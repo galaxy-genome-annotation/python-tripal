@@ -7,7 +7,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Loads a GFF3 file into Tripal')
     TripalAuth(parser)
     parser.add_argument('gff', help='Path to the GFF3 file to load')
-    parser.add_argument('--job-name', help='Name of the job (default=\'Import GFF3 file: <fasta_file_name>\')')
+    parser.add_argument('--job-name', help='Name of the job (default=\'Import GFF3 file: <gff3_file_name>\')')
     parser.add_argument('--organism-id', type=int, required=True, help='Organism ID')
     parser.add_argument('--analysis-id', type=int, required=True, help='Analysis ID')
     parser.add_argument('--import-mode', choices=['add_only', 'update', 'refresh', 'remove'], default='update', help='Import mode, default=update (add_only=existing features won\'t be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be reomved)')
