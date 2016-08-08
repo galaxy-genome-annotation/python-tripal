@@ -4,7 +4,7 @@ import argparse
 from tripal import TripalAuth, TripalInstance
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Sample script to list all jobs')
+    parser = argparse.ArgumentParser(description='Get details about a specific Tripal job')
     TripalAuth(parser)
     parser.add_argument('job_id', type=int, help='ID of the job to retrieve')
     args = parser.parse_args()

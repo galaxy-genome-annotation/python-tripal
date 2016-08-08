@@ -4,7 +4,7 @@ import argparse
 from tripal import TripalAuth, TripalInstance
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Sample script to list all jobs')
+    parser = argparse.ArgumentParser(description='Loads a fasta file into Tripal')
     TripalAuth(parser)
     parser.add_argument('fasta', help='Path to the fasta file to load')
     parser.add_argument('--job-name', help='Name of the job (default=\'Import FASTA file: <fasta_file_name>\')')
