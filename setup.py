@@ -18,6 +18,7 @@ setup(
         'scripts/load_blast.py',
         'scripts/load_fasta.py',
         'scripts/load_gff3.py'
+        'scripts/load_interpro.py',
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
