@@ -1,26 +1,20 @@
 # http://bugs.python.org/issue15881#msg170215
 from setuptools import setup, find_packages
 
+from os import listdir
+
 setup(
     name="tripal",
     version='1.0',
     description="Tripal API library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
-    url="https://github.com/abretaud/python-tripal"
+    url="https://github.com/abretaud/python-tripal",
     install_requires=['requests>=2.4.3'],
     packages=find_packages(),
     license='MIT',
     platforms="Posix; MacOS X; Windows",
-    scripts=[
-        'scripts/get_all_jobs.py',
-        'scripts/get_job.py',
-        'scripts/load_blast.py',
-        'scripts/load_fasta.py',
-        'scripts/load_gff3.py'
-        'scripts/load_interpro.py',
-        'scripts/sync_features.py',
-    ],
+    scripts=['scripts/' + f for f in listdir('scripts')],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
