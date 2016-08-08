@@ -19,6 +19,7 @@ setup(
         'scripts/load_fasta.py',
         'scripts/load_gff3.py'
         'scripts/load_interpro.py',
+        'scripts/sync_features.py',
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
