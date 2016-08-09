@@ -8,6 +8,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Loads InterPro results into Tripal (requires tripal_analysis_interpro module)')
     TripalAuth(parser)
     parser.add_argument('interpro', help='Path to the InterProScan file to load (single XML file, or directory containing multiple XML files)')
+    parser.add_argument('--job-name', help='Name of the job (default=\'Load InterPro results: <interpro_file_name>\')')
     parser.add_argument('--analysis-id', type=int, required=True, help='Analysis ID')
     parser.add_argument('--parse-go', action='store_true', help='Load GO terms to the database')
     parser.add_argument('--query-re', help='The regular expression that can uniquely identify the query name. This parameters is required if the feature name is not the first word in the blast query name.')
@@ -20,7 +21,7 @@ if __name__ == '__main__':
 
     job_name = args.job_name
     if not job_name:
-        job_name = 'Load InterPro results: %s' % os.path.basename(args.gff)
+        job_name = 'Load InterPro results: %s' % os.path.basename(args.interpro)
 
     job_args = [args.analysis_id, args.interpro, int(args.parse_go),
                 args.query_re, args.query_type, int(args.query_re_uniquename)]
