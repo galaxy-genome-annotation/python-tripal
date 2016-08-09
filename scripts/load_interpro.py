@@ -24,6 +24,6 @@ if __name__ == '__main__':
         job_name = 'Load InterPro results: %s' % os.path.basename(args.interpro)
 
     job_args = [args.analysis_id, args.interpro, int(args.parse_go),
-                args.query_re, args.query_type, int(args.query_re_uniquename)]
+                args.query_re, args.query_type, int(args.query_uniquename)]
 
     print json.dumps(ti.jobs.addJob(job_name, 'tripal_analysis_interpro', 'tripal_analysis_interpro_parseXMLFile', job_args), indent=2)
