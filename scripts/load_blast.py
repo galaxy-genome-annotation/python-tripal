@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('--query-type', help='The feature type (e.g. \'gene\', \'mRNA\', \'contig\') of the query. It must be a valid Sequence Ontology term.')
     parser.add_argument('--query-uniquename', action='store_true', help='Use this if the --query-re regular expression matches unique names instead of names in the database.')
     parser.add_argument('--is-concat', action='store_true', help='If the blast result file is simply a list of concatenated blast results.')
-    parser.add_argument('--search-keywords', action='store_true', help='')
+    parser.add_argument('--search-keywords', action='store_true', help='Extract keywords for Tripal search')
 
     args = parser.parse_args()
 
