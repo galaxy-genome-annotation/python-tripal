@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     job_name = args.job_name
     if not job_name:
-        job_name = 'Load Blast results: %s' % os.path.basename(args.gff)
+        job_name = 'Load Blast results: %s' % os.path.basename(args.blast)
 
     transaction = 1 # use transaction or not, no reason to disable this
 
