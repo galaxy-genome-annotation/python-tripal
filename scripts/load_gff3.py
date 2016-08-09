@@ -32,7 +32,7 @@ if __name__ == '__main__':
     transaction = 1 # use transaction or not, no reason to disable this
 
     job_args = [args.gff, args.organism_id, args.analysis_id, int(args.import_mode == 'add_only'),
-                int(args.import_mode == 'update'), int(args.import_mode == 'refresh'), int(args.import_mode == 'remove')
+                int(args.import_mode == 'update'), int(args.import_mode == 'refresh'), int(args.import_mode == 'remove'),
                 transaction, args.target_organism_id, args.target_type, int(args.target_create), args.start_line,
                 args.landmark_type, args.alt_id_attr, args.re_mrna, args.re_protein, int(args.create_organism)]
 
