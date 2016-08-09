@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import json
 import argparse
 from tripal import TripalAuth, TripalInstance
