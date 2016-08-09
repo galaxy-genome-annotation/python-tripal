@@ -30,7 +30,7 @@ if __name__ == '__main__':
     transaction = 1 # use transaction or not, no reason to disable this
 
     job_args = [args.analysis_id, args.blastdb_id, args.blast, args.max_hits, args.blast_ext,
-                args.query_re, args.query_type, int(args.query_re_uniquename), int(args.is_concat),
+                args.query_re, args.query_type, int(args.query_uniquename), int(args.is_concat),
                 int(args.search_keywords)]
 
     print json.dumps(ti.jobs.addJob(job_name, 'tripal_analysis_blast', 'tripal_analysis_blast_parseXMLFile', job_args), indent=2)
