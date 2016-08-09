@@ -21,7 +21,7 @@ if __name__ == '__main__':
         job_name = 'Sync Features'
 
     transaction = 1 # use transaction or not, no reason to disable this
-}
+
     job_args = OrderedDict()
     job_args['base_table'] = 'feature'
     job_args['max_sync'] = args.max_sync
