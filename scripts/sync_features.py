@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import argparse
+from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
 
 if __name__ == '__main__':
@@ -20,15 +21,14 @@ if __name__ == '__main__':
         job_name = 'Sync Features'
 
     transaction = 1 # use transaction or not, no reason to disable this
-
-    job_args = {
-                    'base_table': 'feature',
-                    'max_sync': args.max_sync,
-                    'organism_id': args.organism_id,
-                    'types': args.types,
-                    'ids': args.ids,
-                    'linking_table': 'chado_feature',
-                    'node_type': 'chado_feature'
-                }
+}
+    job_args = OrderedDict()
+    job_args['base_table'] = 'feature'
+    job_args['max_sync'] = args.max_sync
+    job_args['organism_id'] = args.organism_id
+    job_args['types'] = args.types
+    job_args['ids'] = args.ids
+    job_args['linking_table'] = 'chado_feature'
+    job_args['node_type'] = 'chado_feature'
 
     print json.dumps(ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args), indent=2)
