@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('--job-name', help='Name of the job (default=\'Load Blast results: <blast_file_name>\')')
     parser.add_argument('--analysis-id', type=int, required=True, help='Analysis ID')
     parser.add_argument('--blastdb-id', type=int, required=True, help='ID of the database blasted against')
-    parser.add_argument('--max-hits', type=int, required=True, default=25, help='Maximum number of hits kept (default=25)')
+    parser.add_argument('--max-hits', type=int, default=25, help='Maximum number of hits kept (default=25)')
     parser.add_argument('--query-re', help='The regular expression that can uniquely identify the query name. This parameters is required if the feature name is not the first word in the blast query name.')
     parser.add_argument('--query-type', help='The feature type (e.g. \'gene\', \'mRNA\', \'contig\') of the query. It must be a valid Sequence Ontology term.')
     parser.add_argument('--query-uniquename', action='store_true', help='Use this if the --query-re regular expression matches unique names instead of names in the database.')
