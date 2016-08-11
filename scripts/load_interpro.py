@@ -2,7 +2,7 @@
 import os
 import json
 import argparse
-import chado
+from chado import ChadoAuth, ChadoInstance, Analysis, AnalysisProperty, Db
 from tripal import TripalAuth, TripalInstance
 
 if __name__ == '__main__':
@@ -18,11 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--query-uniquename', action='store_true', help='Use this if the --query-re regular expression matches unique names instead of names in the database.')
 
     # Some options to connect directly to chado db using python-chado
-    parser.add_argument('-o', '--dbhost', required=True, help='Database Host')
-    parser.add_argument('-n', '--dbname', required=True, help='Database Name')
-    parser.add_argument('-u', '--dbuser', help='Database Username')
-    parser.add_argument('-p', '--dbpass', help='Database Password')
-    parser.add_argument('--dbschema', help='Database Schema (default: public)', default="public")
+    ChadoAuth(parser)
 
     args = parser.parse_args()
 
