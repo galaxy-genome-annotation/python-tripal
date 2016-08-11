@@ -46,8 +46,9 @@ if __name__ == '__main__':
 
     for p in props:
         ap = AnalysisProperty()
+        ap.analysis_id = args.analysis_id
         for k, v in p.iteritems():
-            ap[k] = v
+            setattr(ap, k, v)
         ci.session.add(ap)
 
     ci.session.commit()
