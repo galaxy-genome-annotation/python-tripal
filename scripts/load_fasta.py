@@ -36,4 +36,4 @@ if __name__ == '__main__':
                 args.method, uid, args.analysis_id, args.match_type]
 
     r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
-    print 'Job scheduled with id %s' % r['job_id']
+    print 'Load fasta job scheduled with id %s' % r['job_id']

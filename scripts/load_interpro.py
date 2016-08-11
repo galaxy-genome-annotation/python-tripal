@@ -35,13 +35,13 @@ if __name__ == '__main__':
 
     # Add tripal specific properties to the analysis
     props = [
-        {'type_name': 'Analysis Type', 'cv_name': 'analysis_property', 'value': 'interpro_analysis'},
-        {'type_name': 'analysis_interpro_interprofile', 'cv_name': 'tripal', 'value': args.interpro},
-        {'type_name': 'analysis_interpro_interproparameters', 'cv_name': 'tripal', 'value': args.interpro_parameters},
-        {'type_name': 'analysis_interpro_parsego', 'cv_name': 'tripal', 'value': int(args.parse_go)},
-        {'type_name': 'analysis_interpro_query_re', 'cv_name': 'tripal', 'value': args.query_re},
-        {'type_name': 'analysis_interpro_query_type', 'cv_name': 'tripal', 'value': args.query_type},
-        {'type_name': 'analysis_interpro_query_uniquename', 'cv_name': 'tripal', 'value': args.query_uniquename}
+        {'type_id': ci.get_cvterm_id('Analysis Type', 'analysis_property'), 'value': 'interpro_analysis'},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_interprofile', 'tripal'), 'value': args.interpro},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_interproparameters', 'tripal'), 'value': args.interpro_parameters},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_parsego', 'tripal'), 'value': int(args.parse_go)},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_query_re', 'tripal'), 'value': args.query_re},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_query_type', 'tripal'), 'value': args.query_type},
+        {'type_id': ci.get_cvterm_id('analysis_interpro_query_uniquename', 'tripal'), 'value': args.query_uniquename}
     ]
 
     for p in props:
@@ -63,4 +63,4 @@ if __name__ == '__main__':
                 args.query_re, args.query_type, int(args.query_uniquename)]
 
     r = ti.jobs.addJob(job_name, 'tripal_analysis_interpro', 'tripal_analysis_interpro_parseXMLFile', job_args)
-    print 'Job scheduled with id %s' % r['job_id']
+    print 'Load interpro job scheduled with id %s' % r['job_id']

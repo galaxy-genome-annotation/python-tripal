@@ -38,4 +38,4 @@ if __name__ == '__main__':
                 args.landmark_type, args.alt_id_attr, int(args.create_organism), args.re_mrna, args.re_protein]
 
     r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
-    print 'Job scheduled with id %s' % r['job_id']
+    print 'Load GFF3 job scheduled with id %s' % r['job_id']

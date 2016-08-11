@@ -32,4 +32,4 @@ if __name__ == '__main__':
     job_args['node_type'] = 'chado_feature'
 
     r = ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-    print 'Job scheduled with id %s' % r['job_id']
+    print 'Sync features job scheduled with id %s' % r['job_id']

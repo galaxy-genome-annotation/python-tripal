@@ -2,15 +2,8 @@
 import os
 import json
 import argparse
-from chado import ChadoAuth, ChadoInstance, Analysis, AnalysisProperty, Db, Cvterm, Cv
+from chado import ChadoAuth, ChadoInstance, Analysis, AnalysisProperty, Db
 from tripal import TripalAuth, TripalInstance
-
-def get_cvterm_id(type_name, cv_name):
-    res = ci.session.query(Cvterm, Cv).filter_by(Cvterm.name = type_name, Cv.name = cv_name)
-    if not res.count():
-        raise Exception("Could not find the analysis %s in the database %s" % (args.analysis_id, ci._engine.url))
-
-    return res.cvterm_id
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Loads Blast results into Tripal (requires tripal_analysis_blast module)')
@@ -47,21 +40,21 @@ if __name__ == '__main__':
     resdb = ci.session.query(Db).filter_by(name = args.blastdb)
     if not resdb.count():
         raise Exception("Could not find the blastdb %s in the database %s" % (args.blastdb, ci._engine.url))
-    blastdb_id = resdb.first.db_id
+    blastdb_id = resdb.one().db_id
 
     # Add tripal specific properties to the analysis
     props = [
-        {'type_id: get_cvterm_id('Analysis Type', 'analysis_property'), 'value': 'blast_analysis'},
-        {'type_id: get_cvterm_id('analysis_blast_blastdb', 'tripal'), 'value': blastdb_id},
-        {'type_id: get_cvterm_id('analysis_blast_blastfile', 'tripal'), 'value': args.blast},
-        {'type_id: get_cvterm_id('analysis_blast_blastparameters', 'tripal'), 'value': args.blast_parameters},
-        {'type_id: get_cvterm_id('analysis_blast_no_parsed', 'tripal'), 'value': args.max_hits},
-        {'type_id: get_cvterm_id('analysis_blast_query_re', 'tripal'), 'value': args.query_re},
-        {'type_id: get_cvterm_id('analysis_blast_query_type', 'tripal'), 'value': args.query_type},
-        {'type_id: get_cvterm_id('analysis_blast_query_uniquename', 'tripal'), 'value': args.query_uniquename},
-        {'type_id: get_cvterm_id('analysis_blast_blastfile_ext', 'tripal'), 'value': args.blast_ext},
-        {'type_id: get_cvterm_id('analysis_blast_is_concat', 'tripal'), 'value': int(args.is_concat)},
-        {'type_id: get_cvterm_id('analysis_blast_search_keywords', 'tripal'), 'value': int(args.search_keywords)}
+        {'type_id': ci.get_cvterm_id('Analysis Type', 'analysis_property'), 'value': 'blast_analysis'},
+        {'type_id': ci.get_cvterm_id('analysis_blast_blastdb', 'tripal'), 'value': blastdb_id},
+        {'type_id': ci.get_cvterm_id('analysis_blast_blastfile', 'tripal'), 'value': args.blast},
+        {'type_id': ci.get_cvterm_id('analysis_blast_blastparameters', 'tripal'), 'value': args.blast_parameters},
+        {'type_id': ci.get_cvterm_id('analysis_blast_no_parsed', 'tripal'), 'value': args.max_hits},
+        {'type_id': ci.get_cvterm_id('analysis_blast_query_re', 'tripal'), 'value': args.query_re},
+        {'type_id': ci.get_cvterm_id('analysis_blast_query_type', 'tripal'), 'value': args.query_type},
+        {'type_id': ci.get_cvterm_id('analysis_blast_query_uniquename', 'tripal'), 'value': args.query_uniquename},
+        {'type_id': ci.get_cvterm_id('analysis_blast_blastfile_ext', 'tripal'), 'value': args.blast_ext},
+        {'type_id': ci.get_cvterm_id('analysis_blast_is_concat', 'tripal'), 'value': int(args.is_concat)},
+        {'type_id': ci.get_cvterm_id('analysis_blast_search_keywords', 'tripal'), 'value': int(args.search_keywords)}
     ]
 
     for p in props:
@@ -87,4 +80,4 @@ if __name__ == '__main__':
                 int(args.search_keywords)]
 
     r = ti.jobs.addJob(job_name, 'tripal_analysis_blast', 'tripal_analysis_blast_parseXMLFile', job_args)
-    print 'Job scheduled with id %s' % r['job_id']
+    print 'Load blast job scheduled with id %s' % r['job_id']
