@@ -43,7 +43,7 @@ if __name__ == '__main__':
     if not resdb.count():
         raise Exception("Could not find the blastdb %s in the database %s" % (args.blastdb, ci._engine.url))
 
-    blastdb_id = resdb.id
+    blastdb_id = resdb[0].id
 
     # Add tripal specific properties to the analysis
     props = [
