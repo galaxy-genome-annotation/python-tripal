@@ -35,37 +35,5 @@ if __name__ == '__main__':
                 args.db_ext_id, args.rel_type, args.rel_subject_re, args.rel_subject_type,
                 args.method, uid, args.analysis_id, args.match_type]
 
-    print json.dumps(ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args), indent=2)
-
-
-"""
-a:14:{
-    i:0;
-        s:42:\"/test_data/sfru_rice_genome_sample.fa\";
-    i:1;
-        s:2:\"13\";
-    i:2;
-        s:4:\"contig\";
-    i:3;
-        s:0:\"\";
-    i:4;
-        s:0:\"\";
-    i:5;
-        s:0:\"\";
-    i:6;
-        s:0:\"\";
-    i:7;
-        s:0:\"\";
-    i:8;
-        s:0:\"\";
-    i:9;
-        s:0:\"\";
-    i:10;
-        s:11:\"Update only\";
-    i:11;
-        s:1:\"1\";
-    i:12;
-        s:2:\"10\";
-    i:13;
-        s:11:\"Unique name\";
-}"""
+    r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
+    print 'Job scheduled with id %s' % r.job_id

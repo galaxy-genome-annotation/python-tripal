@@ -10,7 +10,7 @@ setup(
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
     url="https://github.com/abretaud/python-tripal",
-    install_requires=['requests>=2.4.3'],
+    install_requires=['requests>=2.4.3', 'chado'],
     packages=find_packages(),
     license='MIT',
     platforms="Posix; MacOS X; Windows",

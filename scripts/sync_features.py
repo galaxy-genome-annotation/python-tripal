@@ -31,4 +31,5 @@ if __name__ == '__main__':
     job_args['linking_table'] = 'chado_feature'
     job_args['node_type'] = 'chado_feature'
 
-    print json.dumps(ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args), indent=2)
+    r = ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+    print 'Job scheduled with id %s' % r.job_id

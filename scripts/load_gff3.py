@@ -18,9 +18,9 @@ if __name__ == '__main__':
     parser.add_argument('--start-line', type=int, help='The line in the GFF file where importing should start')
     parser.add_argument('--landmark-type', help='A Sequence Ontology type for the landmark sequences in the GFF fie (e.g. \'chromosome\'). If the GFF file contains a \'##sequence-region\' line that describes the landmark sequences to which all others are aligned and a type is provided here then the features will be created if they do not already exist. If they do exist then this field is not used')
     parser.add_argument('--alt-id-attr', help='Sometimes lines in the GFF file are missing the required ID attribute that specifies the unique name of the feature, but there may be another attribute that can uniquely identify the feature. If so, you may specify the name of the attribute to use for the name.')
+    parser.add_argument('--create-organism', action='store_true', help='The Tripal GFF loader supports the "organism" attribute. This allows features of a different organism to be aligned to the landmark sequence of another species. The format of the attribute is "organism=[genus]:[species]", where [genus] is the organism\'s genus and [species] is the species name. Check this box to automatically add the organism to the database if it does not already exists. Otherwise lines with an organism attribute where the organism is not present in the database will be skipped.')
     parser.add_argument('--re-mrna', help='Regular expression for the mRNA name')
     parser.add_argument('--re-protein', help='Replacement string for the protein name')
-    parser.add_argument('--create-organism', action='store_true', help='The Tripal GFF loader supports the "organism" attribute. This allows features of a different organism to be aligned to the landmark sequence of another species. The format of the attribute is "organism=[genus]:[species]", where [genus] is the organism\'s genus and [species] is the species name. Check this box to automatically add the organism to the database if it does not already exists. Otherwise lines with an organism attribute where the organism is not present in the database will be skipped.')
 
     args = parser.parse_args()
 
@@ -35,6 +35,7 @@ if __name__ == '__main__':
     job_args = [args.gff, args.organism_id, args.analysis_id, int(args.import_mode == 'add_only'),
                 int(args.import_mode == 'update'), int(args.import_mode == 'refresh'), int(args.import_mode == 'remove'),
                 transaction, args.target_organism_id, args.target_type, int(args.target_create), args.start_line,
-                args.landmark_type, args.alt_id_attr, args.re_mrna, args.re_protein, int(args.create_organism)]
+                args.landmark_type, args.alt_id_attr, int(args.create_organism), args.re_mrna, args.re_protein]
 
-    print json.dumps(ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args), indent=2)
+    r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
+    print 'Job scheduled with id %s' % r.job_id
