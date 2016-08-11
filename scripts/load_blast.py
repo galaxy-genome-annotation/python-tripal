@@ -5,9 +5,6 @@ import argparse
 import chado
 from tripal import TripalAuth, TripalInstance
 
-def add_analysis_props(analysis_id):
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Loads Blast results into Tripal (requires tripal_analysis_blast module)')
     TripalAuth(parser)
