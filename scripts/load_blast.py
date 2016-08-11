@@ -89,4 +89,4 @@ if __name__ == '__main__':
                 int(args.search_keywords)]
 
     r = ti.jobs.addJob(job_name, 'tripal_analysis_blast', 'tripal_analysis_blast_parseXMLFile', job_args)
-    print 'Job scheduled with id %s' % r.job_id
+    print 'Job scheduled with id %s' % r['job_id']
