@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('--blast-ext', help='If looking for files in a directory, extension of the blast result files')
     parser.add_argument('--job-name', help='Name of the job (default=\'Load Blast results: <blast_file_name>\')')
     parser.add_argument('--analysis-id', type=int, required=True, help='Analysis ID')
-    parser.add_argument('--blastdb', type=int, required=True, help='Name of the database blasted against (must be in the Chado db table)')
+    parser.add_argument('--blastdb', required=True, help='Name of the database blasted against (must be in the Chado db table)')
     parser.add_argument('--blast-parameters', help='Blast parameters used to produce these results')
     parser.add_argument('--max-hits', type=int, default=25, help='Maximum number of hits kept (default=25)')
     parser.add_argument('--query-re', help='The regular expression that can uniquely identify the query name. This parameters is required if the feature name is not the first word in the blast query name.')
