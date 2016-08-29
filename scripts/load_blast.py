@@ -2,7 +2,7 @@
 import os
 import json
 import argparse
-from chado import ChadoAuth
+from chado import ChadoAuth, ChadoInstance, Db
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
 
 if __name__ == '__main__':
@@ -11,7 +11,6 @@ if __name__ == '__main__':
     TripalAnalysis(parser)
     parser.add_argument('blast', help='Path to the Blast file to load (single XML file, or directory containing multiple XML files)')
     parser.add_argument('--blast-ext', help='If looking for files in a directory, extension of the blast result files')
-    parser.add_argument('--job-name', help='Name of the job (default=\'Load Blast results: <blast_file_name>\')')
     parser.add_argument('--blastdb', required=True, help='Name of the database blasted against (must be in the Chado db table)')
     parser.add_argument('--blast-parameters', help='Blast parameters used to produce these results')
     parser.add_argument('--max-hits', type=int, default=25, help='Maximum number of hits kept (default=25)')
@@ -54,4 +53,4 @@ if __name__ == '__main__':
 
     res = ti.analysis.addAnalysis(params)
 
-    print "New analysis created with ID: %s" % res.nid
+    print "New Blast analysis created with ID: %s" % res['nid']
