@@ -32,6 +32,7 @@ class TripalInstance(object):
 
         self.jobs = JobsClient(self)
         self.analysis = AnalysisClient(self)
+        self.organism = OrganismClient(self)
 
     def __str__(self):
         return '<TripalInstance at %s>' % self.tripal_url
@@ -199,5 +200,18 @@ class AnalysisClient(Client):
             }
 
     def addAnalysis(self, params):
+
+        return self.request('node', params)
+
+class OrganismClient(Client):
+    CLIENT_BASE = '/tripal_api/'
+
+    def getOrganisms(self):
+        return self.get('node', {})
+
+    def getOrganism(self, jobId):
+        return self.get('node/%s' % jobId, {})
+
+    def addOrganism(self, params):
 
         return self.request('node', params)
