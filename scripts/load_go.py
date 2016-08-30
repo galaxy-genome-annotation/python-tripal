@@ -23,8 +23,8 @@ if __name__ == '__main__':
     params = ti.analysis.getBasePayload(args)
 
     methods = {
-        'add': 'Add GO terms',
-        'remove': 'Remove GO terms',
+        'add': 1,
+        'remove': 2,
     }
 
     params.update({
