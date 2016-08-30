@@ -22,13 +22,18 @@ if __name__ == '__main__':
 
     params = ti.analysis.getBasePayload(args)
 
+    methods = {
+        'add': 'Add GO terms',
+        'remove': 'Remove GO terms',
+    }
+
     params.update({
         'type': 'chado_analysis_go',
         'gaf_file': args.gaf,
         'gaf_file_ext': args.gaf_ext,
         'seq_type': args.query_type,
         'query_uniquename': args.query_uniquename,
-        'method': args.method,
+        'method': methods[args.method],
         're_name': args.re_name,
         'gojob': 1,
     })
