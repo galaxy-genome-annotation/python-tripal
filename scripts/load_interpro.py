@@ -25,6 +25,7 @@ if __name__ == '__main__':
     params.update({
         'type': 'chado_analysis_interpro',
         'interprofile': args.interpro,
+        'interprojob': 1,
         'parsego': int(args.parse_go),
         'interproparameters': args.interpro_parameters,
         'query_re': args.query_re,
