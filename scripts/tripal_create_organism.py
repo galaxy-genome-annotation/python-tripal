@@ -28,4 +28,4 @@ if __name__ == '__main__':
 
     res = ti.organism.addOrganism(params)
 
-    print "New organism created with ID: %s" % res['nid']
+    print "New organism created with Node ID: %s" % res['nid']

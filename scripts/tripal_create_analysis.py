@@ -21,4 +21,4 @@ if __name__ == '__main__':
 
     res = ti.analysis.addAnalysis(params)
 
-    print "New analysis created with ID: %s" % res['nid']
+    print "New analysis created with Node ID: %s" % res['nid']
