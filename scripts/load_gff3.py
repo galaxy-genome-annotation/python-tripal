@@ -2,7 +2,6 @@
 import os
 import json
 import argparse
-from chado import ChadoAuth, ChadoInstance, Organism, Analysis
 from tripal import TripalAuth, TripalInstance
 
 if __name__ == '__main__':
@@ -10,10 +9,16 @@ if __name__ == '__main__':
     TripalAuth(parser)
     parser.add_argument('gff', help='Path to the GFF3 file to load')
     parser.add_argument('--job-name', help='Name of the job (default=\'Import GFF3 file: <gff3_file_name>\')')
-    parser.add_argument('--organism', required=True, help='Organism common name')
-    parser.add_argument('--analysis', required=True, help='Analysis name')
+    groupo = parser.add_mutually_exclusive_group(required=True)
+    groupo.add_argument('--organism', help='Organism abbreviation or common name')
+    groupo.add_argument('--organism-id', help='Organism ID')
+    groupa = parser.add_mutually_exclusive_group(required=True)
+    groupa.add_argument('--analysis', help='Analysis name')
+    groupa.add_argument('--analysis-id', help='Analysis ID')
     parser.add_argument('--import-mode', choices=['add_only', 'update', 'refresh', 'remove'], default='update', help='Import mode, default=update (add_only=existing features won\'t be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be reomved)')
-    parser.add_argument('--target-organism-id', type=int, help='In case of Target attribute in the GFF3, choose the organism to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the \'target_organism=genus:species\' attribute in the GFF file.')
+    groupt = parser.add_mutually_exclusive_group()
+    groupt.add_argument('--target-organism', help='In case of Target attribute in the GFF3, choose the organism abbreviation or common name to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the \'target_organism=genus:species\' attribute in the GFF file.')
+    groupt.add_argument('--target-organism-id', help='In case of Target attribute in the GFF3, choose the organism ID to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the \'target_organism=genus:species\' attribute in the GFF file.')
     parser.add_argument('--target-type', help='In case of Target attribute in the GFF3, if the unique name for a target sequence is not unique (e.g. a protein and an mRNA have the same name) then you must specify the type for all targets in the GFF file. If the targets are of different types then the type must be specified using the \'target_type=type\' attribute in the GFF file. This must be a valid Sequence Ontology (SO) term.')
     parser.add_argument('--target-create', action='store_true', help='In case of Target attribute in the GFF3, if the target feature cannot be found, create one using the organism and type specified above, or using the \'target_organism\' and \'target_type\' fields specified in the GFF file. Values specified in the GFF file take precedence over those specified above.')
     parser.add_argument('--start-line', type=int, help='The line in the GFF file where importing should start')
@@ -23,25 +28,31 @@ if __name__ == '__main__':
     parser.add_argument('--re-mrna', help='Regular expression for the mRNA name')
     parser.add_argument('--re-protein', help='Replacement string for the protein name')
 
-    ChadoAuth(parser)
     args = parser.parse_args()
 
     ti = TripalInstance(args.tripal, args.username, args.password)
 
-    ci = ChadoInstance(args.dbhost, args.dbname, args.dbuser, args.dbpass, args.dbschema, args.debug)
-    ci.connect()
+    org_id = None
+    if args.organism:
+        org_id = ti.organism.getOrganismByName(args.organism)['organism_id']
+    elif args.organism_id:
+        org_id = args.organism_id
+    else:
+        raise Exception("Either --organism or --organism-id is required")
 
-    # check if the organism exists and get its id
-    resdb = ci.session.query(Organism).filter_by(common_name = args.organism)
-    if not resdb.count():
-        raise Exception("Could not find the organism %s in the database %s" % (args.organism, ci._engine.url))
-    organism_id = resdb.one().organism_id
+    an_id = None
+    if args.analysis:
+        an_id = ti.analysis.getAnalysisByName(args.analysis)['analysis_id']
+    elif args.analysis_id:
+        an_id = args.analysis_id
+    else:
+        raise Exception("Either --analysis or --analysis-id is required")
 
-    # check if the analysis exists and get its id
-    resdb = ci.session.query(Analysis).filter_by(name = args.analysis)
-    if not resdb.count():
-        raise Exception("Could not find the analysis %s in the database %s" % (args.analysis, ci._engine.url))
-    analysis_id = resdb.one().analysis_id
+    target_org_id = None
+    if args.target_organism:
+        target_org_id = ti.organism.getOrganismByName(args.organism)['organism_id']
+    elif args.target_organism_id:
+        target_org_id = args.organism_id
 
     job_name = args.job_name
     if not job_name:
@@ -49,9 +60,9 @@ if __name__ == '__main__':
 
     transaction = 1 # use transaction or not, no reason to disable this
 
-    job_args = [args.gff, organism_id, analysis_id, int(args.import_mode == 'add_only'),
+    job_args = [args.gff, org_id, an_id, int(args.import_mode == 'add_only'),
                 int(args.import_mode == 'update'), int(args.import_mode == 'refresh'), int(args.import_mode == 'remove'),
-                transaction, args.target_organism_id, args.target_type, int(args.target_create), args.start_line,
+                transaction, target_org_id, args.target_type, int(args.target_create), args.start_line,
                 args.landmark_type, args.alt_id_attr, int(args.create_organism), args.re_mrna, args.re_protein]
 
     r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)

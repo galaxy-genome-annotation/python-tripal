@@ -2,7 +2,6 @@
 import os
 import json
 import argparse
-from chado import ChadoAuth, ChadoInstance, Db
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
 
 if __name__ == '__main__':
@@ -11,7 +10,9 @@ if __name__ == '__main__':
     TripalAnalysis(parser)
     parser.add_argument('blast', help='Path to the Blast file to load (single XML file, or directory containing multiple XML files)')
     parser.add_argument('--blast-ext', help='If looking for files in a directory, extension of the blast result files')
-    parser.add_argument('--blastdb', required=True, help='Name of the database blasted against (must be in the Chado db table)')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--blastdb', help='Name of the database blasted against (must be in the Chado db table)')
+    group.add_argument('--blastdb-id', help='ID of the database blasted against (must be in the Chado db table)')
     parser.add_argument('--blast-parameters', help='Blast parameters used to produce these results')
     parser.add_argument('--max-hits', type=int, default=25, help='Maximum number of hits kept (default=25)')
     parser.add_argument('--query-re', help='The regular expression that can uniquely identify the query name. This parameters is required if the feature name is not the first word in the blast query name.')
@@ -20,20 +21,17 @@ if __name__ == '__main__':
     parser.add_argument('--is-concat', action='store_true', help='If the blast result file is simply a list of concatenated blast results.')
     parser.add_argument('--search-keywords', action='store_true', help='Extract keywords for Tripal search')
 
-    ChadoAuth(parser)
     args = parser.parse_args()
-
-    ci = ChadoInstance(args.dbhost, args.dbname, args.dbuser, args.dbpass, args.dbschema, args.debug)
-
-    ci.connect()
 
     ti = TripalInstance(args.tripal, args.username, args.password)
 
-    # check if the blastdb exists and get its id
-    resdb = ci.session.query(Db).filter_by(name = args.blastdb)
-    if not resdb.count():
-        raise Exception("Could not find the blastdb %s in the database %s" % (args.blastdb, ci._engine.url))
-    blastdb_id = resdb.one().db_id
+    blastdb_id = None
+    if args.blastdb:
+        blastdb_id = ti.db.getDbByName(args.blastdb)['db_id']
+    elif args.blastdb_id:
+        blastdb_id = args.blastdb_id
+    else:
+        raise Exception("Either --blastdb or --blastdb-id is required")
 
     params = ti.analysis.getBasePayload(args)
 

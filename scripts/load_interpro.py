@@ -2,7 +2,6 @@
 import os
 import json
 import argparse
-from chado import ChadoAuth, ChadoInstance
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
 
 if __name__ == '__main__':

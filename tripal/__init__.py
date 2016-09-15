@@ -33,6 +33,7 @@ class TripalInstance(object):
         self.jobs = JobsClient(self)
         self.analysis = AnalysisClient(self)
         self.organism = OrganismClient(self)
+        self.db = DbClient(self)
 
     def __str__(self):
         return '<TripalInstance at %s>' % self.tripal_url
@@ -180,6 +181,19 @@ class AnalysisClient(Client):
     def getAnalysis(self, jobId):
         return self.get('node/%s' % jobId, {})
 
+    def getAnalysisByName(self, name):
+        data = {
+            'table': 'analysis',
+        }
+
+        analyses = self.request('chado/list', data)
+
+        for a in analyses:
+            if a['name'] == name:
+                return a
+
+        raise Exception("Could not find the analysis %s." % (name))
+
     def getBasePayload(self, args):
         date = datetime.today()
         if args.analysis_date_executed:
@@ -212,6 +226,35 @@ class OrganismClient(Client):
     def getOrganism(self, jobId):
         return self.get('node/%s' % jobId, {})
 
+    def getOrganismByName(self, name):
+        data = {
+            'table': 'organism',
+        }
+
+        orgs = self.request('chado/list', data)
+
+        for o in orgs:
+            if o['common_name'] == name or o['abbreviation'] == name:
+                return o
+
+        raise Exception("Could not find the organism %s." % (name))
+
     def addOrganism(self, params):
 
         return self.request('node', params)
+
+class DbClient(Client):
+    CLIENT_BASE = '/tripal_api/'
+
+    def getDbByName(self, name):
+        data = {
+            'table': 'db',
+        }
+
+        orgs = self.request('chado/list', data)
+
+        for o in orgs:
+            if o['name'] == name:
+                return o
+
+        raise Exception("Could not find the Db %s." % (name))
