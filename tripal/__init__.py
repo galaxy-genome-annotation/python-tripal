@@ -34,6 +34,7 @@ class TripalInstance(object):
         self.analysis = AnalysisClient(self)
         self.organism = OrganismClient(self)
         self.db = DbClient(self)
+        self.tripaldb = TripalDbClient(self)
 
     def __str__(self):
         return '<TripalInstance at %s>' % self.tripal_url
@@ -251,10 +252,40 @@ class DbClient(Client):
             'table': 'db',
         }
 
-        orgs = self.request('chado/list', data)
+        dbs = self.request('chado/list', data)
 
-        for o in orgs:
-            if o['name'] == name:
-                return o
+        for d in dbs:
+            if d['name'] == name:
+                return d
 
         raise Exception("Could not find the Db %s." % (name))
+
+class TripalDbClient(Client):
+    CLIENT_BASE = '/tripal_api/'
+
+    def getMviewByName(self, name):
+        data = {
+            'table': 'tripal_mviews',
+        }
+
+        mvs = self.request('chado/list', data)
+
+        for m in mvs:
+            if m['name'] == name:
+                return m
+
+        raise Exception("Could not find the Materialized view %s." % (name))
+
+
+    def getMviews(self):
+        data = {
+            'table': 'tripal_mviews',
+        }
+
+        mvs = self.request('chado/list', data)
+
+        mviews = {}
+        for m in mvs:
+            mviews[m['name']] = m['mview_id']
+
+        return mviews
