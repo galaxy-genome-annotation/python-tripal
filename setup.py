@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     license='MIT',
     platforms="Posix; MacOS X; Windows",
-    scripts=['scripts/' + f for f in listdir('scripts')],
+    scripts=['bin/' + f for f in listdir('bin')],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

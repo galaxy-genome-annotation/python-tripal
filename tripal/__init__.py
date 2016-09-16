@@ -25,8 +25,8 @@ def TripalAnalysis(parser):
 
 class TripalInstance(object):
 
-    def __init__(self, url, username, password):
-        self.tripal_url = url
+    def __init__(self, tripal, username, password, **kwargs):
+        self.tripal_url = tripal
         self.username = username
         self.password = password
 
