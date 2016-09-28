@@ -289,3 +289,15 @@ class TripalDbClient(Client):
             mviews[m['name']] = m['mview_id']
 
         return mviews
+
+    def index(self, table = "index_website", queues = 10, fields = [], links = {}):
+        data = {
+            'table': table,
+            'queues': queues,
+            'fields': fields,
+            'links': links,
+        }
+
+        res = self.request('elasticsearch/index', data)
+
+        return res
