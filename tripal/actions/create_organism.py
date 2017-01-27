@@ -13,7 +13,7 @@ class create_organism(object):
         parser.add_argument("--species", help="The species of the organism")
         parser.add_argument("--abbr", required=True, help="The abbreviation of the organism")
         parser.add_argument("--common", required=True, help="The common name of the organism")
-        parser.add_argument("--description", help="The abbreviation of the organism")
+        parser.add_argument("--description", help="The description of the organism")
         parser.add_argument("--infraspecific-rank", type=int, help="The type id of infraspecific name for any taxon below the rank of species (requires --infraspecific-name.") # TODO use readable names instead of id
         parser.add_argument("--infraspecific-name", help="The infraspecific name for this organism (requires --infraspecific-rank).")
 
