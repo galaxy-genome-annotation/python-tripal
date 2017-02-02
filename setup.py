@@ -5,7 +5,7 @@ from os import listdir
 
 setup(
     name="tripal",
-    version='1.5',
+    version='1.6',
     description="Tripal API library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",

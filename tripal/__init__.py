@@ -3,11 +3,14 @@ import json
 import collections
 import logging
 from datetime import datetime
+
 logging.getLogger("requests").setLevel(logging.CRITICAL)
 log = logging.getLogger()
 
 
 def TripalAuth(parser):
+    parser.add_argument("--auth-login", help="The login if your tripal instance is behind an authentication proxy")
+    parser.add_argument("--auth-password", help="The password if your tripal instance is behind an authentication proxy")
     parser.add_argument('tripal', help='Complete Tripal URL')
     parser.add_argument('username', help='Admin Username')
     parser.add_argument('password', help='Admin Password')
@@ -29,6 +32,13 @@ class TripalInstance(object):
         self.tripal_url = tripal
         self.username = username
         self.password = password
+
+        self.auth_login = None
+        self.auth_password = None
+        if 'auth_login' in kwargs:
+            self.auth_login = kwargs['auth_login']
+        if 'auth_password' in kwargs:
+            self.auth_password = kwargs['auth_password']
 
         self.jobs = JobsClient(self)
         self.analysis = AnalysisClient(self)
@@ -62,9 +72,13 @@ class Client(object):
         if self._session:
             headers['Cookie'] = self._session
 
+        auth = None
+        if self._tripal.auth_login and self._tripal.auth_password:
+            auth = (self._tripal.auth_login, self._tripal.auth_password)
+
         # First get a CSRF token
         r = requests.post(url + 'user/token.json', headers=headers,
-                          verify=self.__verify, **self._requestArgs)
+                          verify=self.__verify, auth=auth, **self._requestArgs)
 
         if r.status_code == 200:
             d = r.json()
@@ -92,8 +106,12 @@ class Client(object):
             'password': self._tripal.password,
         }
 
+        auth = None
+        if self._tripal.auth_login and self._tripal.auth_password:
+            auth = (self._tripal.auth_login, self._tripal.auth_password)
+
         r = requests.post(url + 'user/login.json', data=json.dumps(data), headers=headers,
-                          verify=self.__verify, **self._requestArgs)
+                          verify=self.__verify, auth=auth, **self._requestArgs)
 
         if r.status_code == 200:
             d = r.json()
@@ -118,8 +136,12 @@ class Client(object):
             'X-CSRF-Token': csrfToken
         }
 
+        auth = None
+        if self._tripal.auth_login and self._tripal.auth_password:
+            auth = (self._tripal.auth_login, self._tripal.auth_password)
+
         r = requests.post(url, data=json.dumps(data), headers=headers,
-                          verify=self.__verify, params=post_params, **self._requestArgs)
+                          verify=self.__verify, auth=auth, params=post_params, **self._requestArgs)
 
         if r.status_code == 200:
             d = r.json()
@@ -140,8 +162,12 @@ class Client(object):
             'Cookie': self._session # "SESSc9c711a015d1f2624abf5bff20b25337=FQ4HGEDbfXVEeU9YTGEQMTHyE-VsspsdaNVxhFsVN0k"
         }
 
+        auth = None
+        if self._tripal.auth_login and self._tripal.auth_password:
+            auth = (self._tripal.auth_login, self._tripal.auth_password)
+
         r = requests.get(url, headers=headers, verify=self.__verify,
-                         params=get_params, **self._requestArgs)
+                         params=get_params, auth=auth, **self._requestArgs)
 
         if r.status_code == 200:
             d = r.json()
