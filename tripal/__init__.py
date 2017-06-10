@@ -202,22 +202,19 @@ class JobsClient(Client):
 class AnalysisClient(Client):
     CLIENT_BASE = '/tripal_api/'
 
-    def getAnalyses(self):
+    def getAnalysisNodes(self):
         return self.get('node', {})
 
-    def getAnalysis(self, jobId):
-        return self.get('node/%s' % jobId, {})
+    def getAnalysisNode(self, nodeId):
+        return self.get('node/%s' % nodeId, {})
+
+    def getAnalyses(self):
+        return self.request('chado/list', {'table': 'analysis'})
 
     def getAnalysisByName(self, name):
-        data = {
-            'table': 'analysis',
-        }
-
-        analyses = self.request('chado/list', data)
-
-        for a in analyses:
-            if a['name'] == name:
-                return a
+        for o in self.getOrganisms():
+            if o['name'] == name:
+                return o
 
         raise Exception("Could not find the analysis %s." % (name))
 
@@ -247,20 +244,17 @@ class AnalysisClient(Client):
 class OrganismClient(Client):
     CLIENT_BASE = '/tripal_api/'
 
-    def getOrganisms(self):
+    def getOrganismNodes(self):
         return self.get('node', {})
 
-    def getOrganism(self, jobId):
-        return self.get('node/%s' % jobId, {})
+    def getOrganismNode(self, nodeId):
+        return self.get('node/%s' % nodeId, {})
+
+    def getOrganisms(self):
+        return self.request('chado/list', {'table': 'organism'})
 
     def getOrganismByName(self, name):
-        data = {
-            'table': 'organism',
-        }
-
-        orgs = self.request('chado/list', data)
-
-        for o in orgs:
+        for o in self.getOrganisms():
             if o['common_name'] == name or o['abbreviation'] == name:
                 return o
 
