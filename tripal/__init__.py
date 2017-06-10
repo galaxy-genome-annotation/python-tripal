@@ -264,6 +264,9 @@ class OrganismClient(Client):
 
         return self.request('node', params)
 
+    def getTaxonomicRanks(self):
+        return self.request('chado/taxonomic_ranks', {})
+
 class DbClient(Client):
     CLIENT_BASE = '/tripal_api/'
 

@@ -14,7 +14,7 @@ class create_organism(object):
         parser.add_argument("--abbr", required=True, help="The abbreviation of the organism")
         parser.add_argument("--common", required=True, help="The common name of the organism")
         parser.add_argument("--description", help="The description of the organism")
-        parser.add_argument("--infraspecific-rank", type=int, help="The type id of infraspecific name for any taxon below the rank of species (requires --infraspecific-name.") # TODO use readable names instead of id
+        parser.add_argument("--infraspecific-rank", choices=['subspecies', 'varietas', 'subvariety', 'forma', 'subforma'], help="The type name of infraspecific name for any taxon below the rank of species (requires --infraspecific-name.")
         parser.add_argument("--infraspecific-name", help="The infraspecific name for this organism (requires --infraspecific-rank).")
 
         args = parser.parse_args(args)
@@ -36,8 +36,13 @@ class create_organism(object):
         }
 
         if args.infraspecific_rank:
-            params['infraspecific_rank'] = args.infraspecific_rank
             params['infraspecific_name'] = args.infraspecific_name
+            allowed_ranks = ti.organism.getTaxonomicRanks()
+
+            for r in allowed_ranks:
+                if r['name'] == args.infraspecific_rank:
+                    params['type_id'] = int(r['cvterm_id'])
+                    break
 
         res = ti.organism.addOrganism(params)
 
