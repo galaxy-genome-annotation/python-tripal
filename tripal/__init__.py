@@ -212,7 +212,7 @@ class AnalysisClient(Client):
         return self.request('chado/list', {'table': 'analysis'})
 
     def getAnalysisByName(self, name):
-        for o in self.getOrganisms():
+        for o in self.getAnalyses():
             if o['name'] == name:
                 return o
 
