@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import os
-import json
 import argparse
 from tripal import TripalAuth, TripalInstance
+
 
 class load_fasta(object):
 
@@ -52,11 +53,11 @@ class load_fasta(object):
         if not job_name:
             job_name = 'Import FASTA file: %s' % os.path.basename(args.fasta)
 
-        uid = 1 # user id is not really used by the loader, 1 is admin user
+        uid = 1  # user id is not really used by the loader, 1 is admin user
 
         job_args = [args.fasta, org_id, args.sequence_type, args.re_name, args.re_uniquename, args.re_accession,
                     args.db_ext_id, args.rel_type, args.rel_subject_re, args.rel_subject_type,
                     args.method, uid, an_id, args.match_type]
 
         r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
-        print 'Load fasta job scheduled with id %s' % r['job_id']
+        print('Load fasta job scheduled with id %s' % r['job_id'])

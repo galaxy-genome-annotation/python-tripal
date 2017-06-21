@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import json
+from __future__ import print_function
 import argparse
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
+
 
 class load_interpro(object):
 
@@ -36,4 +36,4 @@ class load_interpro(object):
 
         res = ti.analysis.addAnalysis(params)
 
-        print "New Interpro analysis created with ID: %s" % res['nid']
+        print("New Interpro analysis created with ID: %s" % res['nid'])

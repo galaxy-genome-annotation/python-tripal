@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import json
 import argparse
 from tripal import TripalAuth, TripalInstance
+
 
 class get_job(object):
 
@@ -14,6 +16,6 @@ class get_job(object):
         ti = TripalInstance(**vars(args))
 
         if args.job_id:
-            print json.dumps(ti.jobs.getJob(args.job_id), indent=2)
+            print(json.dumps(ti.jobs.getJob(args.job_id), indent=2))
         else:
-            print json.dumps(ti.jobs.getJobs(), indent=2)
+            print(json.dumps(ti.jobs.getJobs(), indent=2))

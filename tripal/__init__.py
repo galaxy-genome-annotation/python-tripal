@@ -1,6 +1,5 @@
 import requests
 import json
-import collections
 import logging
 from datetime import datetime
 
@@ -15,6 +14,7 @@ def TripalAuth(parser):
     parser.add_argument('username', help='Admin Username')
     parser.add_argument('password', help='Admin Password')
 
+
 def TripalAnalysis(parser):
     parser.add_argument("--analysis-name", required=True, help="Analysis name")
     parser.add_argument("--analysis-program", required=True, help="Program name")
@@ -25,6 +25,7 @@ def TripalAnalysis(parser):
     parser.add_argument("--analysis-description", help="Analysis description")
     parser.add_argument("--analysis-source-uri", help="Source URI")
     parser.add_argument("--analysis-date-executed", help="Date of execution of the analysis (format=YYYY-MM-DD, default=today)")
+
 
 class TripalInstance(object):
 
@@ -48,6 +49,7 @@ class TripalInstance(object):
 
     def __str__(self):
         return '<TripalInstance at %s>' % self.tripal_url
+
 
 class Client(object):
 
@@ -159,7 +161,7 @@ class Client(object):
 
         headers = {
             'Content-Type': 'application/json',
-            'Cookie': self._session # "SESSc9c711a015d1f2624abf5bff20b25337=FQ4HGEDbfXVEeU9YTGEQMTHyE-VsspsdaNVxhFsVN0k"
+            'Cookie': self._session  # "SESSc9c711a015d1f2624abf5bff20b25337=FQ4HGEDbfXVEeU9YTGEQMTHyE-VsspsdaNVxhFsVN0k"
         }
 
         auth = None
@@ -224,22 +226,23 @@ class AnalysisClient(Client):
             date = datetime.strptime(args.analysis_date_executed, '%Y-%m-%d')
 
         return {
-                'analysisname': args.analysis_name,
-                'program': args.analysis_program,
-                'programversion': args.analysis_program_version,
-                'algorithm': args.analysis_algorithm,
-                'sourcename': args.analysis_source_name,
-                'sourceversion': args.analysis_source_version,
-                'sourceuri': args.analysis_source_uri,
-                'description': args.analysis_description,
-                'timeexecuted[day]': date.strftime('%d'),
-                'timeexecuted[month]': date.strftime('%m'),
-                'timeexecuted[year]': date.strftime('%Y'),
-            }
+            'analysisname': args.analysis_name,
+            'program': args.analysis_program,
+            'programversion': args.analysis_program_version,
+            'algorithm': args.analysis_algorithm,
+            'sourcename': args.analysis_source_name,
+            'sourceversion': args.analysis_source_version,
+            'sourceuri': args.analysis_source_uri,
+            'description': args.analysis_description,
+            'timeexecuted[day]': date.strftime('%d'),
+            'timeexecuted[month]': date.strftime('%m'),
+            'timeexecuted[year]': date.strftime('%Y'),
+        }
 
     def addAnalysis(self, params):
 
         return self.request('node', params)
+
 
 class OrganismClient(Client):
     CLIENT_BASE = '/tripal_api/'
@@ -267,6 +270,7 @@ class OrganismClient(Client):
     def getTaxonomicRanks(self):
         return self.request('chado/taxonomic_ranks', {})
 
+
 class DbClient(Client):
     CLIENT_BASE = '/tripal_api/'
 
@@ -282,6 +286,7 @@ class DbClient(Client):
                 return d
 
         raise Exception("Could not find the Db %s." % (name))
+
 
 class TripalDbClient(Client):
     CLIENT_BASE = '/tripal_api/'
@@ -299,7 +304,6 @@ class TripalDbClient(Client):
 
         raise Exception("Could not find the Materialized view %s." % (name))
 
-
     def getMviews(self):
         data = {
             'table': 'tripal_mviews',
@@ -313,7 +317,7 @@ class TripalDbClient(Client):
 
         return mviews
 
-    def index(self, table = "index_website", queues = 10, fields = [], links = {}):
+    def index(self, table="index_website", queues=10, fields=[], links={}):
         data = {
             'table': table,
             'queues': queues,

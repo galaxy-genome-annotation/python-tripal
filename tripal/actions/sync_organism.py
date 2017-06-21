@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import json
+from __future__ import print_function
 import argparse
 from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
+
 
 class sync_organism(object):
 
@@ -30,8 +31,6 @@ class sync_organism(object):
         if not job_name:
             job_name = 'Sync Organism'
 
-        transaction = 1 # use transaction or not, no reason to disable this
-
         job_args = OrderedDict()
         job_args['base_table'] = 'organism'
         job_args['max_sync'] = ''
@@ -42,4 +41,4 @@ class sync_organism(object):
         job_args['node_type'] = 'chado_organism'
 
         r = ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        print 'Sync organism job scheduled with id %s' % r['job_id']
+        print('Sync organism job scheduled with id %s' % r['job_id'])

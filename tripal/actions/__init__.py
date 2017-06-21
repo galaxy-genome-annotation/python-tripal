@@ -1,5 +1,6 @@
 from os.path import dirname
-import sys, pkgutil
+import pkgutil
+import sys
 
 for importer, package_name, _ in pkgutil.iter_modules([dirname(__file__)]):
     full_package_name = '%s.%s' % ('tripal.actions', package_name)

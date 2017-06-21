@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import json
+from __future__ import print_function
 import argparse
 from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
+
 
 class populate_mview(object):
 
@@ -26,7 +27,6 @@ class populate_mview(object):
             for m_name in mviews:
                 self.add_job(m_name, mviews[m_name])
 
-
     def add_job(self, mview, mview_id, job_name=None):
         if not job_name:
             job_name = 'Populate materialized views \'%s\'' % mview
@@ -35,4 +35,4 @@ class populate_mview(object):
         job_args[0] = mview_id
 
         r = self.ti.jobs.addJob(job_name, 'tripal_core', 'tripal_populate_mview', job_args)
-        print 'Populate materialized view job scheduled with id %s' % r['job_id']
+        print('Populate materialized view job scheduled with id %s' % r['job_id'])

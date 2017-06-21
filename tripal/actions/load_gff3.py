@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import os
-import json
 import argparse
 from tripal import TripalAuth, TripalInstance
+
 
 class load_gff3(object):
 
@@ -60,7 +61,7 @@ class load_gff3(object):
         if not job_name:
             job_name = 'Import GFF3 file: %s' % os.path.basename(args.gff)
 
-        transaction = 1 # use transaction or not, no reason to disable this
+        transaction = 1  # use transaction or not, no reason to disable this
 
         job_args = [args.gff, org_id, an_id, int(args.import_mode == 'add_only'),
                     int(args.import_mode == 'update'), int(args.import_mode == 'refresh'), int(args.import_mode == 'remove'),
@@ -68,4 +69,4 @@ class load_gff3(object):
                     args.landmark_type, args.alt_id_attr, int(args.create_organism), args.re_mrna, args.re_protein]
 
         r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
-        print 'Load GFF3 job scheduled with id %s' % r['job_id']
+        print('Load GFF3 job scheduled with id %s' % r['job_id'])

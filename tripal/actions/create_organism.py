@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import json
+from __future__ import print_function
 import argparse
 from tripal import TripalAuth, TripalInstance
+
 
 class create_organism(object):
 
@@ -46,4 +46,4 @@ class create_organism(object):
 
         res = ti.organism.addOrganism(params)
 
-        print "New organism created with Node ID: %s" % res['nid']
+        print("New organism created with Node ID: %s" % res['nid'])

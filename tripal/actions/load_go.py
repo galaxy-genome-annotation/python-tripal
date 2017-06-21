@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import json
+from __future__ import print_function
 import argparse
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
+
 
 class load_go(object):
 
@@ -41,4 +41,4 @@ class load_go(object):
 
         res = ti.analysis.addAnalysis(params)
 
-        print "New GO analysis created with ID: %s" % res['nid']
+        print("New GO analysis created with ID: %s" % res['nid'])

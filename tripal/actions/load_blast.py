@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import json
+from __future__ import print_function
 import argparse
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
+
 
 class load_blast(object):
 
@@ -42,7 +42,7 @@ class load_blast(object):
             'blastdb': blastdb_id,
             'blastfile': args.blast,
             'blastfile_ext': args.blast_ext,
-            'blastjob': 1, # no reason to not launch a job
+            'blastjob': 1,  # no reason to not launch a job
             'blastparameters': args.blast_parameters,
             'query_re': args.query_re,
             'query_type': args.query_type,
@@ -53,4 +53,4 @@ class load_blast(object):
 
         res = ti.analysis.addAnalysis(params)
 
-        print "New Blast analysis created with ID: %s" % res['nid']
+        print("New Blast analysis created with ID: %s" % res['nid'])

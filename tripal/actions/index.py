@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import json
+from __future__ import print_function
 import argparse
-from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
+
 
 class index(object):
 
@@ -25,6 +25,6 @@ class index(object):
 
         ti = TripalInstance(**vars(args))
 
-        res = ti.tripaldb.index(args.table, args.queues, args.fields, links)
+        ti.tripaldb.index(args.table, args.queues, args.fields, links)
 
-        print 'Scheduled indexing with elastic search'
+        print('Scheduled indexing with elastic search')

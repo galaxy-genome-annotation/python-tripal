@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import json
+from __future__ import print_function
 import argparse
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
+
 
 class create_analysis(object):
 
@@ -23,4 +23,4 @@ class create_analysis(object):
 
         res = ti.analysis.addAnalysis(params)
 
-        print "New analysis created with Node ID: %s" % res['nid']
+        print("New analysis created with Node ID: %s" % res['nid'])
