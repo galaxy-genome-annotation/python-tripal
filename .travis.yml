@@ -1,0 +1,18 @@
+language: python
+python:
+- '2.7'
+- '3.5'
+script:
+- pip install -U pip setuptools
+- pip install -U flake8
+- flake8 tripal --ignore=E501 --exclude=scripts/
+- python setup.py install
+deploy:
+  provider: pypi
+  user: abretaud
+  password:
+    secure: DQ3JbzOM353nwNtYDp+svAyit/P7FCpVJXuCA5dPjHdNkWOVUyJdwbtUSZRDuBditz6ip07fFHh2IwXGx4nMO2fZcG3Ah/o0Aj7Ffok4IjDc+NW8MqnF9mrW2n9PVkVYiEGzSKgax/Qvas6pXCHP7LwD3+MjlsrnIYHg1osxMvm/yYm3ns9hEdLHhHoBylxKEvnntpvVjc32OotQPeF+vNcu4jfE0Yrw8f9b2cWJhzt0FADra07wZj0COGfOd1Z2K+ccA79mDx6hpWF3+LAI6P38qkre9F1Tqk+K+fYrCXn8xIZiU4tPJmlCpp0gNmMFewcJqxE+lzGPHAJ2oa3W8bBVy9HcqW0orrH3TbGp/OSTQ9cGqQsdIb4u+xXWM3JEKl43X8nGughBmh9XPuBFzI7yCaKLR1B4tMRkc2dpb5RH4BSTiBAoHPjLOntlPHGhWaBm7WIKVxIXVNOkePEGJb2M+hgqBs6BfhrYS8UZBOkblgDJ8HUwgC8WdUW6sWWB8KtFnU66fRwhvMnGUd+AJJCEuA43gBz9pKA+E05RQHulXlaOJgHWBxhfmEgT9aSV+KkzkyulDf85qQVv4Y0ZSeDcnRFCZfCZZ2gGmEinj7MAzFB5uXD3AGRVOwWzG27Gws0qGHRnVjSPzLA8tISS90y1UPiovZnATf8rJIH/Oh8=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: abretaud/python-tripal
