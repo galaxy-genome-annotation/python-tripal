@@ -274,12 +274,16 @@ class OrganismClient(Client):
 class DbClient(Client):
     CLIENT_BASE = '/tripal_api/'
 
-    def getDbByName(self, name):
+    def getDbs(self):
         data = {
             'table': 'db',
         }
 
-        dbs = self.request('chado/list', data)
+        return self.request('chado/list', data)
+
+    def getDbByName(self, name):
+
+        dbs = self.getDbs()
 
         for d in dbs:
             if d['name'] == name:
