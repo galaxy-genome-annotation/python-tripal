@@ -204,7 +204,7 @@ class JobsClient(Client):
     def runJobs(self, wait=True):
 
         res = None
-        while res == None or res['status'] == 'busy':
+        while res is None or res['status'] == 'busy':
             res = self.request('job/run', {})
             if res['status'] == 'busy':
                 if not wait:
