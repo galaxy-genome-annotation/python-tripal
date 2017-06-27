@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import argparse
+import sys
 from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
 
@@ -14,6 +15,7 @@ class sync_analysis(object):
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument('--analysis', help='Analysis name')
         group.add_argument('--analysis-id', help='Analysis ID')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -42,3 +44,11 @@ class sync_analysis(object):
 
         r = ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
         print('Sync analysis job scheduled with id %s' % r['job_id'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)

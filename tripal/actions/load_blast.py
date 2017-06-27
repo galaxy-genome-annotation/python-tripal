@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import argparse
+import sys
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
 
 
@@ -22,6 +23,7 @@ class load_blast(object):
         parser.add_argument('--query-uniquename', action='store_true', help='Use this if the --query-re regular expression matches unique names instead of names in the database.')
         parser.add_argument('--is-concat', action='store_true', help='If the blast result file is simply a list of concatenated blast results.')
         parser.add_argument('--search-keywords', action='store_true', help='Extract keywords for Tripal search')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -54,3 +56,11 @@ class load_blast(object):
         res = ti.analysis.addAnalysis(params)
 
         print("New Blast analysis created with ID: %s" % res['nid'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)

@@ -2,6 +2,7 @@
 from __future__ import print_function
 import os
 import argparse
+import sys
 from tripal import TripalAuth, TripalInstance
 
 
@@ -30,6 +31,7 @@ class load_gff3(object):
         parser.add_argument('--create-organism', action='store_true', help='The Tripal GFF loader supports the "organism" attribute. This allows features of a different organism to be aligned to the landmark sequence of another species. The format of the attribute is "organism=[genus]:[species]", where [genus] is the organism\'s genus and [species] is the species name. Check this box to automatically add the organism to the database if it does not already exists. Otherwise lines with an organism attribute where the organism is not present in the database will be skipped.')
         parser.add_argument('--re-mrna', help='Regular expression for the mRNA name')
         parser.add_argument('--re-protein', help='Replacement string for the protein name')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -70,3 +72,11 @@ class load_gff3(object):
 
         r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
         print('Load GFF3 job scheduled with id %s' % r['job_id'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)

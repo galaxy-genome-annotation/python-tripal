@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import argparse
+import sys
 from collections import OrderedDict
 from tripal import TripalAuth, TripalInstance
 
@@ -17,6 +18,7 @@ class sync_features(object):
         parser.add_argument('--max-sync', type=int, help='Maximum number of features to sync (default: all)')
         parser.add_argument('--types', nargs='*', help='Space-delimited list of types of records to be synced (e.g. gene mRNA, default: all)')
         parser.add_argument('--ids', nargs='*', help='Space-delimited list of names of records to be synced (e.g. gene0001, default: all)')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -45,3 +47,11 @@ class sync_features(object):
 
         r = ti.jobs.addJob(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
         print('Sync features job scheduled with id %s' % r['job_id'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)

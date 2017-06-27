@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import time
 from datetime import datetime
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -199,6 +200,28 @@ class JobsClient(Client):
         }
 
         return self.request('job', data)
+
+    def runJobs(self, wait=True):
+
+        res = None
+        while res == None or res['status'] == 'busy':
+            res = self.request('job/run', {})
+            if res['status'] == 'busy':
+                if not wait:
+                    return res
+                time.sleep(20)
+
+        return res
+
+    def wait(self, jobId):
+
+        job = None
+        while not job or job['status'] not in ('Completed', 'Cancelled', 'Error'):
+            job = self.getJob(jobId)
+            if job['status'] == 'busy':
+                time.sleep(20)
+
+        return job
 
 
 class AnalysisClient(Client):

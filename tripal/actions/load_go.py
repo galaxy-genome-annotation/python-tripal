@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import argparse
+import sys
 from tripal import TripalAuth, TripalAnalysis, TripalInstance
 
 
@@ -16,6 +17,7 @@ class load_go(object):
         parser.add_argument('--query-uniquename', action='store_true', help='Use this if the --re-name regular expression matches unique names instead of names in the database.')
         parser.add_argument('--method', choices=['add', 'remove'], default='add', help='Import method')
         parser.add_argument('--re-name', help='Regular expression to extract the feature name from GAF file.')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -42,3 +44,11 @@ class load_go(object):
         res = ti.analysis.addAnalysis(params)
 
         print("New GO analysis created with ID: %s" % res['nid'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)

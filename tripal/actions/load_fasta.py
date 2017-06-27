@@ -2,6 +2,7 @@
 from __future__ import print_function
 import os
 import argparse
+import sys
 from tripal import TripalAuth, TripalInstance
 
 
@@ -28,6 +29,7 @@ class load_fasta(object):
         parser.add_argument('--rel-subject-type', help='Relation subject type (must match already loaded data, e.g. mRNA)', default='')
         parser.add_argument('--method', help='Insertion method', choices=['Insert only', 'Update only', 'Insert and update'], default='Insert and update')
         parser.add_argument('--match-type', help='Match type for already loaded features (used for "Update only" or "Insert and update" methods)', choices=['Name', 'Unique name'], default='Unique name')
+        parser.add_argument('--no-wait', action='store_true', help='Do not wait for job to complete')
 
         args = parser.parse_args(args)
 
@@ -61,3 +63,11 @@ class load_fasta(object):
 
         r = ti.jobs.addJob(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
         print('Load fasta job scheduled with id %s' % r['job_id'])
+
+        if not args.no_wait:
+            run_res = ti.jobs.runJobs()
+            ti.jobs.wait(r['job_id'])
+            with open(run_res['stdout'], 'r') as fin:
+                print(fin.read())
+            with open(run_res['stderr'], 'r') as fin:
+                print(fin.read(), file=sys.stderr)
