@@ -15,7 +15,8 @@ A Python library for interacting with tripal_home_
 History
 -------
 
-To be added...
+ - 1.9
+    - wait for job completion and get logs
 
 Requirements
 ------------
