@@ -38,12 +38,22 @@ class load_interpro(object):
 
         res = ti.analysis.addAnalysis(params)
 
-        print("New Interpro analysis created with ID: %s" % res['nid'])
-
+        an_node = ti.analysis.getAnalysisNode(res['nid'])
+        an_id = an_node['analysis']['analysis_id']
+        print("New Interpro analysis created with ID %s (node id: %s)" % (an_id, res['nid']))
         if not args.no_wait:
+            job_id = None
+            jobs = ti.jobs.getJobs()
+            for job in jobs:
+                if job['modulename'] == 'tripal_analysis_interpro' and job['raw_arguments'][0] == an_id:
+                    job_id = job['job_id']
             run_res = ti.jobs.runJobs()
-            ti.jobs.wait(r['job_id'])
-            with open(run_res['stdout'], 'r') as fin:
-                print(fin.read())
-            with open(run_res['stderr'], 'r') as fin:
-                print(fin.read(), file=sys.stderr)
+            if not job_id:
+                print("Could not get job id for analysis %s" % an_id, file=sys.stderr)
+            else:
+                ti.jobs.wait(job_id)
+                print("Job finished, getting the logs...")
+                with open(run_res['stdout'], 'r') as fin:
+                    print(fin.read())
+                with open(run_res['stderr'], 'r') as fin:
+                    print(fin.read(), file=sys.stderr)
