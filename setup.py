@@ -7,7 +7,7 @@ setup(
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
-    url="https://github.com/abretaud/python-tripal",
+    url="https://github.com/galaxy-genome-annotation/python-tripal",
     install_requires=['requests>=2.4.3'],
     packages=find_packages(),
     license='MIT',

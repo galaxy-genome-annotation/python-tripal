@@ -1,6 +1,6 @@
 # Tripal Library
 
-[![Build](https://travis-ci.org/abretaud/python-tripal.svg?branch=master)](https://travis-ci.org/abretaud/python-tripal)
+[![Build](https://travis-ci.org/galaxy-genome-annotation/python-tripal.svg?branch=master)](https://travis-ci.org/galaxy-genome-annotation/python-tripal)
 [![Documentation](https://readthedocs.org/projects/python-tripal/badge/?version=latest)](http://python-tripal.readthedocs.io/en/latest/?badge=latest)
 
 A Python library for interacting with [Tripal](http://tripal.info/)
