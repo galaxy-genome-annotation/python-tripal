@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<tool id="tripaille.job.add_job" name="job" version="1.0">
+ <description>add_job</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille job add_job
+"$name"
+"$module"
+"$callback"
+"$arguments"
+
+#if $priority:
+  --priority "$priority"
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="name" label="Name" argument="name" type="text" help="The name of the job" />
+	<param name="module" label="Module" argument="module" type="text" help="The Tripal module name to invoke" />
+	<param name="callback" label="Callback" argument="callback" type="text" help="The Tripal module callback function to invoke" />
+	<param name="arguments" label="Arguments" argument="arguments" type="text" help="A JSON string representing an array of arguments (e.g. "['some', 'arg', 42, 'foo']")" />
+
+    <!-- options -->
+	<param name="priority" label="Priority" argument="priority" type="integer" value="10" help="An integer score to prioritize the job" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Schedule a new job
+	</help>
+</tool>

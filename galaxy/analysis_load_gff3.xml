@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<tool id="tripaille.analysis.load_gff3" name="analysis" version="1.0">
+ <description>load_gff3</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille analysis load_gff3
+"$gff"
+
+#if $organism:
+  --organism "$organism"
+#end if
+#if $organism_id:
+  --organism_id "$organism_id"
+#end if
+#if $analysis:
+  --analysis "$analysis"
+#end if
+#if $analysis_id:
+  --analysis_id "$analysis_id"
+#end if
+#if $import_mode:
+  --import_mode "$import_mode"
+#end if
+#if $target_organism:
+  --target_organism "$target_organism"
+#end if
+#if $target_organism_id:
+  --target_organism_id "$target_organism_id"
+#end if
+#if $target_type:
+  --target_type "$target_type"
+#end if
+#if $target_create:
+  $target_create
+#end if
+#if $start_line:
+  --start_line "$start_line"
+#end if
+#if $landmark_type:
+  --landmark_type "$landmark_type"
+#end if
+#if $alt_id_attr:
+  --alt_id_attr "$alt_id_attr"
+#end if
+#if $create_organism:
+  $create_organism
+#end if
+#if $re_mrna:
+  --re_mrna "$re_mrna"
+#end if
+#if $re_protein:
+  --re_protein "$re_protein"
+#end if
+#if $job_name:
+  --job_name "$job_name"
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="gff" label="Gff" argument="gff" type="text" help="Path to the GFF file to load" />
+
+    <!-- options -->
+	<param name="organism" label="Organism" argument="organism" type="text" help="Organism common name or abbreviation" />
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="integer" value="0" help="Organism ID" />
+	<param name="analysis" label="Analysis" argument="analysis" type="text" help="Analysis name" />
+	<param name="analysis_id" label="Analysis Id" argument="analysis_id" type="integer" value="0" help="Analysis ID" />
+	<param name="import_mode" label="Import Mode" argument="import_mode" type="text" help="Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be removed)')" />
+	<param name="target_organism" label="Target Organism" argument="target_organism" type="text" help="In case of Target attribute in the GFF3, choose the organism abbreviation or common name to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the 'target_organism=genus:species' attribute in the GFF file.')" />
+	<param name="target_organism_id" label="Target Organism Id" argument="target_organism_id" type="integer" value="0" help="In case of Target attribute in the GFF3, choose the organism ID to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the 'target_organism=genus:species' attribute in the GFF file.')" />
+	<param name="target_type" label="Target Type" argument="target_type" type="text" help="In case of Target attribute in the GFF3, if the unique name for a target sequence is not unique (e.g. a protein and an mRNA have the same name) then you must specify the type for all targets in the GFF file. If the targets are of different types then the type must be specified using the 'target_type=type' attribute in the GFF file. This must be a valid Sequence Ontology (SO) term.')" />
+	<param name="target_create" label="Target Create" argument="target_create" type="boolean" truevalue="--target_create" falsevalue="" help="In case of Target attribute in the GFF3, if the target feature cannot be found, create one using the organism and type specified above, or using the 'target_organism' and 'target_type' fields specified in the GFF file. Values specified in the GFF file take precedence over those specified above.')" />
+	<param name="start_line" label="Start Line" argument="start_line" type="integer" value="0" help="The line in the GFF file where importing should start" />
+	<param name="landmark_type" label="Landmark Type" argument="landmark_type" type="text" help="A Sequence Ontology type for the landmark sequences in the GFF fie (e.g. 'chromosome')." />
+	<param name="alt_id_attr" label="Alt Id Attr" argument="alt_id_attr" type="text" help="When ID attribute is absent, specify which other attribute can uniquely identify the feature." />
+	<param name="create_organism" label="Create Organism" argument="create_organism" type="boolean" truevalue="--create_organism" falsevalue="" help="Create organisms when encountering organism attribute (these lines will be skip otherwise)" />
+	<param name="re_mrna" label="Re Mrna" argument="re_mrna" type="text" help="Regular expression for the mRNA name" />
+	<param name="re_protein" label="Re Protein" argument="re_protein" type="text" help="Replacement string for the protein name" />
+	<param name="job_name" label="Job Name" argument="job_name" type="text" help="Name of the job" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Do not wait for job to complete" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Load GFF3 file
+	</help>
+</tool>

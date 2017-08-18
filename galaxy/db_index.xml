@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<tool id="tripaille.db.index" name="db" version="1.0">
+ <description>index</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille db index
+
+#if $mode:
+  --mode "$mode"
+#end if
+#if $table:
+  --table "$table"
+#end if
+#if $index_name:
+  --index_name "$index_name"
+#end if
+#if $queues:
+  --queues "$queues"
+#end if
+#for $rep in $repeat_fields:
+  --fields "$rep.fields"
+#end for
+#for $rep in $repeat_links:
+  --links "$rep.links"
+#end for
+#if $tokenizer:
+  --tokenizer "$tokenizer"
+#end if
+#if $job_name:
+  --job_name "$job_name"
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="mode" label="Mode" argument="mode" type="text" help="Indexing mode: 'website' to index everything, 'table' to index a single table (default: website)" />
+	<param name="table" label="Table" argument="table" type="text" help="Table to index (only in 'table' mode)" />
+	<param name="index_name" label="Index Name" argument="index_name" type="text" help="Index name (only in 'table' mode)" />
+	<param name="queues" label="Queues" argument="queues" type="integer" value="10" help="Number of indexing task queues" />
+	<repeat name="repeat_fields" title="fields">
+		<param name="fields" label="Fields" argument="fields" type="text" help="Fields to index (only in 'table' mode), syntax: <field_name>|<field_type>, field_type should be one of 'string', 'keyword', 'date', 'long', 'double', 'boolean', 'ip', 'object', 'nested', 'geo_point', 'geo_shape', or 'completion'" />
+	</repeat>
+	<repeat name="repeat_links" title="links">
+		<param name="links" label="Links" argument="links" type="text" help="List of links to show to users, syntax: <column-where-to-show-the-link>|</your/url/[any-column-name]>" />
+	</repeat>
+	<param name="tokenizer" label="Tokenizer" argument="tokenizer" type="text" help="Tokenizer to use (one of 'standard', 'letter', 'lowercase', 'whitespace', 'uax_url_email', 'classic', 'ngram', 'edge_ngram', 'keyword', 'pattern', or 'path_hierarchy'; default='standard')" />
+	<param name="job_name" label="Job Name" argument="job_name" type="text" help="Name of the job" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Do not wait for job to complete" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Schedule database indexing using elasticsearch
+	</help>
+</tool>

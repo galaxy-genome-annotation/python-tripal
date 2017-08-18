@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tool id="tripaille.job.get_jobs" name="job" version="1.0">
+ <description>get_jobs</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille job get_jobs
+
+#if $job_id:
+  --job_id "$job_id"
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="job_id" label="Job Id" argument="job_id" type="integer" value="0" help="job id" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get all jobs
+	</help>
+</tool>

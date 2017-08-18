@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<tool id="tripaille.job.wait" name="job" version="1.0">
+ <description>wait</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille job wait
+"$job_id"
+
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="job_id" label="Job Id" argument="job_id" type="integer" value="0" help="job id" />
+
+    <!-- options -->
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Wait for a job completion
+	</help>
+</tool>

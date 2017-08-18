@@ -1,0 +1,27 @@
+project_name: tripaille
+strict: true
+module:
+    base_module: tripal
+    instance_cls: "<class 'tripal.TripalInstance'>"
+    instance_func: TripalInstance
+    instance_args: []
+    instance_kwargs:
+        tripal_url: "http://localhost/tripal/"
+        username: "admin"
+        password: "changeme"
+
+    ignore:
+        top_attrs:
+            - 'tripal_url'
+            - 'username'
+            - 'password'
+            - 'auth_login'
+            - 'auth_password'
+        funcs:
+            - get
+            - post
+
+documentation: |
+    Tripaille is a set of wrappers for accessing Tripal. Each utility is implemented as
+    a subcommand of ``tripaille``. This section of the documentation
+    describes these commands.

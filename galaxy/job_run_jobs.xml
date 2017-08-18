@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tool id="tripaille.job.run_jobs" name="job" version="1.0">
+ <description>run_jobs</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille job run_jobs
+
+#if $wait:
+  $wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="wait" label="Wait" argument="wait" type="boolean" truevalue="--wait" falsevalue="" help="Wait for job completion" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Run jobs in queue. There is no way to trigger a single job execution.
+	</help>
+</tool>

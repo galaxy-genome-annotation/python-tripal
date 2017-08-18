@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tool id="tripaille.db.get_mviews" name="db" version="1.0">
+ <description>get_mviews</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille db get_mviews
+
+#if $name:
+  --name "$name"
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="name" label="Name" argument="name" type="text" help="filter on mview name" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get all materialized views
+	</help>
+</tool>

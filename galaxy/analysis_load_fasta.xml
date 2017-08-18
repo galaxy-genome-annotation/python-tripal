@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<tool id="tripaille.analysis.load_fasta" name="analysis" version="1.0">
+ <description>load_fasta</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille analysis load_fasta
+"$fasta"
+
+#if $organism:
+  --organism "$organism"
+#end if
+#if $organism_id:
+  --organism_id "$organism_id"
+#end if
+#if $analysis:
+  --analysis "$analysis"
+#end if
+#if $analysis_id:
+  --analysis_id "$analysis_id"
+#end if
+#if $sequence_type:
+  --sequence_type "$sequence_type"
+#end if
+#if $re_name:
+  --re_name "$re_name"
+#end if
+#if $re_uniquename:
+  --re_uniquename "$re_uniquename"
+#end if
+#if $db_ext_id:
+  --db_ext_id "$db_ext_id"
+#end if
+#if $re_accession:
+  --re_accession "$re_accession"
+#end if
+#if $rel_type:
+  --rel_type "$rel_type"
+#end if
+#if $rel_subject_re:
+  --rel_subject_re "$rel_subject_re"
+#end if
+#if $rel_subject_type:
+  --rel_subject_type "$rel_subject_type"
+#end if
+#if $method:
+  --method "$method"
+#end if
+#if $match_type:
+  --match_type "$match_type"
+#end if
+#if $job_name:
+  --job_name "$job_name"
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="fasta" label="Fasta" argument="fasta" type="text" help="Path to the Fasta file to load" />
+
+    <!-- options -->
+	<param name="organism" label="Organism" argument="organism" type="text" help="Organism common name or abbreviation" />
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="integer" value="0" help="Organism ID" />
+	<param name="analysis" label="Analysis" argument="analysis" type="text" help="Analysis name" />
+	<param name="analysis_id" label="Analysis Id" argument="analysis_id" type="integer" value="0" help="Analysis ID" />
+	<param name="sequence_type" label="Sequence Type" argument="sequence_type" type="text" help="Sequence type" />
+	<param name="re_name" label="Re Name" argument="re_name" type="text" help="Regular expression for the name" />
+	<param name="re_uniquename" label="Re Uniquename" argument="re_uniquename" type="text" help="Regular expression for the unique name" />
+	<param name="db_ext_id" label="Db Ext Id" argument="db_ext_id" type="text" help="External DB ID" />
+	<param name="re_accession" label="Re Accession" argument="re_accession" type="text" help="Regular expression for the accession from external DB" />
+	<param name="rel_type" label="Rel Type" argument="rel_type" type="text" help="Relation type (part_of or derives_from)" />
+	<param name="rel_subject_re" label="Rel Subject Re" argument="rel_subject_re" type="text" help="Relation subject regular expression (used to extract id of related entity)" />
+	<param name="rel_subject_type" label="Rel Subject Type" argument="rel_subject_type" type="text" help="Relation subject type (must match already loaded data, e.g. mRNA)" />
+	<param name="method" label="Method" argument="method" type="text" help="Insertion method (insert, update or insup, default=insup (Insert and Update))" />
+	<param name="match_type" label="Match Type" argument="match_type" type="text" help="Match type for already loaded features (name or uniquename; default=uniquename; used for \"Update only\" or \"Insert and update\" methods)'" />
+	<param name="job_name" label="Job Name" argument="job_name" type="text" help="Name of the job" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Do not wait for job to complete" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Load fasta sequences
+	</help>
+</tool>

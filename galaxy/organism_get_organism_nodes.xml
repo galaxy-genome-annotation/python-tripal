@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tool id="tripaille.organism.get_organism_nodes" name="organism" version="1.0">
+ <description>get_organism_nodes</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille organism get_organism_nodes
+
+#if $node:
+  --node "$node"
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="node" label="Node" argument="node" type="integer" value="0" help="filter on node id" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get organism nodes
+	</help>
+</tool>

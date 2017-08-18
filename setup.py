@@ -1,12 +1,10 @@
 # http://bugs.python.org/issue15881#msg170215
 from setuptools import setup, find_packages
 
-from os import listdir
-
 setup(
     name="tripal",
-    version='1.9',
-    description="Tripal API library",
+    version='2.0',
+    description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
     url="https://github.com/abretaud/python-tripal",
@@ -14,7 +12,10 @@ setup(
     packages=find_packages(),
     license='MIT',
     platforms="Posix; MacOS X; Windows",
-    scripts=['bin/' + f for f in listdir('bin')],
+    entry_points='''
+        [console_scripts]
+        tripaille=tripaille.cli:tripaille
+    ''',
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

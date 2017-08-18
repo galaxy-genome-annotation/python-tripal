@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tool id="tripaille.job.get_logs" name="job" version="1.0">
+ <description>get_logs</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille job get_logs
+"$stdout"
+"$stderr"
+
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="stdout" label="Stdout" argument="stdout" type="text" help="Path to stdout file, as returned by run_jobs" />
+	<param name="stderr" label="Stderr" argument="stderr" type="text" help="Path to stderr file, as returned by run_jobs" />
+
+    <!-- options -->
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get job output
+	</help>
+</tool>
