@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tripal",
-    version='2.0',
+    version='2.0.1',
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
