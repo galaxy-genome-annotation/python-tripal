@@ -8,7 +8,7 @@ setup(
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
     url="https://github.com/galaxy-genome-annotation/python-tripal",
-    install_requires=['requests>=2.4.3'],
+    install_requires=['requests>=2.4.3', 'wrapt', 'click', 'pyyaml'],
     packages=find_packages(),
     license='MIT',
     platforms="Posix; MacOS X; Windows",
