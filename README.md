@@ -7,6 +7,9 @@ A Python library for interacting with [Tripal](http://tripal.info/)
 
 ## History
 
+ - 2.0.1
+    - fix missing requirements
+
  - 2.0
     - Rewritten most of the code, now working in a similar way as parsec or chakin
     - New cli tool named 'tripaille'
