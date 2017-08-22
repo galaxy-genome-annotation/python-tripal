@@ -1,15 +1,27 @@
 # http://bugs.python.org/issue15881#msg170215
-from setuptools import setup, find_packages
+import glob
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+subpackages = [x.replace('/', '.') for x in glob.glob('tripaille/commands/*') if not x.endswith('.py')]
+subpackages += [x.replace('/', '.') for x in glob.glob('tripal/*') if not x.endswith('.py')]
 
 setup(
     name="tripal",
-    version='2.0.1',
+    version='2.0.2',
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
     url="https://github.com/galaxy-genome-annotation/python-tripal",
-    install_requires=['requests>=2.4.3', 'wrapt', 'click', 'pyyaml'],
-    packages=find_packages(),
+    install_requires=['requests>=2.4.3', 'wrapt', 'click', 'pyyaml', 'future'],
+    packages=[
+        'tripal',
+        'tripaille',
+        'tripaille.commands',
+    ] + subpackages,
     license='MIT',
     platforms="Posix; MacOS X; Windows",
     entry_points='''
