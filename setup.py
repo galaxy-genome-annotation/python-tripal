@@ -11,7 +11,7 @@ subpackages += [x.replace('/', '.') for x in glob.glob('tripal/*') if not x.ends
 
 setup(
     name="tripal",
-    version='2.0.2',
+    version='2.0.3',
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",

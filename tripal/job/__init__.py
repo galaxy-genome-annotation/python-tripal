@@ -101,6 +101,10 @@ class JobClient(Client):
 
         job = None
         while not job or job['status'] not in ('Completed', 'Cancelled', 'Error'):
+            # First call is_running to make sure the job status is updated in case it
+            # exited in a wrong way
+            self._check_running()
+
             job = self.get_jobs(job_id)
             if not job:
                 raise Exception("Could not find job %s" % job_id)
@@ -108,6 +112,10 @@ class JobClient(Client):
             time.sleep(20)
 
         return job
+
+    def _check_running(self):
+
+        return self._request('job/is_running', {})
 
     def get_logs(self, stdout, stderr):
         """

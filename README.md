@@ -7,8 +7,14 @@ A Python library for interacting with [Tripal](http://tripal.info/)
 
 ## History
 
+ - 2.0.3
+    - More reliable detection of job failures
+
+ - 2.0.2
+    - Fix broken pip install tripal
+
  - 2.0.1
-    - fix missing requirements
+    - Fix missing requirements
 
  - 2.0
     - Rewritten most of the code, now working in a similar way as parsec or chakin
@@ -17,7 +23,7 @@ A Python library for interacting with [Tripal](http://tripal.info/)
     - Updated indexing code to latest tripal_elasticsearch module
 
  - 1.9
-    - wait for job completion and get logs
+    - Wait for job completion and get logs
 
 ## Requirements
 
