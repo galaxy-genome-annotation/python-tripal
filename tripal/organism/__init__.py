@@ -118,7 +118,7 @@ class OrganismClient(Client):
             'species': species,
             'abbreviation': abbr,
             'common_name': common,
-            'description': comment,
+            'description': { 'value': comment },
             'type_id': 0,
             'infraspecific_name': '',
         }
