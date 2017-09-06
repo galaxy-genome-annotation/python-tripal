@@ -75,7 +75,7 @@ class AnalysisClient(Client):
         ans = self._request('chado/list', {'table': 'analysis'})
 
         if analysis_id:
-            ans = [v for v in ans if v['analysis_id'] == analysis_id]
+            ans = [v for v in ans if v['analysis_id'] == str(analysis_id)]
         if name:
             ans = [v for v in ans if v['name'] == name]
         if program:

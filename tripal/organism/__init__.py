@@ -62,7 +62,7 @@ class OrganismClient(Client):
 
         orgs = self._request('chado/list', {'table': 'organism'})
         if organism_id:
-            orgs = [v for v in orgs if v['organism_id'] == organism_id]
+            orgs = [v for v in orgs if v['organism_id'] == str(organism_id)]
         if genus:
             orgs = [v for v in orgs if v['genus'] == genus]
         if species:

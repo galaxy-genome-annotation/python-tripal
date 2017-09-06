@@ -30,7 +30,7 @@ class DbClient(Client):
         dbs = self._request('chado/list', {'table': 'db'})
 
         if db_id:
-            dbs = [v for v in dbs if v['db_id'] == db_id]
+            dbs = [v for v in dbs if v['db_id'] == str(db_id)]
 
         return dbs
 
