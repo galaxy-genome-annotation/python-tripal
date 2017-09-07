@@ -7,6 +7,9 @@ A Python library for interacting with [Tripal](http://tripal.info/)
 
 ## History
 
+ - 2.0.4
+    - Small bug fixes
+
  - 2.0.3
     - More reliable detection of job failures
 
