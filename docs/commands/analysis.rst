@@ -33,6 +33,31 @@ Create an analysis
       -h, --help            Show this message and exit.
     
 
+``delete_orphans`` command
+--------------------------
+
+**Usage**::
+
+    tripaille analysis delete_orphans [OPTIONS]
+
+**Help**
+
+Delete orphans Drupal analysis nodes
+
+
+**Output**
+
+
+    status
+    
+**Options**::
+
+
+      --job_name TEXT  Name of the job
+      --no_wait        Return immediately without waiting for job completion
+      -h, --help       Show this message and exit.
+    
+
 ``get_analyses`` command
 ------------------------
 
@@ -65,28 +90,28 @@ Get analyses
       -h, --help             Show this message and exit.
     
 
-``get_analysis_nodes`` command
-------------------------------
+``get_analyses_tripal`` command
+-------------------------------
 
 **Usage**::
 
-    tripaille analysis get_analysis_nodes [OPTIONS]
+    tripaille analysis get_analyses_tripal [OPTIONS]
 
 **Help**
 
-Get analysis nodes
+Get analysis entities
 
 
 **Output**
 
 
-    Analysis node information
+    Analysis entity/node information
     
 **Options**::
 
 
-      --node INTEGER  filter on node id
-      -h, --help      Show this message and exit.
+      --analysis_id INTEGER  An analysis entity/node ID
+      -h, --help             Show this message and exit.
     
 
 ``load_blast`` command
@@ -127,6 +152,8 @@ Create a Blast analysis
       --is_concat              If the blast result file is simply a list of
                                concatenated blast results.
       --search_keywords        Extract keywords for Tripal search
+      --no_parsed TEXT         Maximum number of hits to parse per feature.
+                               Default=all  [default: all]
       --no_wait                Do not wait for job to complete
       --algorithm TEXT         analysis algorithm
       --sourceversion TEXT     analysis sourceversion
@@ -207,11 +234,8 @@ Load GFF3 file
       --analysis_id INTEGER         Analysis ID
       --import_mode TEXT            Import mode (add_only=existing features won't be
                                     touched, update=existing features will be
-                                    updated and obsolete attributes kept,
-                                    refresh=existing features will be updated and
-                                    obsolete attributes removed, remove=features
-                                    present in the db and in the GFF3 file will be
-                                    removed)')  [default: update]
+                                    updated and obsolete attributes kept)')
+                                    [default: update]
       --target_organism TEXT        In case of Target attribute in the GFF3, choose
                                     the organism abbreviation or common name to
                                     which target sequences belong. Select this only
@@ -286,22 +310,27 @@ Create a GO analysis
 **Options**::
 
 
-      --gaf_ext TEXT        If looking for files in a directory, extension of the
-                            GAF files
-      --query_type TEXT     The feature type (e.g. 'gene', 'mRNA', 'contig') of the
-                            query. It must be a valid Sequence Ontology term.
-      --query_uniquename    Use this if the --query-re regular expression matches
-                            unique names instead of names in the database.
-      --method TEXT         Import method ('add' or 'remove')  [default: add]
-      --re_name TEXT        Regular expression to extract the feature name from GAF
-                            file.
-      --no_wait             Do not wait for job to complete
-      --algorithm TEXT      analysis algorithm
-      --sourceversion TEXT  analysis sourceversion
-      --sourceuri TEXT      analysis sourceuri
-      --description TEXT    analysis description
-      --date_executed TEXT  analysis date_executed (yyyy-mm-dd)
-      -h, --help            Show this message and exit.
+      --organism TEXT        Organism common name or abbreviation
+      --organism_id INTEGER  Organism ID
+      --gaf_ext TEXT         If looking for files in a directory, extension of the
+                             GAF files
+      --query_type TEXT      The feature type (e.g. 'gene', 'mRNA', 'contig') of the
+                             query. It must be a valid Sequence Ontology term.
+      --query_matching TEXT  Method to match identifiers to features in the
+                             database. ('name', 'uniquename' or 'dbxref')  [default:
+                             uniquename]
+      --method TEXT          Import method ('add' or 'remove')  [default: add]
+      --name_column INTEGER  Column containing the feature identifiers (2, 3, 10 or
+                             11; default=2).  [default: 2]
+      --re_name TEXT         Regular expression to extract the feature name from GAF
+                             file.
+      --no_wait              Do not wait for job to complete
+      --algorithm TEXT       analysis algorithm
+      --sourceversion TEXT   analysis sourceversion
+      --sourceuri TEXT       analysis sourceuri
+      --description TEXT     analysis description
+      --date_executed TEXT   analysis date_executed (yyyy-mm-dd)
+      -h, --help             Show this message and exit.
     
 
 ``load_interpro`` command
