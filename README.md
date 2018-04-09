@@ -9,8 +9,13 @@ A Python library for interacting with [Tripal](http://tripal.info/)
 
  - 3.0
     - Added support for Tripal 3
+        - Add `job add_import_job` for generic Tripal 3 importer
+        - Add preliminary code for entity management (waiting for https://github.com/tripal/tripal/issues/202)
+    - GFF3: removed bugged 'refresh' and 'remove' loading mode (no more available in Tripal3)
+    - Renamed `organism get_organism_nodes` to `organism get_organisms_tripal`
+      and `analysis get_analysis_nodes` to `analysis get_analyses_tripal`.
+      Both now return Drupal Nodes for Tripal 2 or Entities for Tripal 3.
     - Added tests
-    - GFF3: removed bugged 'refresh' and 'remove' loading mode (disabled in Tripal3)
 
  - 2.0.4
     - Small bug fixes
