@@ -27,7 +27,7 @@ from tripaille.decorators import custom_exception, str_output
 )
 @click.option(
     "--import_mode",
-    help="Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be removed)')",
+    help="Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept)')",
     default="update",
     show_default=True,
     type=str
