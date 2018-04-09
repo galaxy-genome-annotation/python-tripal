@@ -7,6 +7,11 @@ A Python library for interacting with [Tripal](http://tripal.info/)
 
 ## History
 
+ - 3.0
+    - Added support for Tripal 3
+    - Added tests
+    - GFF3: removed bugged 'refresh' and 'remove' loading mode (disabled in Tripal3)
+
  - 2.0.4
     - Small bug fixes
 
