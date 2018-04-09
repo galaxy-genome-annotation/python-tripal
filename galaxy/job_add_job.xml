@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.job.add_job" name="job" version="1.0">
+<tool id="tripaille_job_add_job" name="job" version="@WRAPPER_VERSION@.0">
  <description>add_job</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,13 +7,13 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille job add_job
-"$name"
-"$module"
-"$callback"
-"$arguments"
+'$name'
+'$module'
+'$callback'
+'$arguments'
 
 #if $priority:
-  --priority "$priority"
+  --priority '$priority'
 #end if
 
 | jq -S . > $results
@@ -34,5 +34,7 @@ tripaille job add_job
 	</outputs>
 	<help>
 Schedule a new job
+
+@HELP@
 	</help>
 </tool>

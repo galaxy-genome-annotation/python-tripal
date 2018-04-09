@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.feature.sync" name="feature" version="1.0">
+<tool id="tripaille_feature_sync" name="feature" version="@WRAPPER_VERSION@.0">
  <description>sync</description>
 	<macros>
 		<import>macros.xml</import>
@@ -9,22 +9,22 @@
 tripaille feature sync
 
 #if $organism:
-  --organism "$organism"
+  --organism '$organism'
 #end if
 #if $organism_id:
-  --organism_id "$organism_id"
+  --organism_id '$organism_id'
 #end if
 #if $max_sync:
-  --max_sync "$max_sync"
+  --max_sync '$max_sync'
 #end if
 #for $rep in $repeat_types:
-  --types "$rep.types"
+  --types '$rep.types'
 #end for
 #for $rep in $repeat_ids:
-  --ids "$rep.ids"
+  --ids '$rep.ids'
 #end for
 #if $job_name:
-  --job_name "$job_name"
+  --job_name '$job_name'
 #end if
 #if $no_wait:
   $no_wait
@@ -54,5 +54,7 @@ tripaille feature sync
 	</outputs>
 	<help>
 Synchronize some features
+
+@HELP@
 	</help>
 </tool>

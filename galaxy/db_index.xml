@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.db.index" name="db" version="1.0">
+<tool id="tripaille_db_index" name="db" version="@WRAPPER_VERSION@.0">
  <description>index</description>
 	<macros>
 		<import>macros.xml</import>
@@ -9,28 +9,28 @@
 tripaille db index
 
 #if $mode:
-  --mode "$mode"
+  --mode '$mode'
 #end if
 #if $table:
-  --table "$table"
+  --table '$table'
 #end if
 #if $index_name:
-  --index_name "$index_name"
+  --index_name '$index_name'
 #end if
 #if $queues:
-  --queues "$queues"
+  --queues '$queues'
 #end if
 #for $rep in $repeat_fields:
-  --fields "$rep.fields"
+  --fields '$rep.fields'
 #end for
 #for $rep in $repeat_links:
-  --links "$rep.links"
+  --links '$rep.links'
 #end for
 #if $tokenizer:
-  --tokenizer "$tokenizer"
+  --tokenizer '$tokenizer'
 #end if
 #if $job_name:
-  --job_name "$job_name"
+  --job_name '$job_name'
 #end if
 #if $no_wait:
   $no_wait
@@ -62,5 +62,7 @@ tripaille db index
 	</outputs>
 	<help>
 Schedule database indexing using elasticsearch
+
+@HELP@
 	</help>
 </tool>

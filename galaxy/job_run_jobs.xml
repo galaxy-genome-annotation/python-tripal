@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.job.run_jobs" name="job" version="1.0">
+<tool id="tripaille_job_run_jobs" name="job" version="@WRAPPER_VERSION@.0">
  <description>run_jobs</description>
 	<macros>
 		<import>macros.xml</import>
@@ -26,5 +26,7 @@ tripaille job run_jobs
 	</outputs>
 	<help>
 Run jobs in queue. There is no way to trigger a single job execution.
+
+@HELP@
 	</help>
 </tool>

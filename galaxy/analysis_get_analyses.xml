@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.analysis.get_analyses" name="analysis" version="1.0">
+<tool id="tripaille_analysis_get_analyses" name="analysis" version="@WRAPPER_VERSION@.0">
  <description>get_analyses</description>
 	<macros>
 		<import>macros.xml</import>
@@ -9,31 +9,31 @@
 tripaille analysis get_analyses
 
 #if $analysis_id:
-  --analysis_id "$analysis_id"
+  --analysis_id '$analysis_id'
 #end if
 #if $name:
-  --name "$name"
+  --name '$name'
 #end if
 #if $program:
-  --program "$program"
+  --program '$program'
 #end if
 #if $programversion:
-  --programversion "$programversion"
+  --programversion '$programversion'
 #end if
 #if $algorithm:
-  --algorithm "$algorithm"
+  --algorithm '$algorithm'
 #end if
 #if $sourcename:
-  --sourcename "$sourcename"
+  --sourcename '$sourcename'
 #end if
 #if $sourceversion:
-  --sourceversion "$sourceversion"
+  --sourceversion '$sourceversion'
 #end if
 #if $sourceuri:
-  --sourceuri "$sourceuri"
+  --sourceuri '$sourceuri'
 #end if
 #if $date_executed:
-  --date_executed "$date_executed"
+  --date_executed '$date_executed'
 #end if
 
 | jq -S . > $results
@@ -58,5 +58,7 @@ tripaille analysis get_analyses
 	</outputs>
 	<help>
 Get analyses
+
+@HELP@
 	</help>
 </tool>

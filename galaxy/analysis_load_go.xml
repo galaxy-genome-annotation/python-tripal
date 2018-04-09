@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.analysis.load_go" name="analysis" version="1.0">
+<tool id="tripaille_analysis_load_go" name="analysis" version="@WRAPPER_VERSION@.0">
  <description>load_go</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,44 +7,53 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille analysis load_go
-"$name"
-"$program"
-"$programversion"
-"$sourcename"
-"$gaf_output"
+'$name'
+'$program'
+'$programversion'
+'$sourcename'
+'$gaf_output'
 
+#if $organism:
+  --organism '$organism'
+#end if
+#if $organism_id:
+  --organism_id '$organism_id'
+#end if
 #if $gaf_ext:
-  --gaf_ext "$gaf_ext"
+  --gaf_ext '$gaf_ext'
 #end if
 #if $query_type:
-  --query_type "$query_type"
+  --query_type '$query_type'
 #end if
-#if $query_uniquename:
-  $query_uniquename
+#if $query_matching:
+  --query_matching '$query_matching'
 #end if
 #if $method:
-  --method "$method"
+  --method '$method'
+#end if
+#if $name_column:
+  --name_column '$name_column'
 #end if
 #if $re_name:
-  --re_name "$re_name"
+  --re_name '$re_name'
 #end if
 #if $no_wait:
   $no_wait
 #end if
 #if $algorithm:
-  --algorithm "$algorithm"
+  --algorithm '$algorithm'
 #end if
 #if $sourceversion:
-  --sourceversion "$sourceversion"
+  --sourceversion '$sourceversion'
 #end if
 #if $sourceuri:
-  --sourceuri "$sourceuri"
+  --sourceuri '$sourceuri'
 #end if
 #if $description:
-  --description "$description"
+  --description '$description'
 #end if
 #if $date_executed:
-  --date_executed "$date_executed"
+  --date_executed '$date_executed'
 #end if
 
 | jq -S . > $results
@@ -58,10 +67,13 @@ tripaille analysis load_go
 	<param name="gaf_output" label="Gaf Output" argument="gaf_output" type="text" help="Path to the GAF file to load (single file, or directory containing multiple GAF files)" />
 
     <!-- options -->
+	<param name="organism" label="Organism" argument="organism" type="text" help="Organism common name or abbreviation" />
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="integer" value="0" help="Organism ID" />
 	<param name="gaf_ext" label="Gaf Ext" argument="gaf_ext" type="text" help="If looking for files in a directory, extension of the GAF files" />
 	<param name="query_type" label="Query Type" argument="query_type" type="text" help="The feature type (e.g. 'gene', 'mRNA', 'contig') of the query. It must be a valid Sequence Ontology term." />
-	<param name="query_uniquename" label="Query Uniquename" argument="query_uniquename" type="boolean" truevalue="--query_uniquename" falsevalue="" help="Use this if the --query-re regular expression matches unique names instead of names in the database." />
+	<param name="query_matching" label="Query Matching" argument="query_matching" type="text" help="Method to match identifiers to features in the database. ('name', 'uniquename' or 'dbxref')" />
 	<param name="method" label="Method" argument="method" type="text" help="Import method ('add' or 'remove')" />
+	<param name="name_column" label="Name Column" argument="name_column" type="integer" value="2" help="Column containing the feature identifiers (2, 3, 10 or 11; default=2)." />
 	<param name="re_name" label="Re Name" argument="re_name" type="text" help="Regular expression to extract the feature name from GAF file." />
 	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Do not wait for job to complete" />
 	<param name="algorithm" label="Algorithm" argument="algorithm" type="text" help="analysis algorithm" />
@@ -76,5 +88,7 @@ tripaille analysis load_go
 	</outputs>
 	<help>
 Create a GO analysis
+
+@HELP@
 	</help>
 </tool>
