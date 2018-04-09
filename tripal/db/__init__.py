@@ -1,9 +1,9 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-from collections import OrderedDict
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 import logging
+from collections import OrderedDict
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -11,7 +11,7 @@ log = logging.getLogger()
 
 
 class DbClient(Client):
-    CLIENT_BASE = '/tripal_api/'
+    """Access Tripal/Chado database"""
 
     def get_dbs(self, db_id=None, name=None):
         """
@@ -31,6 +31,8 @@ class DbClient(Client):
 
         if db_id:
             dbs = [v for v in dbs if v['db_id'] == str(db_id)]
+        if name:
+            dbs = [v for v in dbs if v['name'] == name]
 
         return dbs
 

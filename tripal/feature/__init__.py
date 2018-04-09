@@ -1,9 +1,9 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-from collections import OrderedDict
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 import logging
+from collections import OrderedDict
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -11,7 +11,7 @@ log = logging.getLogger()
 
 
 class FeatureClient(Client):
-    CLIENT_BASE = '/tripal_api/'
+    """Manage Tripal features"""
 
     def sync(self, organism=None, organism_id=None, max_sync='', types=[], ids=[],
              job_name=None, no_wait=None):
