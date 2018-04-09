@@ -15,6 +15,7 @@ A Python library for interacting with [Tripal](http://tripal.info/)
     - Renamed `organism get_organism_nodes` to `organism get_organisms_tripal`
       and `analysis get_analysis_nodes` to `analysis get_analyses_tripal`.
       Both now return Drupal Nodes for Tripal 2 or Entities for Tripal 3.
+    - Added `delete_orphans` methods for organisms and analyses
     - Added tests
 
  - 2.0.4
