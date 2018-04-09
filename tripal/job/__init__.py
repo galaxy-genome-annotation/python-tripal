@@ -2,9 +2,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import json
 import logging
 import time
+
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -141,9 +143,9 @@ class JobClient(Client):
             if job:
                 time.sleep(20)
 
-            # First call is_running to make sure the job status is updated in case it
+            # First, call is_running to make sure the job status is updated in case it
             # exited in a wrong way
-            run_status = self._check_running()
+            self._check_running()
 
             job = self.get_jobs(job_id)
             if not job:

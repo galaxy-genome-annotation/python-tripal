@@ -2,9 +2,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import logging
+
 from future import standard_library
+
 import requests
+
 from tripal.analysis import AnalysisClient
 from tripal.db import DbClient
 from tripal.entity import EntityClient
