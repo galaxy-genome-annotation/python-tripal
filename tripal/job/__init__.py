@@ -1,7 +1,7 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 import json
 import logging
 import time
@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 
 class JobClient(Client):
-    CLIENT_BASE = '/tripal_api/'
+    """Manage Tripal jobs"""
 
     def get_jobs(self, job_id=None):
         """
@@ -67,6 +67,43 @@ class JobClient(Client):
 
         return self._request('job', data)
 
+    def add_import_job(self, name, importer, input_file, arguments, priority=10):
+        """
+        Schedule a new import job
+
+        :type name: str
+        :param name: The name of the job
+
+        :type importer: str
+        :param importer: The Tripal importer to use (e.g. FASTAImporter)
+
+        :type input_file: str
+        :param input_file: Local path to the file to import
+
+        :type arguments: str
+        :param arguments: A JSON string representing an array of arguments (e.g. "['some', 'arg', 42, 'foo']")
+
+        :type priority: int
+        :param priority: An integer score to prioritize the job
+
+        :rtype: dict
+        :return: Job information
+        """
+
+        # Ensure we will send an array whatever the input is
+        if not isinstance(arguments, list) and not isinstance(arguments, dict):
+            arguments = json.loads(arguments)
+
+        data = {
+            'name': name,
+            'importer': importer,
+            'file': input_file,
+            'arguments': arguments,
+            'priority': priority,
+        }
+
+        return self._request('job/create_import', data)
+
     def run_jobs(self, wait=True):
         """
         Run jobs in queue. There is no way to trigger a single job execution.
@@ -101,15 +138,17 @@ class JobClient(Client):
 
         job = None
         while not job or job['status'] not in ('Completed', 'Cancelled', 'Error'):
+            if job:
+                time.sleep(20)
+
             # First call is_running to make sure the job status is updated in case it
             # exited in a wrong way
-            self._check_running()
+            run_status = self._check_running()
 
             job = self.get_jobs(job_id)
             if not job:
                 raise Exception("Could not find job %s" % job_id)
             job = job[0]
-            time.sleep(20)
 
         return job
 
