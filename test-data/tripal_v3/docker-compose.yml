@@ -14,12 +14,12 @@ services:
             VIRTUAL_HOST: localhost:8501
             UPLOAD_LIMIT: 20M
             MEMORY_LIMIT: 512M
-            TRIPAL_GIT_CLONE_MODULES: ""
-            TRIPAL_DOWNLOAD_MODULES: ""
             TRIPAL_ENABLE_MODULES: "tripal_analysis_blast tripal_analysis_interpro tripal_analysis_go tripal_rest_api tripal_elasticsearch"
 
   tripaldb:
         image: erasche/chado:1.31-jenkins110.2-pg9.5
+        ports:
+            - "5432:5432"
         environment:
             - POSTGRES_PASSWORD=postgres
             # The default chado image would try to install the schema on first run,
