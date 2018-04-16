@@ -155,9 +155,6 @@ class FeatureTest(unittest.TestCase):
             output = out.getvalue().strip()
             output_err = err.getvalue().strip()
 
-            print(output, file=saved_stdout)
-            print(output_err, file=saved_stdout)
-
             assert "Chado GAF Loader" in output, "gaf loaded"
             assert "Done" in output, "gaf loaded"
             assert "[error]" not in output_err, "gaf loaded"
