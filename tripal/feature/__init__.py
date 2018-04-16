@@ -65,18 +65,34 @@ class FeatureClient(Client):
         if not job_name:
             job_name = 'Sync Features'
 
-        job_args = OrderedDict()
-        job_args['base_table'] = 'feature'
-        job_args['max_sync'] = max_sync
-        job_args['organism_id'] = organism_id
-        job_args['types'] = types
-        job_args['ids'] = ids
-        job_args['linking_table'] = 'chado_feature'
-        job_args['node_type'] = 'chado_feature'
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
 
-        r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
+            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
+            """
+            job_args = OrderedDict()
+            job_args[0] = OrderedDict()
+            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
+            job_args[0]['filters'] = OrderedDict()
+            job_args[0]['filters']['analysis_id'] = organism_id  # FIXME Don't know if using analysis_id is possible
+
+            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+            """
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'feature'
+            job_args['max_sync'] = max_sync
+            job_args['organism_id'] = organism_id
+            job_args['types'] = types
+            job_args['ids'] = ids
+            job_args['linking_table'] = 'chado_feature'
+            job_args['node_type'] = 'chado_feature'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r

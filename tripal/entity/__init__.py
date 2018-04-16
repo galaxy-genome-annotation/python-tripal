@@ -29,7 +29,7 @@ class EntityClient(Client):
         """
 
         if self.tripal.version != 3:
-            raise NotImplementedError()
+            raise NotImplementedError("Not available in Tripal 2")
 
         if entity:
             if entity_id:
@@ -55,9 +55,9 @@ class EntityClient(Client):
         :return: Entity information
         """
 
-        if self.tripal.version != 3:
-            raise NotImplementedError()
+        raise NotImplementedError("Waiting for https://github.com/tripal/tripal/issues/202")
 
+        # FIXME This should work, once get_fields is working (gives the expected params structure)
         return self._request_ws(entity, params)
 
     def get_fields(self, entity):
@@ -71,4 +71,4 @@ class EntityClient(Client):
         :return: Fields information
         """
 
-        raise NotImplementedError()
+        raise NotImplementedError("Waiting for https://github.com/tripal/tripal/issues/202")

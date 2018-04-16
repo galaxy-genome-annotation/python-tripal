@@ -195,24 +195,27 @@ class AnalysisClient(Client):
         :rtype: str
         :return: status
         """
-
         if not job_name:
             job_name = 'Delete orphan analyses'
 
-        job_args = OrderedDict()
-        job_args[0] = 'analysis'
-        job_args[1] = 250000
-        job_args[2] = 'chado_analysis'
-        job_args[3] = 'chado_analysis'
-
-        r = self.tripal.job.add_job(job_name, 'chado_analysis', 'chado_cleanup_orphaned_nodes', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
-
-        if no_wait:
-            return r
+        if self.tripal.version == 3:
+            # FIXME Don't know if it's possible
+            raise NotImplementedError("Not yet possible in Tripal 3")
         else:
-            return self._run_job_and_wait(r['job_id'])
+            job_args = OrderedDict()
+            job_args[0] = 'analysis'
+            job_args[1] = 250000
+            job_args[2] = 'chado_analysis'
+            job_args[3] = 'chado_analysis'
+
+            r = self.tripal.job.add_job(job_name, 'chado_analysis', 'chado_cleanup_orphaned_nodes', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            if no_wait:
+                return r
+            else:
+                return self._run_job_and_wait(r['job_id'])
 
     def load_blast(self, name, program, programversion, sourcename, blast_output,
                    blast_ext=None, blastdb=None, blastdb_id=None,
@@ -926,7 +929,7 @@ class AnalysisClient(Client):
                   analysis_id=None, import_mode='update', target_organism=None,
                   target_organism_id=None, target_type=None, target_create=False,
                   start_line=None, landmark_type=None, alt_id_attr=None,
-                  create_organism=None, re_mrna=None, re_protein=None, job_name=None, no_wait=False):
+                  create_organism=False, re_mrna=None, re_protein=None, job_name=None, no_wait=False):
         """
         Load GFF3 file
 
@@ -1119,18 +1122,34 @@ class AnalysisClient(Client):
         if not job_name:
             job_name = 'Sync Analysis'
 
-        job_args = OrderedDict()
-        job_args['base_table'] = 'analysis'
-        job_args['max_sync'] = ''
-        job_args['organism_id'] = ''
-        job_args['types'] = []
-        job_args['ids'] = [int(analysis_id)]
-        job_args['linking_table'] = 'chado_analysis'
-        job_args['node_type'] = 'chado_analysis'
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
 
-        r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
+            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
+            """
+            job_args = OrderedDict()
+            job_args[0] = OrderedDict()
+            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
+            job_args[0]['filters'] = OrderedDict()
+            job_args[0]['filters']['analysis_id'] = analysis_id  # FIXME Don't know if using analysis_id is possible
+
+            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+            """
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'analysis'
+            job_args['max_sync'] = ''
+            job_args['organism_id'] = ''
+            job_args['types'] = []
+            job_args['ids'] = [int(analysis_id)]
+            job_args['linking_table'] = 'chado_analysis'
+            job_args['node_type'] = 'chado_analysis'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r

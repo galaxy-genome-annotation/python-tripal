@@ -217,18 +217,34 @@ class OrganismClient(Client):
         if not job_name:
             job_name = 'Sync Organism'
 
-        job_args = OrderedDict()
-        job_args['base_table'] = 'organism'
-        job_args['max_sync'] = ''
-        job_args['organism_id'] = ''
-        job_args['types'] = []
-        job_args['ids'] = [organism_id]
-        job_args['linking_table'] = 'chado_organism'
-        job_args['node_type'] = 'chado_organism'
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
 
-        r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
+            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
+            """
+            job_args = OrderedDict()
+            job_args[0] = OrderedDict()
+            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
+            job_args[0]['filters'] = OrderedDict()
+            job_args[0]['filters']['analysis_id'] = organism_id  # FIXME Don't know if using analysis_id is possible
+
+            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+            """
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'organism'
+            job_args['max_sync'] = ''
+            job_args['organism_id'] = ''
+            job_args['types'] = []
+            job_args['ids'] = [organism_id]
+            job_args['linking_table'] = 'chado_organism'
+            job_args['node_type'] = 'chado_organism'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r
@@ -251,18 +267,21 @@ class OrganismClient(Client):
 
         if not job_name:
             job_name = 'Delete orphan organisms'
-
-        job_args = OrderedDict()
-        job_args[0] = 'organism'
-        job_args[1] = 250000
-        job_args[2] = 'chado_organism'
-        job_args[3] = 'chado_organism'
-
-        r = self.tripal.job.add_job(job_name, 'chado_organism', 'chado_cleanup_orphaned_nodes', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
-
-        if no_wait:
-            return r
+        if self.tripal.version == 3:
+            # FIXME Don't know if it's possible
+            raise NotImplementedError("Not yet possible in Tripal 3")
         else:
-            return self._run_job_and_wait(r['job_id'])
+            job_args = OrderedDict()
+            job_args[0] = 'organism'
+            job_args[1] = 250000
+            job_args[2] = 'chado_organism'
+            job_args[3] = 'chado_organism'
+
+            r = self.tripal.job.add_job(job_name, 'chado_organism', 'chado_cleanup_orphaned_nodes', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            if no_wait:
+                return r
+            else:
+                return self._run_job_and_wait(r['job_id'])
