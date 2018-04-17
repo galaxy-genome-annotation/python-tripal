@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.analysis.load_interpro" name="analysis" version="1.0">
+<tool id="tripaille_analysis_load_interpro" name="analysis" version="@WRAPPER_VERSION@.0">
  <description>load_interpro</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,20 +7,20 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille analysis load_interpro
-"$name"
-"$program"
-"$programversion"
-"$sourcename"
-"$interpro_output"
+'$name'
+'$program'
+'$programversion'
+'$sourcename'
+'$interpro_output'
 
 #if $interpro_parameters:
-  --interpro_parameters "$interpro_parameters"
+  --interpro_parameters '$interpro_parameters'
 #end if
 #if $query_re:
-  --query_re "$query_re"
+  --query_re '$query_re'
 #end if
 #if $query_type:
-  --query_type "$query_type"
+  --query_type '$query_type'
 #end if
 #if $query_uniquename:
   $query_uniquename
@@ -32,19 +32,19 @@ tripaille analysis load_interpro
   $no_wait
 #end if
 #if $algorithm:
-  --algorithm "$algorithm"
+  --algorithm '$algorithm'
 #end if
 #if $sourceversion:
-  --sourceversion "$sourceversion"
+  --sourceversion '$sourceversion'
 #end if
 #if $sourceuri:
-  --sourceuri "$sourceuri"
+  --sourceuri '$sourceuri'
 #end if
 #if $description:
-  --description "$description"
+  --description '$description'
 #end if
 #if $date_executed:
-  --date_executed "$date_executed"
+  --date_executed '$date_executed'
 #end if
 
 | jq -S . > $results
@@ -76,5 +76,7 @@ tripaille analysis load_interpro
 	</outputs>
 	<help>
 Create an Interpro analysis
+
+@HELP@
 	</help>
 </tool>

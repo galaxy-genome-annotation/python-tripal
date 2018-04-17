@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.job.wait" name="job" version="1.0">
+<tool id="tripaille_job_wait" name="job" version="@WRAPPER_VERSION@.0">
  <description>wait</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,7 +7,7 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille job wait
-"$job_id"
+'$job_id'
 
 
 | jq -S . > $results
@@ -24,5 +24,7 @@ tripaille job wait
 	</outputs>
 	<help>
 Wait for a job completion
+
+@HELP@
 	</help>
 </tool>

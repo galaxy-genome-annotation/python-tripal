@@ -7,6 +7,7 @@ from tripaille.commands.db.populate_mviews import cli as func3
 
 @click.group()
 def cli():
+    """Access Tripal/Chado database"""
     pass
 
 

@@ -5,11 +5,15 @@ from tripaille.decorators import custom_exception, dict_output
 
 @click.command('add_organism')
 @click.argument("genus", type=str)
-@click.argument("common", type=str)
-@click.argument("abbr", type=str)
+@click.argument("species", type=str)
 @click.option(
-    "--species",
-    help="The species of the organism",
+    "--common",
+    help="The common name of the organism",
+    type=str
+)
+@click.option(
+    "--abbr",
+    help="The abbreviation of the organism",
     type=str
 )
 @click.option(
@@ -30,11 +34,11 @@ from tripaille.decorators import custom_exception, dict_output
 @pass_context
 @custom_exception
 @dict_output
-def cli(ctx, genus, common, abbr, species="", comment="", infraspecific_rank="", infraspecific_name=""):
+def cli(ctx, genus, species, common="", abbr="", comment="", infraspecific_rank="", infraspecific_name=""):
     """Add a new organism to the database
 
 Output:
 
     Organism information
     """
-    return ctx.gi.organism.add_organism(genus, common, abbr, species=species, comment=comment, infraspecific_rank=infraspecific_rank, infraspecific_name=infraspecific_name)
+    return ctx.gi.organism.add_organism(genus, species, common=common, abbr=abbr, comment=comment, infraspecific_rank=infraspecific_rank, infraspecific_name=infraspecific_name)

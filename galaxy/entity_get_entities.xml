@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<tool id="tripaille_entity_get_entities" name="entity" version="@WRAPPER_VERSION@.0">
+ <description>get_entities</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille entity get_entities
+
+#if $entity:
+  --entity '$entity'
+#end if
+#if $entity_id:
+  --entity_id '$entity_id'
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="entity" label="Entity" argument="entity" type="text" help="Name of the entity type (e.g. Organism)" />
+	<param name="entity_id" label="Entity Id" argument="entity_id" type="integer" value="0" help="ID of an entity" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get entities
+
+@HELP@
+	</help>
+</tool>

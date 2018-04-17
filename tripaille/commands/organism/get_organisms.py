@@ -38,7 +38,7 @@ from tripaille.decorators import custom_exception, list_output
 @custom_exception
 @list_output
 def cli(ctx, organism_id="", genus="", species="", common="", abbr="", comment=""):
-    """Get organisms
+    """Get organisms from chado table
 
 Output:
 

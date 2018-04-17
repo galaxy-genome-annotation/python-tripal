@@ -1,11 +1,13 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-from collections import OrderedDict
-from datetime import datetime
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import logging
 import os
+from collections import OrderedDict
+from datetime import datetime
+
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -13,27 +15,33 @@ log = logging.getLogger()
 
 
 class AnalysisClient(Client):
-    CLIENT_BASE = '/tripal_api/'
+    """Manage Tripal analyses"""
 
-    def get_analysis_nodes(self, node=None):
+    def get_analyses_tripal(self, analysis_id=None):
         """
-        Get analysis nodes
+        Get analysis entities
 
-        :type node: int
-        :param node: filter on node id
+        :type analysis_id: int
+        :param analysis_id: An analysis entity/node ID
 
         :rtype: list of dict
-        :return: Analysis node information
+        :return: Analysis entity/node information
         """
 
-        if node:
-            nodes = [self._get('node/%s' % node, {})]
+        if self.tripal.version == 3:
+            if analysis_id:
+                entities = [self._get_ws('Analysis/%s' % analysis_id, {})]
+            else:
+                entities = self._get_ws('Analysis', {})
         else:
-            nodes = self._get('node', {})
+            if analysis_id:
+                entities = [self._get('node/%s' % analysis_id, {})]
+            else:
+                entities = self._get('node', {})
 
-        nodes = [n for n in nodes if n['type'].startswith('chado_analysis')]
+            entities = [n for n in entities if n['type'].startswith('chado_analysis')]
 
-        return nodes
+        return entities
 
     def get_analyses(self, analysis_id=None, name=None, program=None, programversion=None,
                      algorithm=None, sourcename=None, sourceversion=None,
@@ -95,8 +103,8 @@ class AnalysisClient(Client):
 
         return ans
 
-    def add_analysis(self, name, program, programversion, sourcename, algorithm="",
-                     sourceversion="", sourceuri="", description="", date_executed=None):
+    def add_analysis(self, name, program, programversion, sourcename, algorithm=None,
+                     sourceversion=None, sourceuri=None, description=None, date_executed=None):
         """
         Create an analysis
 
@@ -135,31 +143,86 @@ class AnalysisClient(Client):
         if date_executed:
             date = datetime.strptime(date_executed, '%Y-%m-%d')
 
-        params = {
-            'type': 'chado_analysis',
-            'analysisname': name,
-            'program': program,
-            'programversion': programversion,
-            'algorithm': algorithm,
-            'sourcename': sourcename,
-            'sourceversion': sourceversion,
-            'sourceuri': sourceuri,
-            'description': description,
-            'timeexecuted': {
-                'day': date.strftime('%d'),
-                'month': date.strftime('%m'),
-                'year': date.strftime('%Y')
-            },
-        }
+        if self.tripal.version == 3:
+            params = {
+                'entity_type': 'Analysis',
+                'params': {
+                    'name': name,
+                    'software': program,
+                    'version_number': programversion,
+                    'algorithm': algorithm,
+                    'source_data': {
+                        'sourcename': sourcename,
+                        'sourceversion': sourceversion,
+                        'sourceuri': sourceuri,
+                    },
+                    'description': description,
+                    'time_executed': date.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+            }
 
-        return self._request('node', params)
+            return self._request('entity/create', params)
+        else:
+            params = {
+                'type': 'chado_analysis',
+                'analysisname': name,
+                'program': program,
+                'programversion': programversion,
+                'algorithm': algorithm,
+                'sourcename': sourcename,
+                'sourceversion': sourceversion,
+                'sourceuri': sourceuri,
+                'description': description,
+                'timeexecuted': {
+                    'day': date.strftime('%d'),
+                    'month': date.strftime('%m'),
+                    'year': date.strftime('%Y')
+                },
+            }
+
+            return self._request('node', params)
+
+    def delete_orphans(self, job_name=None, no_wait=None):
+        """
+        Delete orphans Drupal analysis nodes
+
+        :type job_name: str
+        :param job_name: Name of the job
+
+        :type no_wait: bool
+        :param no_wait: Return immediately without waiting for job completion
+
+        :rtype: str
+        :return: status
+        """
+        if not job_name:
+            job_name = 'Delete orphan analyses'
+
+        if self.tripal.version == 3:
+            # FIXME Don't know if it's possible
+            raise NotImplementedError("Not yet possible in Tripal 3")
+        else:
+            job_args = OrderedDict()
+            job_args[0] = 'analysis'
+            job_args[1] = 250000
+            job_args[2] = 'chado_analysis'
+            job_args[3] = 'chado_analysis'
+
+            r = self.tripal.job.add_job(job_name, 'chado_analysis', 'chado_cleanup_orphaned_nodes', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            if no_wait:
+                return r
+            else:
+                return self._run_job_and_wait(r['job_id'])
 
     def load_blast(self, name, program, programversion, sourcename, blast_output,
                    blast_ext=None, blastdb=None, blastdb_id=None,
                    blast_parameters=None, query_re=None, query_type=None,
                    query_uniquename=False, is_concat=False, search_keywords=False,
-                   no_wait=False, algorithm="", sourceversion="", sourceuri="",
-                   description="", date_executed=None):
+                   no_parsed="all", no_wait=False, algorithm=None, sourceversion=None,
+                   sourceuri=None, description=None, date_executed=None):
         """
         Create a Blast analysis
 
@@ -205,6 +268,9 @@ class AnalysisClient(Client):
         :type search_keywords: bool
         :param search_keywords: Extract keywords for Tripal search
 
+        :type no_parsed: str
+        :param no_parsed: Maximum number of hits to parse per feature. Default=all
+
         :type no_wait: bool
         :param no_wait: Do not wait for job to complete
 
@@ -241,67 +307,114 @@ class AnalysisClient(Client):
         if not blastdb_id:
             raise Exception("Either blastdb or blastdb_id is required")
 
-        date = datetime.today()
-        if date_executed:
-            date = datetime.strptime(date_executed, '%Y-%m-%d')
+        if self.tripal.version == 3:
+            # Tripal v3.x
+            if description:
+                description += '<br/ >'
+            description += 'Blast parameters: {}'.format(blast_parameters)
 
-        params = {
-            'type': 'chado_analysis_blast',
-            'analysisname': name,
-            'program': program,
-            'programversion': programversion,
-            'algorithm': algorithm,
-            'sourcename': sourcename,
-            'sourceversion': sourceversion,
-            'sourceuri': sourceuri,
-            'description': description,
-            'timeexecuted': {
-                'day': date.strftime('%d'),
-                'month': date.strftime('%m'),
-                'year': date.strftime('%Y')
-            },
+            analysis = self.add_analysis(name,
+                                         program,
+                                         programversion,
+                                         sourcename,
+                                         algorithm,
+                                         sourceversion,
+                                         sourceuri,
+                                         description,
+                                         date_executed)
 
-            'blastdb': blastdb_id,
-            'blastfile': blast_output,
-            'blastfile_ext': blast_ext,
-            'blastjob': 1,  # no reason to not launch a job
-            'blastparameters': blast_parameters,
-            'query_re': query_re,
-            'query_type': query_type,
-            'query_uniquename': query_uniquename,
-            'is_concat': int(is_concat),
-            'search_keywords': int(search_keywords),
-        }
+            if not analysis or '@id' not in analysis:
+                raise Exception("Failed to create analysis: %s" % analysis)
 
-        res = self._request('node', params)
+            an_chado = self.get_analyses(program=program, programversion=programversion, sourcename=sourcename)
 
-        an_node = self.get_analysis_nodes(res['nid'])
+            an_id = an_chado[0]['analysis_id']
 
-        if not an_node:
-            raise Exception("Could not find analysis node with id %s" % res['nid'])
+            job_args = {
+                'analysis_id': an_id,
+                'blastdb': blastdb_id,
+                'blastfile_ext': blast_ext,
+                'is_concat': int(is_concat),
+                'no_parsed': no_parsed,
+                'query_re': query_re,
+                'query_type': query_type,
+                'query_uniquename': query_uniquename,
+            }
 
-        an_node = an_node[0]
+            job_name = 'Import Blast file: %s' % os.path.basename(blast_output)
 
-        if no_wait:
-            return an_node
+            r = self.tripal.job.add_import_job(job_name, 'BlastImporter', blast_output, job_args)
+
+            if no_wait:
+                return r
+
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            job_id = r['job_id']
         else:
-            an_id = an_node['analysis']['analysis_id']
-            job_id = None
-            jobs = self.tripal.job.get_jobs()
-            for job in jobs:
-                if job['modulename'] == 'tripal_analysis_blast' and job['raw_arguments'][0] == an_id:
-                    job_id = job['job_id']
+            # Tripal v2.x
+            date = datetime.today()
+            if date_executed:
+                date = datetime.strptime(date_executed, '%Y-%m-%d')
 
-            if not job_id:
-                raise Exception("Could not get job id for analysis %s" % an_id)
+            params = {
+                'type': 'chado_analysis_blast',
+                'analysisname': name,
+                'program': program,
+                'programversion': programversion,
+                'algorithm': algorithm,
+                'sourcename': sourcename,
+                'sourceversion': sourceversion,
+                'sourceuri': sourceuri,
+                'description': description,
+                'timeexecuted': {
+                    'day': date.strftime('%d'),
+                    'month': date.strftime('%m'),
+                    'year': date.strftime('%Y')
+                },
 
-            return self._run_job_and_wait(job_id)
+                'blastdb': blastdb_id,
+                'blastfile': blast_output,
+                'blastfile_ext': blast_ext,
+                'blastjob': 1,  # no reason to not launch a job
+                'blastparameters': blast_parameters,
+                'query_re': query_re,
+                'query_type': query_type,
+                'query_uniquename': query_uniquename,
+                'is_concat': int(is_concat),
+                'search_keywords': int(search_keywords),
+            }
+
+            res = self._request('node', params)
+
+            an_node = self.get_analyses_tripal(res['nid'])
+
+            if not an_node:
+                raise Exception("Could not find analysis node with id %s" % res['nid'])
+
+            an_node = an_node[0]
+
+            if no_wait:
+                return an_node
+            else:
+                an_id = an_node['analysis']['analysis_id']
+                job_id = None
+                jobs = self.tripal.job.get_jobs()
+                for job in jobs:
+                    if job['modulename'] == 'tripal_analysis_blast' and job['raw_arguments'][0] == an_id:
+                        job_id = job['job_id']
+
+                if not job_id:
+                    raise Exception("Could not get job id for analysis %s" % an_id)
+
+        return self._run_job_and_wait(job_id)
 
     def load_interpro(self, name, program, programversion, sourcename,
                       interpro_output, interpro_parameters=None, query_re=None,
                       query_type=None, query_uniquename=False, parse_go=False,
-                      no_wait=False, algorithm="", sourceversion="", sourceuri="",
-                      description="", date_executed=None):
+                      no_wait=False, algorithm=None, sourceversion=None, sourceuri=None,
+                      description=None, date_executed=None):
         """
         Create an Interpro analysis
 
@@ -357,65 +470,116 @@ class AnalysisClient(Client):
         :return: Loading information
         """
 
-        date = datetime.today()
-        if date_executed:
-            date = datetime.strptime(date_executed, '%Y-%m-%d')
+        if self.tripal.version == 3:
+            # Tripal v3.x
+            if description:
+                description += '<br/ >'
+            description += 'InterProScan parameters: {}'.format(interpro_parameters)
 
-        params = {
-            'type': 'chado_analysis_interpro',
-            'analysisname': name,
-            'program': program,
-            'programversion': programversion,
-            'algorithm': algorithm,
-            'sourcename': sourcename,
-            'sourceversion': sourceversion,
-            'sourceuri': sourceuri,
-            'description': description,
-            'timeexecuted': {
-                'day': date.strftime('%d'),
-                'month': date.strftime('%m'),
-                'year': date.strftime('%Y')
-            },
+            analysis = self.add_analysis(name,
+                                         program,
+                                         programversion,
+                                         sourcename,
+                                         algorithm,
+                                         sourceversion,
+                                         sourceuri,
+                                         description,
+                                         date_executed)
 
-            'interprofile': interpro_output,
-            'interprojob': 1,
-            'parsego': int(parse_go),
-            'interproparameters': interpro_parameters,
-            'query_re': query_re,
-            'query_type': query_type,
-            'query_uniquename': query_uniquename,
-        }
+            if not analysis or '@id' not in analysis:
+                raise Exception("Failed to create analysis: %s" % analysis)
 
-        res = self._request('node', params)
+            an_chado = self.get_analyses(program=program, programversion=programversion, sourcename=sourcename)
 
-        an_node = self.get_analysis_nodes(res['nid'])
+            an_id = an_chado[0]['analysis_id']
 
-        if not an_node:
-            raise Exception("Could not find analysis node with id %s" % res['nid'])
+            job_args = {
+                'analysis_id': an_id,
+                'parsego': int(parse_go),
+                'query_re': query_re,
+                'query_type': query_type,
+                'query_uniquename': query_uniquename,
+            }
 
-        an_node = an_node[0]
+            job_name = 'Import InterProScan file: %s' % os.path.basename(interpro_output)
 
-        if no_wait:
-            return an_node
+            r = self.tripal.job.add_import_job(job_name, 'InterProImporter', interpro_output, job_args)
+
+            if no_wait:
+                return r
+
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            job_id = r['job_id']
         else:
-            an_id = an_node['analysis']['analysis_id']
-            job_id = None
-            jobs = self.tripal.job.get_jobs()
-            for job in jobs:
-                if job['modulename'] == 'tripal_analysis_interpro' and job['raw_arguments'][0] == an_id:
-                    job_id = job['job_id']
+            # Tripal v2.x
+            date = datetime.today()
+            if date_executed:
+                date = datetime.strptime(date_executed, '%Y-%m-%d')
 
-            if not job_id:
-                raise Exception("Could not get job id for analysis %s" % an_id)
+            params = {
+                'type': 'chado_analysis_interpro',
+                'analysisname': name,
+                'program': program,
+                'programversion': programversion,
+                'algorithm': algorithm,
+                'sourcename': sourcename,
+                'sourceversion': sourceversion,
+                'sourceuri': sourceuri,
+                'description': description,
+                'timeexecuted': {
+                    'day': date.strftime('%d'),
+                    'month': date.strftime('%m'),
+                    'year': date.strftime('%Y')
+                },
 
-            return self._run_job_and_wait(job_id)
+                'interprofile': interpro_output,
+                'interprojob': 1,
+                'parsego': int(parse_go),
+                'interproparameters': interpro_parameters,
+                'query_re': query_re,
+                'query_type': query_type,
+                'query_uniquename': query_uniquename,
+            }
+
+            res = self._request('node', params)
+
+            an_node = self.get_analyses_tripal(res['nid'])
+
+            if not an_node:
+                raise Exception("Could not find analysis node with id %s" % res['nid'])
+
+            an_node = an_node[0]
+
+            if no_wait:
+                return an_node
+            else:
+                an_id = an_node['analysis']['analysis_id']
+                job_id = None
+                jobs = self.tripal.job.get_jobs()
+                for job in jobs:
+                    if job['modulename'] == 'tripal_analysis_interpro' and job['raw_arguments'][0] == an_id:
+                        job_id = job['job_id']
+
+                if not job_id:
+                    raise Exception("Could not get job id for analysis %s" % an_id)
+
+        return self._run_job_and_wait(job_id)
 
     def load_go(self, name, program, programversion, sourcename, gaf_output,
-                gaf_ext=None, query_type=None, query_uniquename=False,
-                method='add', re_name=None, no_wait=False, algorithm="",
-                sourceversion="", sourceuri="", description="", date_executed=None):
+                organism=None, organism_id=None,
+                gaf_ext=None, query_type=None, query_matching='uniquename',
+                method='add', name_column=2, re_name=None, no_wait=False, algorithm=None,
+                sourceversion=None, sourceuri=None, description=None, date_executed=None):
         """
         Create a GO analysis
+
+        :type organism: str
+        :param organism: Organism common name or abbreviation
+
+        :type organism_id: int
+        :param organism_id: Organism ID
 
         :type name: str
         :param name: analysis name
@@ -438,11 +602,14 @@ class AnalysisClient(Client):
         :type query_type: str
         :param query_type: The feature type (e.g. \'gene\', \'mRNA\', \'contig\') of the query. It must be a valid Sequence Ontology term.
 
-        :type query_uniquename: bool
-        :param query_uniquename: Use this if the --query-re regular expression matches unique names instead of names in the database.
+        :type query_matching: str
+        :param query_matching: Method to match identifiers to features in the database. ('name', 'uniquename' or 'dbxref')
 
         :type method: str
         :param method: Import method ('add' or 'remove')
+
+        :type name_column: int
+        :param name_column: Column containing the feature identifiers (2, 3, 10 or 11; default=2).
 
         :type re_name: str
         :param re_name: Regular expression to extract the feature name from GAF file.
@@ -469,71 +636,140 @@ class AnalysisClient(Client):
         :return: Loading information
         """
 
+        if organism_id:
+            found_org = self.tripal.organism.get_organisms(organism_id=organism_id)
+            if not found_org:
+                raise Exception("Invalid organism ID")
+        elif organism:
+            found_org = self.tripal.organism.get_organisms(common=organism)
+            if not found_org:
+                found_org = self.tripal.organism.get_organisms(abbr=organism)
+
+            if not found_org:
+                raise Exception("Invalid organism name")
+
+            organism_id = found_org[0]['organism_id']
+
+        if not organism_id:
+            raise Exception("Either organism or organism_id is required")
+
         methods = {
             'add': 1,
             'remove': 2,
         }
 
+        query_types = OrderedDict()
+        query_types['name'] = 'name'
+        query_types['uniquename'] = 'uniquename'
+        query_types['dbxref'] = 'dbxref'
+
         if method not in methods:
             raise Exception("Method should be 'add' or 'remove'")
 
-        date = datetime.today()
-        if date_executed:
-            date = datetime.strptime(date_executed, '%Y-%m-%d')
+        if query_matching not in query_types:
+            raise Exception("Method should be 'name', 'uniquename' or 'dbxref'")
 
-        params = {
-            'type': 'chado_analysis_go',
-            'analysisname': name,
-            'program': program,
-            'programversion': programversion,
-            'algorithm': algorithm,
-            'sourcename': sourcename,
-            'sourceversion': sourceversion,
-            'sourceuri': sourceuri,
-            'description': description,
-            'timeexecuted': {
-                'day': date.strftime('%d'),
-                'month': date.strftime('%m'),
-                'year': date.strftime('%Y')
-            },
+        if self.tripal.version == 3:
+            # Tripal v3.x
 
-            'gaf_file': gaf_output,
-            'gaf_file_ext': gaf_ext,
-            'seq_type': query_type,
-            'query_uniquename': query_uniquename,
-            'method': methods[method],
-            're_name': re_name,
-            'gojob': 1,
-        }
+            analysis = self.add_analysis(name,
+                                         program,
+                                         programversion,
+                                         sourcename,
+                                         algorithm,
+                                         sourceversion,
+                                         sourceuri,
+                                         description,
+                                         date_executed)
 
-        res = self._request('node', params)
+            if not analysis or '@id' not in analysis:
+                raise Exception("Failed to create analysis: %s" % analysis)
 
-        an_node = self.get_analysis_nodes(res['nid'])
+            an_chado = self.get_analyses(program=program, programversion=programversion, sourcename=sourcename)
 
-        if not an_node:
-            raise Exception("Could not find analysis node with id %s" % res['nid'])
+            an_id = an_chado[0]['analysis_id']
 
-        an_node = an_node[0]
+            job_args = {
+                'organism_id': organism_id,
+                'analysis_id': an_id,
+                'gaf_file_ext': gaf_ext,
+                'seq_type': query_type,
+                'query_type': query_matching,
+                'method': methods[method],
+                'name_col': name_column,
+                're_name': re_name,
+            }
 
-        if no_wait:
-            return an_node
+            job_name = 'Import GAF file: %s' % os.path.basename(gaf_output)
+
+            r = self.tripal.job.add_import_job(job_name, 'GAFImporter', gaf_output, job_args)
+
+            if no_wait:
+                return r
+
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            job_id = r['job_id']
         else:
-            an_id = an_node['analysis']['analysis_id']
-            job_id = None
-            jobs = self.tripal.job.get_jobs()
-            for job in jobs:
-                if job['modulename'] == 'tripal_analysis_go' and job['raw_arguments'][0] == an_id:
-                    job_id = job['job_id']
+            # Tripal v2.x
+            date = datetime.today()
+            if date_executed:
+                date = datetime.strptime(date_executed, '%Y-%m-%d')
 
-            if not job_id:
-                raise Exception("Could not get job id for analysis %s" % an_id)
+            params = {
+                'type': 'chado_analysis_go',
+                'analysisname': name,
+                'program': program,
+                'programversion': programversion,
+                'algorithm': algorithm,
+                'sourcename': sourcename,
+                'sourceversion': sourceversion,
+                'sourceuri': sourceuri,
+                'description': description,
+                'timeexecuted': {
+                    'day': date.strftime('%d'),
+                    'month': date.strftime('%m'),
+                    'year': date.strftime('%Y')
+                },
 
-            return self._run_job_and_wait(job_id)
+                'gaf_file': gaf_output,
+                'gaf_file_ext': gaf_ext,
+                'seq_type': query_type,
+                'query_uniquename': (query_matching == 'uniquename'),
+                'method': methods[method],
+                're_name': re_name,
+                'gojob': 1,
+            }
+
+            res = self._request('node', params)
+
+            an_node = self.get_analyses_tripal(res['nid'])
+
+            if not an_node:
+                raise Exception("Could not find analysis node with id %s" % res['nid'])
+
+            an_node = an_node[0]
+
+            if no_wait:
+                return an_node
+            else:
+                an_id = an_node['analysis']['analysis_id']
+                job_id = None
+                jobs = self.tripal.job.get_jobs()
+                for job in jobs:
+                    if job['modulename'] == 'tripal_analysis_go' and job['raw_arguments'][0] == an_id:
+                        job_id = job['job_id']
+
+                if not job_id:
+                    raise Exception("Could not get job id for analysis %s" % an_id)
+
+        return self._run_job_and_wait(job_id)
 
     def load_fasta(self, fasta, organism=None, organism_id=None, analysis=None,
-                   analysis_id=None, sequence_type="contig", re_name='',
-                   re_uniquename='', db_ext_id='', re_accession='',
-                   rel_type='', rel_subject_re='', rel_subject_type='',
+                   analysis_id=None, sequence_type="contig", re_name=None,
+                   re_uniquename=None, db_ext_id=None, re_accession=None,
+                   rel_type=None, rel_subject_re=None, rel_subject_type=None,
                    method='insup', match_type='uniquename', job_name=None, no_wait=False):
         """
         Load fasta sequences
@@ -625,11 +861,10 @@ class AnalysisClient(Client):
         if not analysis_id:
             raise Exception("Either analysis or analysis_id is required")
 
-        methods = {
-            'insert': 'Insert only',
-            'update': 'Update only',
-            'insup': 'Insert and update',
-        }
+        methods = OrderedDict()
+        methods['insert'] = 'Insert only'
+        methods['update'] = 'Update only'
+        methods['insup'] = 'Insert and update'
 
         if method not in methods:
             raise Exception("Method should be 'insert', 'update', or 'insup'")
@@ -644,10 +879,9 @@ class AnalysisClient(Client):
         elif rel_type:
             rel_type = rel_types[rel_type]
 
-        match_types = {
-            'name': 'Name',
-            'uniquename': 'Unique name',
-        }
+        match_types = OrderedDict()
+        match_types['name'] = 'Name'
+        match_types['uniquename'] = 'Unique name'
 
         if match_type not in match_types:
             raise Exception("match_type should be 'name' or 'uniquename'")
@@ -655,13 +889,34 @@ class AnalysisClient(Client):
         if not job_name:
             job_name = 'Import FASTA file: %s' % os.path.basename(fasta)
 
-        uid = 1  # user id is not really used by the loader, 1 is admin user
+        if self.tripal.version == 3:
+            # Tripal v3.x
+            job_args = {
+                'analysis_id': analysis_id,
+                'organism_id': organism_id,
+                'seqtype': sequence_type,
+                'method': list(methods.keys()).index(method),
+                'match_type': list(match_types.keys()).index(match_type),
+                're_name': re_name,
+                're_uname': re_uniquename,
+                're_accession': re_accession,
+                'db_id': db_ext_id,
+                'rel_type': rel_type,
+                're_subject': rel_subject_re,
+                'parent_type': rel_subject_type,
+            }
 
-        job_args = [fasta, organism_id, sequence_type, re_name, re_uniquename, re_accession,
-                    db_ext_id, rel_type, rel_subject_re, rel_subject_type,
-                    methods[method], uid, analysis_id, match_types[match_type]]
+            r = self.tripal.job.add_import_job(job_name, 'FASTAImporter', fasta, job_args)
+        else:
+            # Tripal v2.x
+            uid = 1  # user id is not really used by the loader, 1 is admin user
 
-        r = self.tripal.job.add_job(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
+            job_args = [fasta, organism_id, sequence_type, re_name, re_uniquename, re_accession,
+                        db_ext_id, rel_type, rel_subject_re, rel_subject_type,
+                        methods[method], uid, analysis_id, match_types[match_type]]
+
+            r = self.tripal.job.add_job(job_name, 'tripal_feature', 'tripal_feature_load_fasta', job_args)
+
         if 'job_id' not in r or not r['job_id']:
             raise Exception("Failed to create job, received %s" % r)
 
@@ -674,7 +929,7 @@ class AnalysisClient(Client):
                   analysis_id=None, import_mode='update', target_organism=None,
                   target_organism_id=None, target_type=None, target_create=False,
                   start_line=None, landmark_type=None, alt_id_attr=None,
-                  create_organism=None, re_mrna=None, re_protein=None, job_name=None, no_wait=False):
+                  create_organism=False, re_mrna=None, re_protein=None, job_name=None, no_wait=False):
         """
         Load GFF3 file
 
@@ -694,7 +949,7 @@ class AnalysisClient(Client):
         :param analysis_id: Analysis ID
 
         :type import_mode: str
-        :param import_mode: Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be removed)')
+        :param import_mode: Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept)')
 
         :type target_organism: str
         :param target_organism: In case of Target attribute in the GFF3, choose the organism abbreviation or common name to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the 'target_organism=genus:species' attribute in the GFF file.')
@@ -782,27 +1037,46 @@ class AnalysisClient(Client):
 
             target_organism_id = found_torg[0]['organism_id']
 
-        import_modes = {
-            'add_only': 'add_only',
-            'update': 'update',
-            'refresh': 'refresh',
-            'remove': 'remove',
-        }
+        import_modes = OrderedDict()
+        import_modes['add_only'] = 'add_only'
+        import_modes['update'] = 'update'
 
         if import_mode not in import_modes:
-            raise Exception("import_mode should be 'add_only', 'update', 'refresh' or 'remove'")
+            raise Exception("import_mode should be 'add_only', 'update'")
 
         if not job_name:
             job_name = 'Import GFF3 file: %s' % os.path.basename(gff)
 
         transaction = 1  # use transaction or not, no reason to disable this
 
-        job_args = [gff, organism_id, analysis_id, int(import_mode == 'add_only'),
-                    int(import_mode == 'update'), int(import_mode == 'refresh'), int(import_mode == 'remove'),
-                    transaction, target_organism_id, target_type, int(target_create), start_line,
-                    landmark_type, alt_id_attr, int(create_organism), re_mrna, re_protein]
+        if self.tripal.version == 3:
+            # Tripal v3.x
+            job_args = {
+                'analysis_id': analysis_id,
+                'organism_id': organism_id,
+                'line_number': str(start_line),
+                'landmark_type': landmark_type,
+                'alt_id_attr': alt_id_attr,
+                're_mrna': re_mrna,
+                're_protein': re_protein,
+                'use_transaction': transaction,
+                'add_only': int(import_mode == 'add_only'),
+                'update': int(import_mode == 'update'),
+                'create_organism': int(create_organism),
+                'target_organism_id': target_organism_id,
+                'target_type': target_type,
+                'create_target': int(target_create),
+            }
 
-        r = self.tripal.job.add_job(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
+            r = self.tripal.job.add_import_job(job_name, 'GFF3Importer', gff, job_args)
+        else:
+            job_args = [gff, organism_id, analysis_id, int(import_mode == 'add_only'),
+                        int(import_mode == 'update'), 0, 0,
+                        transaction, target_organism_id, target_type, int(target_create), start_line,
+                        landmark_type, alt_id_attr, int(create_organism), re_mrna, re_protein]
+
+            r = self.tripal.job.add_job(job_name, 'tripal_feature', 'tripal_feature_load_gff3', job_args)
+
         if 'job_id' not in r or not r['job_id']:
             raise Exception("Failed to create job, received %s" % r)
 
@@ -848,18 +1122,34 @@ class AnalysisClient(Client):
         if not job_name:
             job_name = 'Sync Analysis'
 
-        job_args = OrderedDict()
-        job_args['base_table'] = 'analysis'
-        job_args['max_sync'] = ''
-        job_args['organism_id'] = ''
-        job_args['types'] = []
-        job_args['ids'] = [int(analysis_id)]
-        job_args['linking_table'] = 'chado_analysis'
-        job_args['node_type'] = 'chado_analysis'
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
 
-        r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
+            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
+            """
+            job_args = OrderedDict()
+            job_args[0] = OrderedDict()
+            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
+            job_args[0]['filters'] = OrderedDict()
+            job_args[0]['filters']['analysis_id'] = analysis_id  # FIXME Don't know if using analysis_id is possible
+
+            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+            """
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'analysis'
+            job_args['max_sync'] = ''
+            job_args['organism_id'] = ''
+            job_args['types'] = []
+            job_args['ids'] = [int(analysis_id)]
+            job_args['linking_table'] = 'chado_analysis'
+            job_args['node_type'] = 'chado_analysis'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.job.get_jobs" name="job" version="1.0">
+<tool id="tripaille_job_get_jobs" name="job" version="@WRAPPER_VERSION@.0">
  <description>get_jobs</description>
 	<macros>
 		<import>macros.xml</import>
@@ -9,7 +9,7 @@
 tripaille job get_jobs
 
 #if $job_id:
-  --job_id "$job_id"
+  --job_id '$job_id'
 #end if
 
 | jq -S . > $results
@@ -26,5 +26,7 @@ tripaille job get_jobs
 	</outputs>
 	<help>
 Get all jobs
+
+@HELP@
 	</help>
 </tool>

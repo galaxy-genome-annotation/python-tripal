@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<tool id="tripaille_organism_get_organisms_tripal" name="organism" version="@WRAPPER_VERSION@.0">
+ <description>get_organisms_tripal</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille organism get_organisms_tripal
+
+#if $organism_id:
+  --organism_id '$organism_id'
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="integer" value="0" help="An organism entity ID" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Get organism entities
+
+@HELP@
+	</help>
+</tool>

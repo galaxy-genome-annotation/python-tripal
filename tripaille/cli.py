@@ -89,7 +89,7 @@ class tripailleCLI(click.MultiCommand):
         # We pre-calculate this so it works more nicely within packaged
         # versions of tripaille. Please feel free to fix this?
 
-        commands = ['init', 'organism', 'job', 'db', 'analysis', 'feature']
+        commands = ['init', 'analysis', 'db', 'entity', 'feature', 'job', 'organism', 'phylogeny']
         return commands
 
     def get_command(self, ctx, name):

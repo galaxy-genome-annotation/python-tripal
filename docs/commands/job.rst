@@ -5,6 +5,30 @@ This section is auto-generated from the help text for the tripaille command
 ``job``.
 
 
+``add_import_job`` command
+--------------------------
+
+**Usage**::
+
+    tripaille job add_import_job [OPTIONS] NAME IMPORTER INPUT_FILE ARGUMENTS
+
+**Help**
+
+Schedule a new import job
+
+
+**Output**
+
+
+    Job information
+    
+**Options**::
+
+
+      --priority INTEGER  An integer score to prioritize the job  [default: 10]
+      -h, --help          Show this message and exit.
+    
+
 ``add_job`` command
 -------------------
 

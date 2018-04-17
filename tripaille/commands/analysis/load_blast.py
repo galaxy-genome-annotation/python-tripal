@@ -55,6 +55,13 @@ from tripaille.decorators import custom_exception, str_output
     is_flag=True
 )
 @click.option(
+    "--no_parsed",
+    help="Maximum number of hits to parse per feature. Default=all",
+    default="all",
+    show_default=True,
+    type=str
+)
+@click.option(
     "--no_wait",
     help="Do not wait for job to complete",
     is_flag=True
@@ -87,11 +94,11 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, name, program, programversion, sourcename, blast_output, blast_ext="", blastdb="", blastdb_id="", blast_parameters="", query_re="", query_type="", query_uniquename=False, is_concat=False, search_keywords=False, no_wait=False, algorithm="", sourceversion="", sourceuri="", description="", date_executed=""):
+def cli(ctx, name, program, programversion, sourcename, blast_output, blast_ext="", blastdb="", blastdb_id="", blast_parameters="", query_re="", query_type="", query_uniquename=False, is_concat=False, search_keywords=False, no_parsed="all", no_wait=False, algorithm="", sourceversion="", sourceuri="", description="", date_executed=""):
     """Create a Blast analysis
 
 Output:
 
     Loading information
     """
-    return ctx.gi.analysis.load_blast(name, program, programversion, sourcename, blast_output, blast_ext=blast_ext, blastdb=blastdb, blastdb_id=blastdb_id, blast_parameters=blast_parameters, query_re=query_re, query_type=query_type, query_uniquename=query_uniquename, is_concat=is_concat, search_keywords=search_keywords, no_wait=no_wait, algorithm=algorithm, sourceversion=sourceversion, sourceuri=sourceuri, description=description, date_executed=date_executed)
+    return ctx.gi.analysis.load_blast(name, program, programversion, sourcename, blast_output, blast_ext=blast_ext, blastdb=blastdb, blastdb_id=blastdb_id, blast_parameters=blast_parameters, query_re=query_re, query_type=query_type, query_uniquename=query_uniquename, is_concat=is_concat, search_keywords=search_keywords, no_parsed=no_parsed, no_wait=no_wait, algorithm=algorithm, sourceversion=sourceversion, sourceuri=sourceuri, description=description, date_executed=date_executed)

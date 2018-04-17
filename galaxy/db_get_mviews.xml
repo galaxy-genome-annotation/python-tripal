@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.db.get_mviews" name="db" version="1.0">
+<tool id="tripaille_db_get_mviews" name="db" version="@WRAPPER_VERSION@.0">
  <description>get_mviews</description>
 	<macros>
 		<import>macros.xml</import>
@@ -9,7 +9,7 @@
 tripaille db get_mviews
 
 #if $name:
-  --name "$name"
+  --name '$name'
 #end if
 
 | jq -S . > $results
@@ -26,5 +26,7 @@ tripaille db get_mviews
 	</outputs>
 	<help>
 Get all materialized views
+
+@HELP@
 	</help>
 </tool>

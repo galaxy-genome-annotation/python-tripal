@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.analysis.load_fasta" name="analysis" version="1.0">
+<tool id="tripaille_analysis_load_fasta" name="analysis" version="@WRAPPER_VERSION@.0">
  <description>load_fasta</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,52 +7,52 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille analysis load_fasta
-"$fasta"
+'$fasta'
 
 #if $organism:
-  --organism "$organism"
+  --organism '$organism'
 #end if
 #if $organism_id:
-  --organism_id "$organism_id"
+  --organism_id '$organism_id'
 #end if
 #if $analysis:
-  --analysis "$analysis"
+  --analysis '$analysis'
 #end if
 #if $analysis_id:
-  --analysis_id "$analysis_id"
+  --analysis_id '$analysis_id'
 #end if
 #if $sequence_type:
-  --sequence_type "$sequence_type"
+  --sequence_type '$sequence_type'
 #end if
 #if $re_name:
-  --re_name "$re_name"
+  --re_name '$re_name'
 #end if
 #if $re_uniquename:
-  --re_uniquename "$re_uniquename"
+  --re_uniquename '$re_uniquename'
 #end if
 #if $db_ext_id:
-  --db_ext_id "$db_ext_id"
+  --db_ext_id '$db_ext_id'
 #end if
 #if $re_accession:
-  --re_accession "$re_accession"
+  --re_accession '$re_accession'
 #end if
 #if $rel_type:
-  --rel_type "$rel_type"
+  --rel_type '$rel_type'
 #end if
 #if $rel_subject_re:
-  --rel_subject_re "$rel_subject_re"
+  --rel_subject_re '$rel_subject_re'
 #end if
 #if $rel_subject_type:
-  --rel_subject_type "$rel_subject_type"
+  --rel_subject_type '$rel_subject_type'
 #end if
 #if $method:
-  --method "$method"
+  --method '$method'
 #end if
 #if $match_type:
-  --match_type "$match_type"
+  --match_type '$match_type'
 #end if
 #if $job_name:
-  --job_name "$job_name"
+  --job_name '$job_name'
 #end if
 #if $no_wait:
   $no_wait
@@ -88,5 +88,7 @@ tripaille analysis load_fasta
 	</outputs>
 	<help>
 Load fasta sequences
+
+@HELP@
 	</help>
 </tool>
