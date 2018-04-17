@@ -1,14 +1,18 @@
 """Base tripal client
 """
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-import click
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import json
-import requests
+
+import click
 
 from future import standard_library
+
+import requests
+
 standard_library.install_aliases()
 
 
@@ -16,6 +20,7 @@ class Client(object):
     """
     Base client class implementing methods to make queries to the server
     """
+    CLIENT_BASE = '/tripal_api/'
 
     def __init__(self, tripalinstance, **requestArgs):
         self.tripal = tripalinstance
@@ -23,6 +28,8 @@ class Client(object):
         self.__verify = requestArgs.get('verify', True)
         self._requestArgs = requestArgs
         self._session = None
+
+        self._ws_client_base = '/web-services/content/v0.1/'
 
         if 'verify' in self._requestArgs:
             del self._requestArgs['verify']
@@ -90,6 +97,14 @@ class Client(object):
     def _request(self, clientMethod, data, post_params={}):
         url = self.tripal.tripal_url + self.CLIENT_BASE + clientMethod
 
+        return self._do_request(url, clientMethod, data, post_params)
+
+    def _request_ws(self, clientMethod, data, post_params={}):
+        url = self.tripal.tripal_url + self._ws_client_base + clientMethod
+
+        return self._do_request(url, clientMethod, data, post_params)
+
+    def _do_request(self, url, clientMethod, data, post_params={}):
         if not self._session:
             self._login()
 
@@ -107,11 +122,13 @@ class Client(object):
             auth = (self.tripal.auth_login, self.tripal.auth_password)
 
         r = requests.post(url, data=json.dumps(data), headers=headers,
-                          verify=self.__verify, auth=auth, params=post_params, **self._requestArgs)
+                          verify=self.__verify, auth=auth, **self._requestArgs)
 
         if r.status_code == 200:
             d = r.json()
             return d
+        elif r.status_code == 201 and 'Location' in r.headers:
+            return self._do_get(r.headers['Location'], {})
 
         # @see self.body for HTTP response body
         raise Exception("Unexpected response from tripal %s: %s" %
@@ -120,6 +137,14 @@ class Client(object):
     def _get(self, clientMethod, get_params):
         url = self.tripal.tripal_url + self.CLIENT_BASE + clientMethod
 
+        return self._do_get(url, get_params)
+
+    def _get_ws(self, clientMethod, get_params):
+        url = self.tripal.tripal_url + self._ws_client_base + clientMethod
+
+        return self._do_get(url, get_params)
+
+    def _do_get(self, url, get_params):
         if not self._session:
             self._login()
 

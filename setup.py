@@ -6,12 +6,12 @@ try:
 except ImportError:
     from distutils.core import setup
 
-subpackages = [x.replace('/', '.') for x in glob.glob('tripaille/commands/*') if not x.endswith('.py')]
-subpackages += [x.replace('/', '.') for x in glob.glob('tripal/*') if not x.endswith('.py')]
+subpackages = [x.replace('/', '.') for x in glob.glob('tripaille/commands/*') if not x.endswith('.py') and not x.endswith('.pyc')]
+subpackages += [x.replace('/', '.') for x in glob.glob('tripal/*') if not x.endswith('.py') and not x.endswith('.pyc')]
 
 setup(
     name="tripal",
-    version='2.0.4',
+    version='3.0',
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
@@ -29,12 +29,14 @@ setup(
         tripaille=tripaille.cli:tripaille
     ''',
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering",
         "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7"
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
     ])

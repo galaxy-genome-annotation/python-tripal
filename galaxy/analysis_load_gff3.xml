@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.analysis.load_gff3" name="analysis" version="1.0">
+<tool id="tripaille_analysis_load_gff3" name="analysis" version="@WRAPPER_VERSION@.0">
  <description>load_gff3</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,55 +7,55 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille analysis load_gff3
-"$gff"
+'$gff'
 
 #if $organism:
-  --organism "$organism"
+  --organism '$organism'
 #end if
 #if $organism_id:
-  --organism_id "$organism_id"
+  --organism_id '$organism_id'
 #end if
 #if $analysis:
-  --analysis "$analysis"
+  --analysis '$analysis'
 #end if
 #if $analysis_id:
-  --analysis_id "$analysis_id"
+  --analysis_id '$analysis_id'
 #end if
 #if $import_mode:
-  --import_mode "$import_mode"
+  --import_mode '$import_mode'
 #end if
 #if $target_organism:
-  --target_organism "$target_organism"
+  --target_organism '$target_organism'
 #end if
 #if $target_organism_id:
-  --target_organism_id "$target_organism_id"
+  --target_organism_id '$target_organism_id'
 #end if
 #if $target_type:
-  --target_type "$target_type"
+  --target_type '$target_type'
 #end if
 #if $target_create:
   $target_create
 #end if
 #if $start_line:
-  --start_line "$start_line"
+  --start_line '$start_line'
 #end if
 #if $landmark_type:
-  --landmark_type "$landmark_type"
+  --landmark_type '$landmark_type'
 #end if
 #if $alt_id_attr:
-  --alt_id_attr "$alt_id_attr"
+  --alt_id_attr '$alt_id_attr'
 #end if
 #if $create_organism:
   $create_organism
 #end if
 #if $re_mrna:
-  --re_mrna "$re_mrna"
+  --re_mrna '$re_mrna'
 #end if
 #if $re_protein:
-  --re_protein "$re_protein"
+  --re_protein '$re_protein'
 #end if
 #if $job_name:
-  --job_name "$job_name"
+  --job_name '$job_name'
 #end if
 #if $no_wait:
   $no_wait
@@ -72,7 +72,7 @@ tripaille analysis load_gff3
 	<param name="organism_id" label="Organism Id" argument="organism_id" type="integer" value="0" help="Organism ID" />
 	<param name="analysis" label="Analysis" argument="analysis" type="text" help="Analysis name" />
 	<param name="analysis_id" label="Analysis Id" argument="analysis_id" type="integer" value="0" help="Analysis ID" />
-	<param name="import_mode" label="Import Mode" argument="import_mode" type="text" help="Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept, refresh=existing features will be updated and obsolete attributes removed, remove=features present in the db and in the GFF3 file will be removed)')" />
+	<param name="import_mode" label="Import Mode" argument="import_mode" type="text" help="Import mode (add_only=existing features won't be touched, update=existing features will be updated and obsolete attributes kept)')" />
 	<param name="target_organism" label="Target Organism" argument="target_organism" type="text" help="In case of Target attribute in the GFF3, choose the organism abbreviation or common name to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the 'target_organism=genus:species' attribute in the GFF file.')" />
 	<param name="target_organism_id" label="Target Organism Id" argument="target_organism_id" type="integer" value="0" help="In case of Target attribute in the GFF3, choose the organism ID to which target sequences belong. Select this only if target sequences belong to a different organism than the one specified with --organism-id. And only choose an organism here if all of the target sequences belong to the same species. If the targets in the GFF file belong to multiple different species then the organism must be specified using the 'target_organism=genus:species' attribute in the GFF file.')" />
 	<param name="target_type" label="Target Type" argument="target_type" type="text" help="In case of Target attribute in the GFF3, if the unique name for a target sequence is not unique (e.g. a protein and an mRNA have the same name) then you must specify the type for all targets in the GFF file. If the targets are of different types then the type must be specified using the 'target_type=type' attribute in the GFF file. This must be a valid Sequence Ontology (SO) term.')" />
@@ -92,5 +92,7 @@ tripaille analysis load_gff3
 	</outputs>
 	<help>
 Load GFF3 file
+
+@HELP@
 	</help>
 </tool>

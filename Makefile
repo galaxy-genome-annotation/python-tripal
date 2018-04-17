@@ -1,3 +1,3 @@
 rebuild:
-	python scripts/autobuilder.py --galaxy
-	python scripts/commands_to_rst.py
+	python3 scripts/autobuilder.py --galaxy
+	python3 scripts/commands_to_rst.py

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.job.get_logs" name="job" version="1.0">
+<tool id="tripaille_job_get_logs" name="job" version="@WRAPPER_VERSION@.0">
  <description>get_logs</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,8 +7,8 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille job get_logs
-"$stdout"
-"$stderr"
+'$stdout'
+'$stderr'
 
 
 | jq -S . > $results
@@ -26,5 +26,7 @@ tripaille job get_logs
 	</outputs>
 	<help>
 Get job output
+
+@HELP@
 	</help>
 </tool>

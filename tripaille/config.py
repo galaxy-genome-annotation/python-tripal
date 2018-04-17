@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
+from tripal import TripalInstance
 import yaml
-import tripal
 
 DEFAULT_CONFIG = {
 }
@@ -59,8 +59,8 @@ def get_instance(instance_name=None):
         auth_login = conf['auth_login']
         auth_password = conf['auth_password']
 
-    return tripal.TripalInstance(tripal_url=conf['tripal_url'],
-                                 username=conf['username'],
-                                 password=conf['password'],
-                                 auth_login=auth_login,
-                                 auth_password=auth_password)
+    return TripalInstance(tripal_url=conf['tripal_url'],
+                          username=conf['username'],
+                          password=conf['password'],
+                          auth_login=auth_login,
+                          auth_password=auth_password)

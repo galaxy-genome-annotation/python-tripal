@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool id="tripaille.organism.add_organism" name="organism" version="1.0">
+<tool id="tripaille_organism_add_organism" name="organism" version="@WRAPPER_VERSION@.0">
  <description>add_organism</description>
 	<macros>
 		<import>macros.xml</import>
@@ -7,21 +7,23 @@
 	<expand macro="requirements"/>
 	<command detect_errors="aggressive">
 tripaille organism add_organism
-"$genus"
-"$common"
-"$abbr"
+'$genus'
+'$species'
 
-#if $species:
-  --species "$species"
+#if $common:
+  --common '$common'
+#end if
+#if $abbr:
+  --abbr '$abbr'
 #end if
 #if $comment:
-  --comment "$comment"
+  --comment '$comment'
 #end if
 #if $infraspecific_rank:
-  --infraspecific_rank "$infraspecific_rank"
+  --infraspecific_rank '$infraspecific_rank'
 #end if
 #if $infraspecific_name:
-  --infraspecific_name "$infraspecific_name"
+  --infraspecific_name '$infraspecific_name'
 #end if
 
 | jq -S . > $results
@@ -29,11 +31,11 @@ tripaille organism add_organism
 	<inputs>
     <!-- arguments -->
 	<param name="genus" label="Genus" argument="genus" type="text" help="The genus of the organism" />
-	<param name="common" label="Common" argument="common" type="text" help="The common name of the organism" />
-	<param name="abbr" label="Abbr" argument="abbr" type="text" help="The abbreviation of the organism" />
+	<param name="species" label="Species" argument="species" type="text" help="The species of the organism" />
 
     <!-- options -->
-	<param name="species" label="Species" argument="species" type="text" help="The species of the organism" />
+	<param name="common" label="Common" argument="common" type="text" help="The common name of the organism" />
+	<param name="abbr" label="Abbr" argument="abbr" type="text" help="The abbreviation of the organism" />
 	<param name="comment" label="Comment" argument="comment" type="text" help="A comment / description" />
 	<param name="infraspecific_rank" label="Infraspecific Rank" argument="infraspecific_rank" type="text" help="The type name of infraspecific name for any taxon below the rank of species. Must be one of ['subspecies', 'varietas', 'subvariety', 'forma', 'subforma']" />
 	<param name="infraspecific_name" label="Infraspecific Name" argument="infraspecific_name" type="text" help="The infraspecific name for this organism." />
@@ -44,5 +46,7 @@ tripaille organism add_organism
 	</outputs>
 	<help>
 Add a new organism to the database
+
+@HELP@
 	</help>
 </tool>

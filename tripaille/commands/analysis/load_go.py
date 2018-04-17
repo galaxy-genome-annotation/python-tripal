@@ -10,6 +10,16 @@ from tripaille.decorators import custom_exception, str_output
 @click.argument("sourcename", type=str)
 @click.argument("gaf_output", type=str)
 @click.option(
+    "--organism",
+    help="Organism common name or abbreviation",
+    type=str
+)
+@click.option(
+    "--organism_id",
+    help="Organism ID",
+    type=int
+)
+@click.option(
     "--gaf_ext",
     help="If looking for files in a directory, extension of the GAF files",
     type=str
@@ -20,9 +30,11 @@ from tripaille.decorators import custom_exception, str_output
     type=str
 )
 @click.option(
-    "--query_uniquename",
-    help="Use this if the --query-re regular expression matches unique names instead of names in the database.",
-    is_flag=True
+    "--query_matching",
+    help="Method to match identifiers to features in the database. ('name', 'uniquename' or 'dbxref')",
+    default="uniquename",
+    show_default=True,
+    type=str
 )
 @click.option(
     "--method",
@@ -30,6 +42,13 @@ from tripaille.decorators import custom_exception, str_output
     default="add",
     show_default=True,
     type=str
+)
+@click.option(
+    "--name_column",
+    help="Column containing the feature identifiers (2, 3, 10 or 11; default=2).",
+    default="2",
+    show_default=True,
+    type=int
 )
 @click.option(
     "--re_name",
@@ -69,11 +88,11 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, name, program, programversion, sourcename, gaf_output, gaf_ext="", query_type="", query_uniquename=False, method="add", re_name="", no_wait=False, algorithm="", sourceversion="", sourceuri="", description="", date_executed=""):
+def cli(ctx, name, program, programversion, sourcename, gaf_output, organism="", organism_id="", gaf_ext="", query_type="", query_matching="uniquename", method="add", name_column=2, re_name="", no_wait=False, algorithm="", sourceversion="", sourceuri="", description="", date_executed=""):
     """Create a GO analysis
 
 Output:
 
     Loading information
     """
-    return ctx.gi.analysis.load_go(name, program, programversion, sourcename, gaf_output, gaf_ext=gaf_ext, query_type=query_type, query_uniquename=query_uniquename, method=method, re_name=re_name, no_wait=no_wait, algorithm=algorithm, sourceversion=sourceversion, sourceuri=sourceuri, description=description, date_executed=date_executed)
+    return ctx.gi.analysis.load_go(name, program, programversion, sourcename, gaf_output, organism=organism, organism_id=organism_id, gaf_ext=gaf_ext, query_type=query_type, query_matching=query_matching, method=method, name_column=name_column, re_name=re_name, no_wait=no_wait, algorithm=algorithm, sourceversion=sourceversion, sourceuri=sourceuri, description=description, date_executed=date_executed)

@@ -1,9 +1,11 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-from collections import OrderedDict
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import logging
+from collections import OrderedDict
+
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
@@ -11,32 +13,37 @@ log = logging.getLogger()
 
 
 class OrganismClient(Client):
-    CLIENT_BASE = '/tripal_api/'
+    """Manage Tripal organisms"""
 
-    def get_organism_nodes(self, node=None):
+    def get_organisms_tripal(self, organism_id=None):
         """
-        Get organism nodes
+        Get organism entities
 
-        :type node: int
-        :param node: filter on node id
+        :type organism_id: int
+        :param organism_id: An organism entity ID
 
         :rtype: list of dict
-        :return: Organism node information
+        :return: Organism entity information
         """
 
-        if node:
-            nodes = [self._get('node/%s' % node, {})]
+        if self.tripal.version == 3:
+            if organism_id:
+                entities = [self._get_ws('Organism/%s' % organism_id, {})]
+            else:
+                entities = self._get_ws('Organism', {})
         else:
-            nodes = self._get('node', {})
+            if organism_id:
+                entities = [self._get('node/%s' % organism_id, {})]
+            else:
+                entities = self._get('node', {})
+                entities = [n for n in entities if n['type'] == 'chado_organism']
 
-        nodes = [n for n in nodes if n['type'] == 'chado_organism']
-
-        return nodes
+        return entities
 
     def get_organisms(self, organism_id=None, genus=None, species=None, common=None, abbr=None,
                       comment=None):
         """
-        Get organisms
+        Get organisms from chado table
 
         :type organism_id: str
         :param organism_id: An organism ID
@@ -76,7 +83,7 @@ class OrganismClient(Client):
 
         return orgs
 
-    def add_organism(self, genus, common, abbr, species=None, comment=None,
+    def add_organism(self, genus, species, common=None, abbr=None, comment=None,
                      infraspecific_rank=None, infraspecific_name=None):
         """
         Add a new organism to the database
@@ -84,14 +91,14 @@ class OrganismClient(Client):
         :type genus: str
         :param genus: The genus of the organism
 
+        :type species: str
+        :param species: The species of the organism
+
         :type common: str
         :param common: The common name of the organism
 
         :type abbr: str
         :param abbr: The abbreviation of the organism
-
-        :type species: str
-        :param species: The species of the organism
 
         :type comment: str
         :param comment: A comment / description
@@ -112,29 +119,53 @@ class OrganismClient(Client):
         if infraspecific_rank and infraspecific_rank not in ['subspecies', 'varietas', 'subvariety', 'forma', 'subforma']:
             raise Exception("infraspecific_rank must be one of ['subspecies', 'varietas', 'subvariety', 'forma', 'subforma']")
 
-        params = {
-            'type': 'chado_organism',
-            'genus': genus,
-            'species': species,
-            'abbreviation': abbr,
-            'common_name': common,
-            'description': {
-                'value': comment
-            },
-            'type_id': 0,
-            'infraspecific_name': '',
-        }
+        if self.tripal.version == 3:
+            params = {
+                'entity_type': 'Organism',
+                'params': {
+                    'genus': genus,
+                    'species': species,
+                    'abbreviation': abbr,
+                    'common_name': common,
+                    'description': comment,
+                }
+            }
 
-        if infraspecific_rank:
-            params['infraspecific_name'] = infraspecific_name
-            allowed_ranks = self.get_taxonomic_ranks()
+            if infraspecific_rank:
+                params['params']['infraspecifictaxon'] = {}
+                params['params']['infraspecifictaxon']['infraspecific_name'] = infraspecific_name
+                allowed_ranks = self.get_taxonomic_ranks()
 
-            for r in allowed_ranks:
-                if r['name'] == infraspecific_rank:
-                    params['type_id'] = int(r['cvterm_id'])
-                    break
+                for r in allowed_ranks:
+                    if r['name'] == infraspecific_rank:
+                        params['params']['infraspecifictaxon']['type_id'] = int(r['cvterm_id'])
+                        break
 
-        return self._request('node', params)
+            return self._request('entity/create', params)
+        else:
+            params = {
+                'type': 'chado_organism',
+                'genus': genus,
+                'species': species,
+                'abbreviation': abbr,
+                'common_name': common,
+                'description': {
+                    'value': comment
+                },
+                'type_id': 0,
+                'infraspecific_name': '',
+            }
+
+            if infraspecific_rank:
+                params['infraspecific_name'] = infraspecific_name
+                allowed_ranks = self.get_taxonomic_ranks()
+
+                for r in allowed_ranks:
+                    if r['name'] == infraspecific_rank:
+                        params['type_id'] = int(r['cvterm_id'])
+                        break
+
+            return self._request('node', params)
 
     def get_taxonomic_ranks(self):
         """
@@ -186,20 +217,71 @@ class OrganismClient(Client):
         if not job_name:
             job_name = 'Sync Organism'
 
-        job_args = OrderedDict()
-        job_args['base_table'] = 'organism'
-        job_args['max_sync'] = ''
-        job_args['organism_id'] = ''
-        job_args['types'] = []
-        job_args['ids'] = [organism_id]
-        job_args['linking_table'] = 'chado_organism'
-        job_args['node_type'] = 'chado_organism'
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
 
-        r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
-        if 'job_id' not in r or not r['job_id']:
-            raise Exception("Failed to create job, received %s" % r)
+            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
+            """
+            job_args = OrderedDict()
+            job_args[0] = OrderedDict()
+            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
+            job_args[0]['filters'] = OrderedDict()
+            job_args[0]['filters']['analysis_id'] = organism_id  # FIXME Don't know if using analysis_id is possible
+
+            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+            """
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'organism'
+            job_args['max_sync'] = ''
+            job_args['organism_id'] = ''
+            job_args['types'] = []
+            job_args['ids'] = [organism_id]
+            job_args['linking_table'] = 'chado_organism'
+            job_args['node_type'] = 'chado_organism'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r
         else:
             return self._run_job_and_wait(r['job_id'])
+
+    def delete_orphans(self, job_name=None, no_wait=None):
+        """
+        Delete orphans Drupal organism nodes
+
+        :type job_name: str
+        :param job_name: Name of the job
+
+        :type no_wait: bool
+        :param no_wait: Return immediately without waiting for job completion
+
+        :rtype: str
+        :return: status
+        """
+
+        if not job_name:
+            job_name = 'Delete orphan organisms'
+        if self.tripal.version == 3:
+            # FIXME Don't know if it's possible
+            raise NotImplementedError("Not yet possible in Tripal 3")
+        else:
+            job_args = OrderedDict()
+            job_args[0] = 'organism'
+            job_args[1] = 250000
+            job_args[2] = 'chado_organism'
+            job_args[3] = 'chado_organism'
+
+            r = self.tripal.job.add_job(job_name, 'chado_organism', 'chado_cleanup_orphaned_nodes', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            if no_wait:
+                return r
+            else:
+                return self._run_job_and_wait(r['job_id'])

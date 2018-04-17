@@ -12,6 +12,8 @@ describes these commands.
 
    commands/analysis.rst
    commands/db.rst
+   commands/entity.rst
    commands/feature.rst
    commands/job.rst
    commands/organism.rst
+   commands/phylogeny.rst

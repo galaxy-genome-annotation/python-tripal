@@ -10,7 +10,7 @@ This section is auto-generated from the help text for the tripaille command
 
 **Usage**::
 
-    tripaille organism add_organism [OPTIONS] GENUS COMMON ABBR
+    tripaille organism add_organism [OPTIONS] GENUS SPECIES
 
 **Help**
 
@@ -25,7 +25,8 @@ Add a new organism to the database
 **Options**::
 
 
-      --species TEXT             The species of the organism
+      --common TEXT              The common name of the organism
+      --abbr TEXT                The abbreviation of the organism
       --comment TEXT             A comment / description
       --infraspecific_rank TEXT  The type name of infraspecific name for any taxon
                                  below the rank of species. Must be one of
@@ -35,28 +36,29 @@ Add a new organism to the database
       -h, --help                 Show this message and exit.
     
 
-``get_organism_nodes`` command
-------------------------------
+``delete_orphans`` command
+--------------------------
 
 **Usage**::
 
-    tripaille organism get_organism_nodes [OPTIONS]
+    tripaille organism delete_orphans [OPTIONS]
 
 **Help**
 
-Get organism nodes
+Delete orphans Drupal organism nodes
 
 
 **Output**
 
 
-    Organism node information
+    status
     
 **Options**::
 
 
-      --node INTEGER  filter on node id
-      -h, --help      Show this message and exit.
+      --job_name TEXT  Name of the job
+      --no_wait        Return immediately without waiting for job completion
+      -h, --help       Show this message and exit.
     
 
 ``get_organisms`` command
@@ -68,7 +70,7 @@ Get organism nodes
 
 **Help**
 
-Get organisms
+Get organisms from chado table
 
 
 **Output**
@@ -86,6 +88,30 @@ Get organisms
       --abbr TEXT         The abbreviation of the organism
       --comment TEXT      A comment / description
       -h, --help          Show this message and exit.
+    
+
+``get_organisms_tripal`` command
+--------------------------------
+
+**Usage**::
+
+    tripaille organism get_organisms_tripal [OPTIONS]
+
+**Help**
+
+Get organism entities
+
+
+**Output**
+
+
+    Organism entity information
+    
+**Options**::
+
+
+      --organism_id INTEGER  An organism entity ID
+      -h, --help             Show this message and exit.
     
 
 ``get_taxonomic_ranks`` command

@@ -4,11 +4,10 @@ module:
     base_module: tripal
     instance_cls: "<class 'tripal.TripalInstance'>"
     instance_func: TripalInstance
-    instance_args: []
-    instance_kwargs:
-        tripal_url: "http://localhost/tripal/"
-        username: "admin"
-        password: "changeme"
+    instance_args:
+        - "http://localhost:8500/tripal/"
+        - "admin"
+        - "changeme"
 
     ignore:
         top_attrs:
@@ -17,6 +16,7 @@ module:
             - 'password'
             - 'auth_login'
             - 'auth_password'
+            - 'version'
         funcs:
             - get
             - post

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<tool id="tripaille_analysis_delete_orphans" name="analysis" version="@WRAPPER_VERSION@.0">
+ <description>delete_orphans</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille analysis delete_orphans
+
+#if $job_name:
+  --job_name '$job_name'
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="job_name" label="Job Name" argument="job_name" type="text" help="Name of the job" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Return immediately without waiting for job completion" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Delete orphans Drupal analysis nodes
+
+@HELP@
+	</help>
+</tool>

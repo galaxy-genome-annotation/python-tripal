@@ -1,0 +1,48 @@
+version: '2'
+services:
+
+  tripal:
+        image: quay.io/erasche/tripal:master
+        ports:
+            - "8500:80"
+        links:
+            - tripaldb:postgres
+            - elasticsearch:elasticsearch
+        volumes:
+            - ../:/data/
+        environment:
+            VIRTUAL_HOST: localhost:8500
+            UPLOAD_LIMIT: 20M
+            MEMORY_LIMIT: 512M
+            TRIPAL_GIT_CLONE_MODULES: ""
+            TRIPAL_DOWNLOAD_MODULES: ""
+            TRIPAL_ENABLE_MODULES: "tripal_analysis_blast tripal_analysis_interpro tripal_analysis_go tripal_rest_api tripal_elasticsearch"
+
+  tripaldb:
+        image: erasche/chado:1.31-jenkins110.2-pg9.5
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            # The default chado image would try to install the schema on first run,
+            # we just want the tools to be available.
+            - INSTALL_CHADO_SCHEMA=0
+
+  elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+        mem_limit: 700m
+        ports:
+            - "9200:9200"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        environment:
+            bootstrap.memory_lock: "true"
+            xpack.security.enabled: "false"
+            xpack.monitoring.enabled: "false"
+            xpack.ml.enabled: "false"
+            xpack.graph.enabled: "false"
+            xpack.watcher.enabled: "false"
+            cluster.routing.allocation.disk.threshold_enabled: "false"
+            ES_JAVA_OPTS: "-Xms200m -Xmx200m"
