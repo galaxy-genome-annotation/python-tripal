@@ -245,9 +245,9 @@ class FeatureTest(unittest.TestCase):
         assert indexed_data['hits']['total'] > 0, "index content ok"
         assert len(indexed_data['hits']['hits']) > 0, "index content ok"
         for hit in indexed_data['hits']['hits']:
-            assert 'nid' in hit['_source'] in indexed_data, "index content ok"
-            assert 'title' in hit['_source'] in indexed_data, "index content ok"
-            assert 'type' in hit['_source'] in indexed_data, "index content ok"
+            assert 'nid' in hit['_source'], "index content ok"
+            assert 'title' in hit['_source'], "index content ok"
+            assert 'type' in hit['_source'], "index content ok"
             if hit['_source']['type'] == 'chado_feature':
                 assert 'orange1' in hit['_source']['title'], "index content ok"
 
