@@ -163,8 +163,8 @@ class FeatureTest(unittest.TestCase):
             sys.stdout = saved_stdout
             sys.stderr = saved_stderr
 
-        # Sync data
-        # Data was loaded successfully, now, check that it is online
+        # TODO test Sync data
+        # TODO Data was loaded successfully, now, check that it is online
 
     def setUp(self):
         self.ci = ci

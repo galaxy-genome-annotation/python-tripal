@@ -1,5 +1,6 @@
 import sys
 import unittest
+import requests
 
 try:
     from StringIO import StringIO
@@ -180,11 +181,74 @@ class FeatureTest(unittest.TestCase):
             assert "[error]" not in output_err, "sync done"
             assert "[ERROR]" not in output_err, "sync done"
 
+            out = StringIO()
+            err = StringIO()
+            sys.stdout = out
+            sys.stderr = err
+
+            self.ti.db.populate_mviews()
+
+            output = out.getvalue().strip()
+            output_err = err.getvalue().strip()
+
+            assert "Populating view" in output, "populate_mviews done"
+            assert "Done." in output, "populate_mviews done"
+            assert "[error]" not in output_err, "populate_mviews done"
+            assert "[ERROR]" not in output_err, "populate_mviews done"
+
+            out = StringIO()
+            err = StringIO()
+            sys.stdout = out
+            sys.stderr = err
+
+            self.ti.db.index()
+
+            output = out.getvalue().strip()
+            output_err = err.getvalue().strip()
+
+            assert "queue_elasticsearch_queue_1 is available, launching cron-run." in output, "indexing done"
+            assert "Done." in output, "indexing done"
+            assert "[error]" not in output_err, "indexing done"
+            assert "[ERROR]" not in output_err, "indexing done"
+
         finally:
             sys.stdout = saved_stdout
             sys.stderr = saved_stderr
 
-        # TODO Data was loaded successfully, now, check that it is online
+        # Data was loaded successfully, now, check that it is online
+        feats = self.ti.feature.get_features_tripal()
+        found_feat = False
+        for f in feats:
+            if f['title'] == 'orange1.1g022799m, PAC:18136224 (mRNA) Testus 2 testa 2':
+                found_feat = f['uri']
+
+        assert found_feat is not False, "mRNA node found"
+
+        r = requests.get(found_feat, allow_redirects=True)
+        cont = r.json()
+        assert 'path' in cont, "well formed node json"
+
+        r = requests.get(cont['path'], allow_redirects=True)
+        html = str(r.content)
+
+        assert "<strong>BLAST of orange1.1g022799m vs. swissprot:display</strong>" in html, "feature online"  # Blast results
+        assert "The process of introducing a phosphate group on to a protein." in html, "feature online"  # Blast2GO results
+        assert "http://www.ebi.ac.uk/interpro/entry/IPR000719" in html, "feature online"  # Interpro results
+        assert "GAACAGACCAAACCAAACAAAAAaCTCCTCTCCcTTCTCTCTCTCTCTCT" in html, "feature online"  # sequence
+
+        # Check indexed data
+        r = requests.get('http://localhost:9200/website/_search?pretty=true&q=*:*', allow_redirects=True)
+        indexed_data = r.json()
+
+        assert 'hits' in indexed_data, "index content ok"
+        assert indexed_data['hits']['total'] > 0, "index content ok"
+        assert len(indexed_data['hits']['hits']) > 0, "index content ok"
+        for hit in indexed_data['hits']['hits']:
+            assert 'nid' in hit['_source'] in indexed_data, "index content ok"
+            assert 'title' in hit['_source'] in indexed_data, "index content ok"
+            assert 'type' in hit['_source'] in indexed_data, "index content ok"
+            if hit['_source']['type'] == 'chado_feature':
+                assert 'orange1' in hit['_source']['title'], "index content ok"
 
     def setUp(self):
         self.ci = ci
@@ -200,5 +264,6 @@ class FeatureTest(unittest.TestCase):
         self.ci.organism.delete_organisms()
         self.ti.organism.delete_orphans()
         self.ti.analysis.delete_orphans()
+        self.ti.feature.delete_orphans()
 
         self.ci.session.commit()

@@ -15,6 +15,32 @@ log = logging.getLogger()
 class FeatureClient(Client):
     """Manage Tripal features"""
 
+    def get_features_tripal(self, feature_id=None):
+        """
+        Get features entities
+
+        :type feature_id: int
+        :param feature_id: A feature entity/node ID
+
+        :rtype: list of dict
+        :return: Feature entity/node information
+        """
+
+        if self.tripal.version == 3:
+            if feature_id:
+                entities = [self._get_ws('Feature/%s' % feature_id, {})]
+            else:
+                entities = self._get_ws('Feature', {})
+        else:
+            if feature_id:
+                entities = [self._get('node/%s' % feature_id, {})]
+            else:
+                entities = self._get('node', {})
+
+            entities = [n for n in entities if n['type'].startswith('chado_feature')]
+
+        return entities
+
     def sync(self, organism=None, organism_id=None, max_sync='', types=[], ids=[],
              job_name=None, no_wait=None):
         """
@@ -98,3 +124,38 @@ class FeatureClient(Client):
             return r
         else:
             return self._run_job_and_wait(r['job_id'])
+
+    def delete_orphans(self, job_name=None, no_wait=None):
+        """
+        Delete orphans Drupal feature nodes
+
+        :type job_name: str
+        :param job_name: Name of the job
+
+        :type no_wait: bool
+        :param no_wait: Return immediately without waiting for job completion
+
+        :rtype: str
+        :return: status
+        """
+        if not job_name:
+            job_name = 'Delete orphan features'
+
+        if self.tripal.version == 3:
+            # FIXME Don't know if it's possible
+            raise NotImplementedError("Not yet possible in Tripal 3")
+        else:
+            job_args = OrderedDict()
+            job_args[0] = 'feature'
+            job_args[1] = 250000
+            job_args[2] = 'chado_feature'
+            job_args[3] = 'chado_feature'
+
+            r = self.tripal.job.add_job(job_name, 'chado_feature', 'chado_cleanup_orphaned_nodes', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
+
+            if no_wait:
+                return r
+            else:
+                return self._run_job_and_wait(r['job_id'])

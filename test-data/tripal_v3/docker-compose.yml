@@ -29,6 +29,8 @@ services:
   elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
         mem_limit: 700m
+        ports:
+            - "9201:9200"
         ulimits:
             memlock:
                 soft: -1

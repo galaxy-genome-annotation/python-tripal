@@ -95,7 +95,7 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, gff, organism="", organism_id="", analysis="", analysis_id="", import_mode="update", target_organism="", target_organism_id="", target_type="", target_create=False, start_line="", landmark_type="", alt_id_attr="", create_organism="", re_mrna="", re_protein="", job_name="", no_wait=False):
+def cli(ctx, gff, organism="", organism_id="", analysis="", analysis_id="", import_mode="update", target_organism="", target_organism_id="", target_type="", target_create=False, start_line="", landmark_type="", alt_id_attr="", create_organism=False, re_mrna="", re_protein="", job_name="", no_wait=False):
     """Load GFF3 file
 
 Output:
