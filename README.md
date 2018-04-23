@@ -5,6 +5,10 @@
 
 A Python library for interacting with [Tripal](http://tripal.info/)
 
+## Requirements
+
+The [tripal_rest_api](http://github.com/abretaud/tripal_rest_api) module needs to be installed on your Tripal instance (choose the master branch for Tripal 2, or the branch 7.x-3.x for Tripal 3).
+
 ## Installation
 
 ```bash
@@ -135,10 +139,6 @@ Or with the Tripaille client:
 
  - 1.9
     - Wait for job completion and get logs
-
-## Requirements
-
-The [tripal_rest_api](http://github.com/abretaud/tripal_rest_api) module needs to be installed on your tripal instance (choose the master branch for Tripal2, or the branch 7.x-3.x for Tripal3).
 
 ## License
 
