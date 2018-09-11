@@ -74,7 +74,7 @@ class ExpressionClient(Client):
         else:
             file_type = "col"
 
-        if feature_match == "unique_name"
+        if feature_match == "unique_name":
             feature_match = "uniq"
 
         job_args = [organism, analysis, biomaterial_provider, array_design, assay_id, acquisition_id, quantification_id, file_path, file_extension, file_type, start_regex, stop_regex, feature_match]
