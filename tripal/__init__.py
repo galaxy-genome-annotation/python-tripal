@@ -17,6 +17,7 @@ from tripal.job import JobClient
 from tripal.organism import OrganismClient
 from tripal.phylogeny import PhylogenyClient
 from tripal.biomaterial import BiomaterialClient
+from tripal.expression import ExpressionClient
 
 standard_library.install_aliases()
 
@@ -45,6 +46,7 @@ class TripalInstance(object):
         self.organism = OrganismClient(self)
         self.phylogeny = PhylogenyClient(self)
         self.biomaterial = BiomaterialClient(self)
+        self.expression = ExpressionClient(self)
 
     def __str__(self):
         return '<TripalInstance at %s>' % self.tripal_url
