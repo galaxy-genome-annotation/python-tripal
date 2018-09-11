@@ -4,17 +4,11 @@ from tripaille.decorators import custom_exception, str_output
 
 
 @click.command('add_expression')
-@click.argument("organism", type=str)
-@click.argument("analysis", type=str)
-@click.argument("feature_match", type=click.Choice(['name', 'unique_name']))
+@click.argument("organism_id", type=str)
+@click.argument("analysis_id", type=str)
+@click.argument("matching_type", type=click.Choice(['name', 'unique_name']))
 @click.argument("file_type", type=click.Choice(['matrix', 'column']))
 @click.argument("file_path", type=str)
-
-@click.option(
-    "--associated_analysis",
-    help="Associated analysis id",
-    type=str
-)
 
 @click.option(
     "--biomaterial_provider",
@@ -72,11 +66,9 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, organism, analysis, feature_match, file_type, file_path, biomaterial_provider="", array_design ="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex ="", stop_regex ="", no_wait=False):
-    """Create a Blast analysis
-
-Output:
-
-    Loading information
+def cli(ctx, organism_id, analysis_id, matching_type, file_type, file_path, biomaterial_provider="", array_design ="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex ="", stop_regex ="", no_wait=False):
+    """Add one or multiple expression file\n
+       Matching type is either name or unique_name\n
+       File type is either matrix or column
     """
-    return ctx.gi.analysis.load_expression(organism, analysis, feature_match, file_type, file_path, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, no_wait=no_wait)
+    return ctx.gi.expression.add_expression(organism_id, analysis_id, matching_type, file_type, file_path, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, no_wait=no_wait)
