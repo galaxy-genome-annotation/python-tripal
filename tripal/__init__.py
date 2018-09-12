@@ -10,7 +10,6 @@ from future import standard_library
 import requests
 
 from tripal.analysis import AnalysisClient
-from tripal.biomaterial import BiomaterialClient
 from tripal.db import DbClient
 from tripal.entity import EntityClient
 from tripal.expression import ExpressionClient
