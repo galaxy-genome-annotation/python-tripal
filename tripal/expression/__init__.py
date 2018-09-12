@@ -15,9 +15,9 @@ class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
     def add_expression(self, organism, analysis, feature_match, file_type, file_path,
-                      biomaterial_provider=None, array_design=None, assay_id=None,
-                      acquisition_id=None, quantification_id=None, file_extension=None,
-                      start_regex=None, stop_regex=None, no_wait=False):
+                       biomaterial_provider=None, array_design=None, assay_id=None,
+                       acquisition_id=None, quantification_id=None, file_extension=None,
+                       start_regex=None, stop_regex=None, no_wait=False):
         """
         :type organism: str
         :param organism: Organism Id
