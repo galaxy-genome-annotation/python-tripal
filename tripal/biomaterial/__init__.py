@@ -4,7 +4,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-from collections import OrderedDict
 
 from tripal.client import Client
 
@@ -14,7 +13,6 @@ log = logging.getLogger()
 
 class BiomaterialClient(Client):
     """Manage Tripal organisms"""
-
 
     def add_biomaterial(self, organism_id, file_path, file_type, no_wait=False):
         """

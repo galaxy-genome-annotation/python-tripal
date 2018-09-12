@@ -4,20 +4,20 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-from collections import OrderedDict
 
 from tripal.client import Client
 
 logging.getLogger("requests").setLevel(logging.CRITICAL)
 log = logging.getLogger()
 
+
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
-
     def add_expression(self, organism, analysis, feature_match, file_type, file_path,
-                   biomaterial_provider=None, array_design =None, assay_id = None, acquisition_id = None, quantification_id = None,
-                   file_extension=None, start_regex =None, stop_regex =None, no_wait=False):
+                      biomaterial_provider=None, array_design=None, assay_id=None,
+                      acquisition_id=None, quantification_id=None, file_extension=None,
+                      start_regex=None, stop_regex=None, no_wait=False):
         """
         :type organism: str
         :param organism: Organism Id
@@ -67,7 +67,6 @@ class ExpressionClient(Client):
 
         if file_type == "column" and not file_extension:
             raise Exception("File_extension is required for column files")
-        #Cleanup arguments
 
         if file_type == "matrix":
             file_type = "mat"
