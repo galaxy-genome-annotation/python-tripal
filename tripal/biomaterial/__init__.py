@@ -16,7 +16,7 @@ class BiomaterialClient(Client):
     """Manage Tripal organisms"""
 
 
-    def add_biomaterial(self, organism_id, file_path, file_type):
+    def add_biomaterial(self, organism_id, file_path, file_type, no_wait=False):
         """
         Add a new biomaterial to the database
 
@@ -49,4 +49,7 @@ class BiomaterialClient(Client):
         if 'job_id' not in r or not r['job_id']:
             raise Exception("Failed to create job, received %s" % r)
 
-        return self._run_job_and_wait(r['job_id'])
+        if no_wait:
+            return r
+        else:
+            return self._run_job_and_wait(r['job_id'])
