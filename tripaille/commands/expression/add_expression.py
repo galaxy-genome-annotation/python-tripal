@@ -7,8 +7,13 @@ from tripaille.decorators import custom_exception, str_output
 @click.argument("organism_id", type=str)
 @click.argument("analysis_id", type=str)
 @click.argument("matching_type", type=click.Choice(['name', 'uniquename']))
-@click.argument("file_type", type=click.Choice(['matrix', 'column']))
 @click.argument("file_path", type=str)
+
+@click.option(
+"--use_matrix",
+    help="If the expression file is a matrix",
+    is_flag=True
+)
 
 @click.option(
     "--biomaterial_provider",
@@ -66,9 +71,9 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, organism_id, analysis_id, matching_type, file_type, file_path, biomaterial_provider="", array_design ="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex ="", stop_regex ="", no_wait=False):
+def cli(ctx, organism_id, analysis_id, matching_type, file_path, use_matrix=False, biomaterial_provider="", array_design ="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex ="", stop_regex ="", no_wait=False):
     """Add one or multiple expression file\n
        Matching type is either name or unique_name\n
        File type is either matrix or column
     """
-    return ctx.gi.expression.add_expression(organism_id, analysis_id, matching_type, file_type, file_path, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, no_wait=no_wait)
+    return ctx.gi.expression.add_expression(organism_id, analysis_id, matching_type, file_path, use_matrix=use_matrix, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, no_wait=no_wait)

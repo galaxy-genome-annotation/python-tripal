@@ -14,10 +14,10 @@ log = logging.getLogger()
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
-    def add_expression(self, organism, analysis, match_type, file_type, file_path,
+    def add_expression(self, organism, analysis, match_type, file_path,
                        biomaterial_provider=None, array_design=None, assay_id=None,
                        acquisition_id=None, quantification_id=None, file_extension=None,
-                       start_regex=None, stop_regex=None, no_wait=False):
+                       start_regex=None, stop_regex=None, use_matrix=False, no_wait=False):
         """
         :type organism: str
         :param organism: Organism Id
@@ -27,9 +27,6 @@ class ExpressionClient(Client):
 
         :type match_type: str
         :param match_type: Match to features using either name or uniquename
-
-        :type file_type: str
-        :param file_type: Expression file type : column or matrix
 
         :type file_path: str
         :param file_path: Path to the expression file, or directory containing multiple expression files.
@@ -58,6 +55,9 @@ class ExpressionClient(Client):
         :type stop_regex: str
         :param stop_regex: A regular expression to describe the line that occurs after the end of the expression data. If the file has no footer text, this is not needed. (optional)
 
+        :type use_matrix: bool
+        :param use_matrix: Set to true if the expression file is a matrix
+
         :type no_wait: bool
         :param no_wait: Do not wait for job to complete
 
@@ -65,13 +65,13 @@ class ExpressionClient(Client):
         :return: Loading information
         """
 
-        if file_type == "column" and not file_extension:
-            raise Exception("File_extension is required for column files")
-
-        if file_type == "matrix":
+        if use_matrix:
             file_type = "mat"
         else:
             file_type = "col"
+
+        if file_type == "col" and not file_extension:
+            raise Exception("File_extension is required for column files")
 
         if match_type == "uniquename":
             match_type = "uniq"
