@@ -27,4 +27,4 @@ Output:
 
     Biomaterial information
     """
-    return ctx.gi.biomaterial.add_biomaterial(organism_id, file_path, file_type, no_wait=no_wait)
+    return ctx.gi.expression.add_biomaterial(organism_id, file_path, file_type, no_wait=no_wait)

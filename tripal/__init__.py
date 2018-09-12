@@ -45,7 +45,6 @@ class TripalInstance(object):
         self.job = JobClient(self)
         self.organism = OrganismClient(self)
         self.phylogeny = PhylogenyClient(self)
-        self.biomaterial = BiomaterialClient(self)
         self.expression = ExpressionClient(self)
 
     def __str__(self):
