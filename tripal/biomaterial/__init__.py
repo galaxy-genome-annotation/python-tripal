@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 
 class BiomaterialClient(Client):
-    """Manage Tripal organisms"""
+    """Manage Tripal biomaterials"""
 
     def add_biomaterial(self, organism_id, file_path, file_type, no_wait=False):
         """

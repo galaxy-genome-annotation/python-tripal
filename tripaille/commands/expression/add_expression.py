@@ -6,7 +6,7 @@ from tripaille.decorators import custom_exception, str_output
 @click.command('add_expression')
 @click.argument("organism_id", type=str)
 @click.argument("analysis_id", type=str)
-@click.argument("matching_type", type=click.Choice(['name', 'unique_name']))
+@click.argument("matching_type", type=click.Choice(['name', 'uniquename']))
 @click.argument("file_type", type=click.Choice(['matrix', 'column']))
 @click.argument("file_path", type=str)
 

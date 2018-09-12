@@ -14,7 +14,7 @@ log = logging.getLogger()
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
-    def add_expression(self, organism, analysis, feature_match, file_type, file_path,
+    def add_expression(self, organism, analysis, match_type, file_type, file_path,
                        biomaterial_provider=None, array_design=None, assay_id=None,
                        acquisition_id=None, quantification_id=None, file_extension=None,
                        start_regex=None, stop_regex=None, no_wait=False):
@@ -25,11 +25,11 @@ class ExpressionClient(Client):
         :type analysis: str
         :param analysis: Id of the analysis
 
-        :type feature_match: str
-        :param organism: Match to features using either name or unique_name
+        :type match_type: str
+        :param match_type: Match to features using either name or uniquename
 
         :type file_type: str
-        :param file_type: Expresssion file type : column or matrix
+        :param file_type: Expression file type : column or matrix
 
         :type file_path: str
         :param file_path: Path to the expression file, or directory containing multiple expression files.
@@ -73,10 +73,10 @@ class ExpressionClient(Client):
         else:
             file_type = "col"
 
-        if feature_match == "unique_name":
-            feature_match = "uniq"
+        if match_type == "uniquename":
+            match_type = "uniq"
 
-        job_args = [organism, analysis, biomaterial_provider, array_design, assay_id, acquisition_id, quantification_id, file_path, file_extension, file_type, start_regex, stop_regex, feature_match]
+        job_args = [organism, analysis, biomaterial_provider, array_design, assay_id, acquisition_id, quantification_id, file_path, file_extension, file_type, start_regex, stop_regex, match_type]
 
         r = self.tripal.job.add_job("Add Expression", 'tripal_analysis_expression', 'tripal_expression_loader', job_args)
 
