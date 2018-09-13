@@ -17,7 +17,7 @@ class ExpressionClient(Client):
     def add_expression(self, organism, analysis, match_type, file_path,
                        biomaterial_provider=None, array_design=None, assay_id=None,
                        acquisition_id=None, quantification_id=None, file_extension=None,
-                       start_regex=None, stop_regex=None, use_matrix=False, no_wait=False):
+                       start_regex=None, stop_regex=None, use_column=False, no_wait=False):
         """
         :type organism: str
         :param organism: Organism Id
@@ -55,8 +55,8 @@ class ExpressionClient(Client):
         :type stop_regex: str
         :param stop_regex: A regular expression to describe the line that occurs after the end of the expression data. If the file has no footer text, this is not needed. (optional)
 
-        :type use_matrix: bool
-        :param use_matrix: Set to true if the expression file is a matrix
+        :type use_column: bool
+        :param use_matrix: Set to true if the expression file is a column
 
         :type no_wait: bool
         :param no_wait: Do not wait for job to complete
@@ -65,10 +65,10 @@ class ExpressionClient(Client):
         :return: Loading information
         """
 
-        if use_matrix:
-            file_type = "mat"
-        else:
+        if use_column:
             file_type = "col"
+        else:
+            file_type = "mat"
 
         if file_type == "col" and not file_extension:
             raise Exception("File_extension is required for column files")
