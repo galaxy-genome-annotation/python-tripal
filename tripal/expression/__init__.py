@@ -113,7 +113,7 @@ class ExpressionClient(Client):
             orgs = [v for v in orgs if v['biomaterial_id'] == str(biomaterial_id)]
         if provider_id:
             orgs = [v for v in orgs if v['biosourceprovider_id'] == str(provider_id)]
-        if taxon_id:
+        if organism_id:
             orgs = [v for v in orgs if v['taxon_id'] == str(organism_id)]
         if dbxref_id:
             orgs = [v for v in orgs if v['dbxref_id'] == str(dbxref_id)]
