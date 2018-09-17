@@ -150,16 +150,13 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def sync_biomaterials(self, ids = [], organism_id='', max_sync='',
+    def sync_biomaterials(self, ids = [], max_sync='',
                          job_name=None, no_wait=None):
         """
         Synchronize some biomaterials
 
         :type ids : str
         :param ids: List of ids of biomaterials to be synced (default: all)
-
-        :type organism_id : str
-        :param organism_id: ID of the organism to sync (default: all)
 
         :type max_sync: str
         :param max_sync: Maximum number of features to sync (default: all)
@@ -184,7 +181,7 @@ class ExpressionClient(Client):
             job_args = OrderedDict()
             job_args['base_table'] = 'biomaterial'
             job_args['max_sync'] = max_sync
-            job_args['organism_id'] = organism_id
+            job_args['organism_id'] = ''
             job_args['types'] = []
             job_args['ids'] = ids
             job_args['linking_table'] = 'chado_biomaterial'

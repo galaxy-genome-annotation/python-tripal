@@ -19,12 +19,6 @@ from tripaille.decorators import custom_exception, dict_output
 )
 
 @click.option(
-"--organism_id",
-    help="ID of the organism to sync",
-    type=str
-)
-
-@click.option(
 "--job_name",
     help="Name of the job. Default to 'Sync Biomaterials'",
     type=str
@@ -46,4 +40,4 @@ Output:
 
     status
     """
-    return ctx.gi.expression.sync_biomaterials(ids=ids, organism_id=organism_id, max_sync=max_sync, job_name=job_name, no_wait=no_wait)
+    return ctx.gi.expression.sync_biomaterials(ids=ids, max_sync=max_sync, job_name=job_name, no_wait=no_wait)
