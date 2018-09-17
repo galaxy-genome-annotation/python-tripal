@@ -18,8 +18,8 @@ from tripaille.decorators import custom_exception, dict_output
 )
 
 @click.option(
-"--taxon_id",
-    help="Limit query to a taxon id",
+"--organism_id",
+    help="Limit query to an organism id",
     type=str
 )
 
@@ -29,16 +29,14 @@ from tripaille.decorators import custom_exception, dict_output
     type=str
 )
 
-
-
 @pass_context
 @custom_exception
 @dict_output
 
-def cli(ctx, provider_id="", biomaterial_id="", taxon_id="", dbxref_id=""):
+def cli(ctx, provider_id="", biomaterial_id="", organism_id="", dbxref_id=""):
     """List Biomaterials in DB\n
 Output:
 
     status
     """
-    return ctx.gi.expression.get_biomaterials(biomaterial_id=biomaterial_id, provider_id=provider_id, taxon_id=taxon_id, dbxref_id=dbxref_id)
+    return ctx.gi.expression.get_biomaterials(biomaterial_id=biomaterial_id, provider_id=provider_id, organism_id=organism_id, dbxref_id=dbxref_id)

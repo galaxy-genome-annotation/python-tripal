@@ -89,12 +89,21 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def get_biomaterials(self, provider_id="", biomaterial_id="", taxon_id="", dbxref_id=""):
+    def get_biomaterials(self, provider_id="", biomaterial_id="", organism_id="", dbxref_id=""):
         """
         List biomaterials in the database
 
         :type organism_id: str
         :param organism_id: Limit query to the selected organism
+
+        :type biomaterial_id: str
+        :param biomaterial_id: Limit query to the selected biomaterial
+
+        :type provider_id: str
+        :param provider_id: Limit query to the selected provider
+
+        :type dbxref_id: str
+        :param dbxref_id: Limit query to the selected ref
 
         :rtype: dict
         :return: Job information
@@ -105,7 +114,7 @@ class ExpressionClient(Client):
         if provider_id:
             orgs = [v for v in orgs if v['biosourceprovider_id'] == str(provider_id)]
         if taxon_id:
-            orgs = [v for v in orgs if v['taxon_id'] == str(taxon_id)]
+            orgs = [v for v in orgs if v['taxon_id'] == str(organism_id)]
         if dbxref_id:
             orgs = [v for v in orgs if v['dbxref_id'] == str(dbxref_id)]
         return orgs
