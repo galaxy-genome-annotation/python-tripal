@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
+from collections import OrderedDict
 
 from tripal.client import Client
 
@@ -32,19 +33,19 @@ class ExpressionClient(Client):
         :param file_path: Path to the expression file, or directory containing multiple expression files.
 
         :type biomaterial_provider: str
-        :param biomaterial_provider: The contact who provided the biomaterial. (optional)
+        :param biomaterial_provider: The contact who provided the biomaterial. (optional, non functional in Tripal2)
 
         :type array_design: str
-        :param array_design: The array design associated with this analysis. This is not required if the experimental data was gathered from next generation sequencing methods. (optional)
+        :param array_design: The array design associated with this analysis. This is not required if the experimental data was gathered from next generation sequencing methods. (optional, non functional in Tripal2)
 
         :type assay_id: str
-        :param assay_id: The id of the assay associated with the experiment. (optional)
+        :param assay_id: The id of the assay associated with the experiment. (optional, non functional in Tripal2)
 
         :type acquisition_id: str
-        :param acquisition_id: The id of the acquisition associated with the experiment (optional)
+        :param acquisition_id: The id of the acquisition associated with the experiment (optional, non functional in Tripal2)
 
         :type quantification_id: str
-        :param quantification_id: The id of the quantification associated with the experiment (optional)
+        :param quantification_id: The id of the quantification associated with the experiment (optional, non functional in Tripal2)
 
         :type file_extension: str
         :param file_extension: File extension for the file(s) to be loaded into Chado. Do not include the ".". Not required for matrix files. (optional)
@@ -88,6 +89,29 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
+
+    def get_biomaterials(self, provider_id="", biomaterial_id="", taxon_id="", dbxref_id=""):
+        """
+        List biomaterials in the database
+
+        :type organism_id: str
+        :param organism_id: Limit query to the selected organism
+
+        :rtype: dict
+        :return: Job information
+        """
+        orgs = self._request('chado/list', {'table': 'biomaterial'})
+        if biomaterial_id:
+            orgs = [v for v in orgs if v['biomaterial_id'] == str(biomaterial_id)]
+        if provider_id:
+            orgs = [v for v in orgs if v['biosourceprovider_id'] == str(provider_id)]
+        if taxon_id:
+            orgs = [v for v in orgs if v['taxon_id'] == str(taxon_id)]
+        if dbxref_id:
+            orgs = [v for v in orgs if v['dbxref_id'] == str(dbxref_id)]
+        return orgs
+
+
     def add_biomaterial(self, organism_id, file_path, file_type, no_wait=False):
         """
         Add a new biomaterial to the database
@@ -120,6 +144,55 @@ class ExpressionClient(Client):
 
         if 'job_id' not in r or not r['job_id']:
             raise Exception("Failed to create job, received %s" % r)
+
+        if no_wait:
+            return r
+        else:
+            return self._run_job_and_wait(r['job_id'])
+
+    def sync_biomaterials(self, ids = [], organism_id='', max_sync='',
+                         job_name=None, no_wait=None):
+        """
+        Synchronize some biomaterials
+
+        :type ids : str
+        :param ids: List of ids of biomaterials to be synced (default: all)
+
+        :type organism_id : str
+        :param organism_id: ID of the organism to sync (default: all)
+
+        :type max_sync: str
+        :param max_sync: Maximum number of features to sync (default: all)
+
+        :type job_name: str
+        :param job_name: Name of the job
+
+        :type no_wait: bool
+        :param no_wait: Return immediately without waiting for job completion
+
+        :rtype: str
+        :return: status
+        """
+
+        if not job_name:
+            job_name = 'Sync Biomaterials'
+
+        if self.tripal.version == 3:
+            raise NotImplementedError("Not yet possible in Tripal 3")
+
+        else:
+            job_args = OrderedDict()
+            job_args['base_table'] = 'biomaterial'
+            job_args['max_sync'] = max_sync
+            job_args['organism_id'] = organism_id
+            job_args['types'] = []
+            job_args['ids'] = ids
+            job_args['linking_table'] = 'chado_biomaterial'
+            job_args['node_type'] = 'chado_biomaterial'
+
+            r = self.tripal.job.add_job(job_name, 'chado_biomaterial', 'chado_node_sync_records', job_args)
+            if 'job_id' not in r or not r['job_id']:
+                raise Exception("Failed to create job, received %s" % r)
 
         if no_wait:
             return r
