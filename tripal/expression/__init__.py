@@ -89,7 +89,6 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-
     def get_biomaterials(self, provider_id="", biomaterial_id="", taxon_id="", dbxref_id=""):
         """
         List biomaterials in the database
@@ -110,7 +109,6 @@ class ExpressionClient(Client):
         if dbxref_id:
             orgs = [v for v in orgs if v['dbxref_id'] == str(dbxref_id)]
         return orgs
-
 
     def add_biomaterial(self, organism_id, file_path, file_type, no_wait=False):
         """
@@ -150,8 +148,7 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def sync_biomaterials(self, ids = [], max_sync='',
-                         job_name=None, no_wait=None):
+    def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=None):
         """
         Synchronize some biomaterials
 
