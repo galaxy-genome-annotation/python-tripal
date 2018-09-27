@@ -157,7 +157,7 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def delete_biomaterials(self, names=[], organism_id= "", analysis_id ="", no_wait=None, job_name =""):
+    def delete_biomaterials(self, names=[], organism_id="", analysis_id="", no_wait=None, job_name=""):
         """
         Delete some biomaterials
 
@@ -183,7 +183,7 @@ class ExpressionClient(Client):
         # Convert to space separated string
         names = " ".join(names)
 
-        if( not (names or organism_id or analysis_id)):
+        if(not (names or organism_id or analysis_id)):
             raise Exception("Please provide either a list of biomaterial names, an analysis id, or an organism id")
 
         if not job_name:
@@ -202,7 +202,6 @@ class ExpressionClient(Client):
             return r
         else:
             return self._run_job_and_wait(r['job_id'])
-
 
     def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=None):
         """
