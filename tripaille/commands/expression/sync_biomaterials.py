@@ -27,7 +27,7 @@ from tripaille.decorators import custom_exception, dict_output
 @click.option(
     "--no_wait",
     help="Do not wait for job to complete",
-    type=str
+    type=bool
 )
 
 @pass_context

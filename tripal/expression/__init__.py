@@ -157,6 +157,53 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
+    def delete_biomaterials(self, names=[], organism_id= "", analysis_id ="", no_wait=None, job_name =""):
+        """
+        Delete some biomaterials
+
+        :type names : str
+        :param names: List of biomaterial names to delete. (optional)
+
+        :type organism_id: str
+        :param organism_id: Organism id from which to delete biomaterials (optional)
+
+        :type analysis_id: str
+        :param analysis_id: Analysis id from which to delete biomaterials (optional)
+
+        :type no_wait: bool
+        :param no_wait: Return immediately without waiting for job completion
+
+        :type job_name: str
+        :param job_name: Name of the job (optional)
+
+        :rtype: str
+        :return: status
+        """
+
+        # Convert to space separated string
+        names = " ".join(names)
+
+        if( not (names or organism_id or analysis_id)):
+            raise Exception("Please provide either a list of biomaterial names, an analysis id, or an organism id")
+
+        if not job_name:
+            job_name = 'Delete Biomaterials'
+
+        job_args = OrderedDict()
+        job_args['biomaterial_names'] = names
+        job_args['organism_id'] = organism_id
+        job_args['analysis_id'] = analysis_id
+
+        r = self.tripal.job.add_job(job_name, 'tripal_biomaterial', 'tripal_biomaterial_delete_biomaterials', job_args)
+        if 'job_id' not in r or not r['job_id']:
+            raise Exception("Failed to create job, received %s" % r)
+
+        if no_wait:
+            return r
+        else:
+            return self._run_job_and_wait(r['job_id'])
+
+
     def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=None):
         """
         Synchronize some biomaterials
