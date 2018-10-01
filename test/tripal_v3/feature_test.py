@@ -56,8 +56,7 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado GFF3 File Loader" in output, "gff loaded"
-            assert "Percent complete: 100.00%." in output, "gff loaded"
-            assert "Done" in output, "gff loaded"
+            assert "Done." in output, "gff loaded"
             assert "[error]" not in output_err, "gff loaded"
             assert "[ERROR]" not in output_err, "gff loaded"
 
