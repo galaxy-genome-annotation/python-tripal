@@ -57,7 +57,7 @@ class ExpressionClient(Client):
         :param stop_regex: A regular expression to describe the line that occurs after the end of the expression data. If the file has no footer text, this is not needed. (optional)
 
         :type use_column: bool
-        :param use_matrix: Set to true if the expression file is a column
+        :param use_column: Set to true if the expression file is a column
 
         :type no_wait: bool
         :param no_wait: Do not wait for job to complete
@@ -132,6 +132,9 @@ class ExpressionClient(Client):
         :type file_type: str
         :param file_type: The type of the biomaterial file (xml, tsv or csv)
 
+        :type no_wait: bool
+        :param no_wait: Do not wait for job to complete
+
         :rtype: dict
         :return: Job information
         """
@@ -157,11 +160,11 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def delete_biomaterials(self, names=[], organism_id="", analysis_id="", no_wait=None, job_name=""):
+    def delete_biomaterials(self, names=[], organism_id="", analysis_id="", job_name="", no_wait=False):
         """
         Delete some biomaterials
 
-        :type names : str
+        :type names: str
         :param names: List of biomaterial names to delete. (optional)
 
         :type organism_id: str
@@ -203,11 +206,11 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=None):
+    def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=False):
         """
         Synchronize some biomaterials
 
-        :type ids : str
+        :type ids: str
         :param ids: List of ids of biomaterials to be synced (default: all)
 
         :type max_sync: str
