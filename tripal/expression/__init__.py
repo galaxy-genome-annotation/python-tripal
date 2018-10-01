@@ -30,7 +30,7 @@ class ExpressionClient(Client):
         :param match_type: Match to features using either name or uniquename
 
         :type file_path: str
-        :param file_path: Path to the expression file, or directory containing multiple expression files.
+        :param file_path: Path to the expression file, or directory containing multiple expression files
 
         :type biomaterial_provider: str
         :param biomaterial_provider: The contact who provided the biomaterial. (optional, non functional in Tripal2)

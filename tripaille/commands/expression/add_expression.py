@@ -47,7 +47,7 @@ from tripaille.decorators import custom_exception, str_output
 
 @click.option(
     "--file_extension",
-    help="File extension (required for column file). Please exlude the '.'",
+    help="File extension (required for column file). Please exclude the '.'",
     type=str
 )
 

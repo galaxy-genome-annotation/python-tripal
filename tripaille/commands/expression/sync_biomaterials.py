@@ -14,7 +14,7 @@ from tripaille.decorators import custom_exception, dict_output
 
 @click.option(
 "--max-sync",
-    help="Maximum number of features to sync (default: all)",
+    help="Maximum number of biomaterials to sync (default: all)",
     type=str
 )
 
