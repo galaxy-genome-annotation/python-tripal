@@ -6,7 +6,7 @@ from tripaille.decorators import custom_exception, str_output
 @click.command('sync_biomaterials')
 @click.option(
     "--ids",
-    help="List of ids of biomaterials to be synced (default: all)",
+    help="JSON list of ids of biomaterials to be synced (default: all)",
     type=str
 )
 @click.option(

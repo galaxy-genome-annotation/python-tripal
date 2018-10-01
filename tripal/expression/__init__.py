@@ -15,16 +15,16 @@ log = logging.getLogger()
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
-    def add_expression(self, organism, analysis, match_type, file_path,
+    def add_expression(self, organism_id, analysis_id, match_type, file_path,
                        biomaterial_provider=None, array_design=None, assay_id=None,
                        acquisition_id=None, quantification_id=None, file_extension=None,
                        start_regex=None, stop_regex=None, use_column=False, no_wait=False):
         """
-        :type organism: str
-        :param organism: Organism Id
+        :type organism_id: str
+        :param organism_id: Organism Id
 
-        :type analysis: str
-        :param analysis: Id of the analysis
+        :type analysis_id: str
+        :param analysis_id: Id of the analysis
 
         :type match_type: str
         :param match_type: Match to features using either name or uniquename
@@ -57,7 +57,7 @@ class ExpressionClient(Client):
         :param stop_regex: A regular expression to describe the line that occurs after the end of the expression data. If the file has no footer text, this is not needed. (optional)
 
         :type use_column: bool
-        :param use_column: Set to true if the expression file is a column
+        :param use_column: Set if the expression file is a column file
 
         :type no_wait: bool
         :param no_wait: Do not wait for job to complete
@@ -77,7 +77,7 @@ class ExpressionClient(Client):
         if match_type == "uniquename":
             match_type = "uniq"
 
-        job_args = [organism, analysis, biomaterial_provider, array_design, assay_id, acquisition_id, quantification_id, file_path, file_extension, file_type, start_regex, stop_regex, match_type]
+        job_args = [organism_id, analysis_id, biomaterial_provider, array_design, assay_id, acquisition_id, quantification_id, file_path, file_extension, file_type, start_regex, stop_regex, match_type]
 
         r = self.tripal.job.add_job("Add Expression", 'tripal_analysis_expression', 'tripal_expression_loader', job_args)
 
@@ -165,7 +165,7 @@ class ExpressionClient(Client):
         Delete some biomaterials
 
         :type names: str
-        :param names: List of biomaterial names to delete. (optional)
+        :param names: JSON list of biomaterial names to delete. (optional)
 
         :type organism_id: str
         :param organism_id: Organism id from which to delete biomaterials (optional)
@@ -182,6 +182,9 @@ class ExpressionClient(Client):
         :rtype: str
         :return: status
         """
+
+        if not isinstance(names, list) and not isinstance(names, dict):
+            names = json.loads(names)
 
         # Convert to space separated string
         names = " ".join(names)
@@ -211,7 +214,7 @@ class ExpressionClient(Client):
         Synchronize some biomaterials
 
         :type ids: str
-        :param ids: List of ids of biomaterials to be synced (default: all)
+        :param ids: JSON list of ids of biomaterials to be synced (default: all)
 
         :type max_sync: str
         :param max_sync: Maximum number of features to sync (default: all)
@@ -228,6 +231,9 @@ class ExpressionClient(Client):
 
         if not job_name:
             job_name = 'Sync Biomaterials'
+
+        if not isinstance(ids, list) and not isinstance(ids, dict):
+            ids = json.loads(ids)
 
         if self.tripal.version == 3:
             raise NotImplementedError("Not yet possible in Tripal 3")

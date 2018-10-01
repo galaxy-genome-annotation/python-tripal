@@ -4,8 +4,8 @@ from tripaille.decorators import custom_exception, str_output
 
 
 @click.command('add_expression')
-@click.argument("organism", type=str)
-@click.argument("analysis", type=str)
+@click.argument("organism_id", type=str)
+@click.argument("analysis_id", type=str)
 @click.argument("match_type", type=str)
 @click.argument("file_path", type=str)
 @click.option(
@@ -50,7 +50,7 @@ from tripaille.decorators import custom_exception, str_output
 )
 @click.option(
     "--use_column",
-    help="Set to true if the expression file is a column",
+    help="Set if the expression file is a column file",
     is_flag=True
 )
 @click.option(
@@ -61,11 +61,11 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, organism, analysis, match_type, file_path, biomaterial_provider="", array_design="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex="", stop_regex="", use_column=False, no_wait=False):
-    """:type organism: str :param organism: Organism Id
+def cli(ctx, organism_id, analysis_id, match_type, file_path, biomaterial_provider="", array_design="", assay_id="", acquisition_id="", quantification_id="", file_extension="", start_regex="", stop_regex="", use_column=False, no_wait=False):
+    """:type organism_id: str :param organism_id: Organism Id
 
 Output:
 
     Loading information
     """
-    return ctx.gi.expression.add_expression(organism, analysis, match_type, file_path, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, use_column=use_column, no_wait=no_wait)
+    return ctx.gi.expression.add_expression(organism_id, analysis_id, match_type, file_path, biomaterial_provider=biomaterial_provider, array_design=array_design, assay_id=assay_id, acquisition_id=acquisition_id, quantification_id=quantification_id, file_extension=file_extension, start_regex=start_regex, stop_regex=stop_regex, use_column=use_column, no_wait=no_wait)

@@ -6,7 +6,7 @@ from tripaille.decorators import custom_exception, str_output
 @click.command('delete_biomaterials')
 @click.option(
     "--names",
-    help="List of biomaterial names to delete. (optional)",
+    help="JSON list of biomaterial names to delete. (optional)",
     type=str
 )
 @click.option(
