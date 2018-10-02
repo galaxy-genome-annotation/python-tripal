@@ -75,7 +75,7 @@ class ExpressionClient(Client):
         if file_type == "col" and not file_extension:
             raise Exception("File_extension is required for column files")
 
-        if match_type not in ["uniquename","name"]:
+        if match_type not in ["uniquename", "name"]:
             raise Exception("match_type should be 'name' or 'uniquename'")
 
         if match_type == "uniquename":
