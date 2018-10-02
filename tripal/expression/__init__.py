@@ -16,8 +16,8 @@ log = logging.getLogger()
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
-    def add_expression(self, organism_id, analysis_id, match_type, file_path,
-                       biomaterial_provider=None, array_design=None, assay_id=None,
+    def add_expression(self, organism_id, analysis_id, file_path,
+                       match_type="uniquename", biomaterial_provider=None, array_design=None, assay_id=None,
                        acquisition_id=None, quantification_id=None, file_extension=None,
                        start_regex=None, stop_regex=None, use_column=False, no_wait=False):
         """
@@ -28,7 +28,7 @@ class ExpressionClient(Client):
         :param analysis_id: Id of the analysis
 
         :type match_type: str
-        :param match_type: Match to features using either name or uniquename
+        :param match_type: Match to features using either name or uniquename. Default to uniquename
 
         :type file_path: str
         :param file_path: Path to the expression file, or directory containing multiple expression files
@@ -74,6 +74,9 @@ class ExpressionClient(Client):
 
         if file_type == "col" and not file_extension:
             raise Exception("File_extension is required for column files")
+
+        if match_type not in ["uniquename","name"]:
+            raise Exception("match_type should be 'name' or 'uniquename'")
 
         if match_type == "uniquename":
             match_type = "uniq"
