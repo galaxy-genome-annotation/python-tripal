@@ -56,8 +56,7 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado GFF3 File Loader" in output, "gff loaded"
-            assert "Percent complete: 100.00%." in output, "gff loaded"
-            assert "Done" in output, "gff loaded"
+            assert "Done." in output, "gff loaded"
             assert "[error]" not in output_err, "gff loaded"
             assert "[ERROR]" not in output_err, "gff loaded"
 
@@ -72,7 +71,6 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado FASTA Loader" in output, "genome loaded"
-            assert "Percent complete: 100.00%." in output, "genome loaded"
             assert "Done" in output, "genome loaded"
             assert "[error]" not in output_err, "genome loaded"
             assert "[ERROR]" not in output_err, "genome loaded"
@@ -88,7 +86,6 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado FASTA Loader" in output, "transcripts loaded"
-            assert "Percent complete: 100.00%." in output, "transcripts loaded"
             assert "Done" in output, "transcripts loaded"
             assert "[error]" not in output_err, "transcripts loaded"
             assert "[ERROR]" not in output_err, "transcripts loaded"
@@ -106,7 +103,6 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado BLAST XML results loader" in output, "blast loaded"
-            assert "Percent complete: 100.00%." in output, "blast loaded"
             assert "Done" in output, "blast loaded"
             assert "[error]" not in output_err, "blast loaded"
             assert "[ERROR]" not in output_err, "blast loaded"
@@ -124,7 +120,6 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado BLAST XML results loader" in output, "blast loaded"
-            assert "Percent complete: 100.00%." in output, "blast loaded"
             assert "Done" in output, "blast loaded"
             assert "[error]" not in output_err, "blast loaded"
             assert "[ERROR]" not in output_err, "blast loaded"
@@ -140,7 +135,6 @@ class FeatureTest(unittest.TestCase):
             output_err = err.getvalue().strip()
 
             assert "Chado InterProScan XML results loader" in output, "interpro loaded"
-            assert "Percent complete: 100.00%." in output, "interpro loaded"
             assert "Done" in output, "interpro loaded"
             assert "[error]" not in output_err, "interpro loaded"
             assert "[ERROR]" not in output_err, "interpro loaded"
