@@ -21,7 +21,6 @@ Welcome to Tripal's Tripaille!
 TRIPAL_URL: http://localhost/
 TRIPAL_USER: admin
 TRIPAL_PASS: changeme
-
 ```
 
 This will create a tripaille config file in ~/.tripaille.yml
@@ -106,6 +105,9 @@ Or with the Tripaille client:
 ```
 
 ## History
+
+ - 3.1
+    - Add expression module to manage biomaterials and expression data (with tripal_expression module)
 
  - 3.0
     - Added some support for Tripal 3
