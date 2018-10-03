@@ -44,7 +44,7 @@ class FeatureClient(Client):
     def sync(self, organism=None, organism_id=None, max_sync='', types=[], ids=[],
              job_name=None, no_wait=None):
         """
-        Synchronize some features
+        Synchronize some features (Tripal 2 only)
 
         :type organism: str
         :param organism: Common name of the organism to sync
@@ -92,20 +92,7 @@ class FeatureClient(Client):
             job_name = 'Sync Features'
 
         if self.tripal.version == 3:
-            raise NotImplementedError("Not yet possible in Tripal 3")
-
-            # FIXME The following chunk of code is not yet working (see https://github.com/tripal/tripal/issues/337)
-            """
-            job_args = OrderedDict()
-            job_args[0] = OrderedDict()
-            job_args[0]['bundle_name'] = ???  # FIXME No idea how to get this using the API
-            job_args[0]['filters'] = OrderedDict()
-            job_args[0]['filters']['analysis_id'] = organism_id  # FIXME Don't know if using analysis_id is possible
-
-            r = self.tripal.job.add_job(job_name, 'tripal_chado', 'tripal_chado_publish_records', job_args)
-            if 'job_id' not in r or not r['job_id']:
-                raise Exception("Failed to create job, received %s" % r)
-            """
+            raise NotImplementedError("Not possible in Tripal 3. You probably want to use 'entity' -> 'publish' instead.")
         else:
             job_args = OrderedDict()
             job_args['base_table'] = 'feature'

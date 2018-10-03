@@ -53,7 +53,7 @@ tripaille feature sync
 		<data format="json" name="results"/>
 	</outputs>
 	<help>
-Synchronize some features
+Synchronize some features (Tripal 2 only)
 
 @HELP@
 	</help>

@@ -63,7 +63,7 @@ Get features entities
 
 **Help**
 
-Synchronize some features
+Synchronize some features (Tripal 2 only)
 
 
 **Output**

@@ -108,6 +108,7 @@ Or with the Tripaille client:
 
  - 3.1
     - Add expression module to manage biomaterials and expression data (with tripal_expression module)
+    - Add entity.get_bundles() and entity.publish() methods for Tripal 3
 
  - 3.0
     - Added some support for Tripal 3

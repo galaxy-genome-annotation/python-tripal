@@ -45,7 +45,7 @@ from tripaille.decorators import custom_exception, str_output
 @custom_exception
 @str_output
 def cli(ctx, organism="", organism_id="", max_sync="", types=None, ids=None, job_name="", no_wait=""):
-    """Synchronize some features
+    """Synchronize some features (Tripal 2 only)
 
 Output:
 

@@ -29,6 +29,29 @@ Add a new entity to the database
       -h, --help     Show this message and exit.
     
 
+``get_bundles`` command
+-----------------------
+
+**Usage**::
+
+    tripaille entity get_bundles [OPTIONS]
+
+**Help**
+
+Get the list of tripal bundles
+
+
+**Output**
+
+
+    Bundles information
+    
+**Options**::
+
+
+      -h, --help  Show this message and exit.
+    
+
 ``get_entities`` command
 ------------------------
 
@@ -75,4 +98,31 @@ Get the list of available fields for an entity
 
 
       -h, --help  Show this message and exit.
+    
+
+``publish`` command
+-------------------
+
+**Usage**::
+
+    tripaille entity publish [OPTIONS]
+
+**Help**
+
+Publish entities (Tripal 3 only)
+
+
+**Output**
+
+
+    status
+    
+**Options**::
+
+
+      --types TEXT     List of entity types to be published (e.g. Gene mRNA,
+                       default: all)
+      --job_name TEXT  Name of the job
+      --no_wait        Return immediately without waiting for job completion
+      -h, --help       Show this message and exit.
     
