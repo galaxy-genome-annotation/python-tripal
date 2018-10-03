@@ -13,6 +13,7 @@ describes these commands.
    commands/analysis.rst
    commands/db.rst
    commands/entity.rst
+   commands/expression.rst
    commands/feature.rst
    commands/job.rst
    commands/organism.rst

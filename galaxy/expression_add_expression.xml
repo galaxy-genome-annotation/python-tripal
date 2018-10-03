@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<tool id="tripaille_expression_add_expression" name="expression" version="@WRAPPER_VERSION@.0">
+ <description>add_expression</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille expression add_expression
+'$organism_id'
+'$analysis_id'
+'$file_path'
+
+#if $match_type:
+  --match_type '$match_type'
+#end if
+#if $biomaterial_provider:
+  --biomaterial_provider '$biomaterial_provider'
+#end if
+#if $array_design:
+  --array_design '$array_design'
+#end if
+#if $assay_id:
+  --assay_id '$assay_id'
+#end if
+#if $acquisition_id:
+  --acquisition_id '$acquisition_id'
+#end if
+#if $quantification_id:
+  --quantification_id '$quantification_id'
+#end if
+#if $file_extension:
+  --file_extension '$file_extension'
+#end if
+#if $start_regex:
+  --start_regex '$start_regex'
+#end if
+#if $stop_regex:
+  --stop_regex '$stop_regex'
+#end if
+#if $use_column:
+  $use_column
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="text" help="Organism Id" />
+	<param name="analysis_id" label="Analysis Id" argument="analysis_id" type="text" help="Id of the analysis" />
+	<param name="file_path" label="File Path" argument="file_path" type="text" help="Path to the expression file, or directory containing multiple expression files" />
+
+    <!-- options -->
+	<param name="match_type" label="Match Type" argument="match_type" type="text" help="Match to features using either name or uniquename. Default to uniquename" />
+	<param name="biomaterial_provider" label="Biomaterial Provider" argument="biomaterial_provider" type="text" help="The contact who provided the biomaterial. (optional, non functional in Tripal2)" />
+	<param name="array_design" label="Array Design" argument="array_design" type="text" help="The array design associated with this analysis. This is not required if the experimental data was gathered from next generation sequencing methods. (optional, non functional in Tripal2)" />
+	<param name="assay_id" label="Assay Id" argument="assay_id" type="text" help="The id of the assay associated with the experiment. (optional, non functional in Tripal2)" />
+	<param name="acquisition_id" label="Acquisition Id" argument="acquisition_id" type="text" help="The id of the acquisition associated with the experiment (optional, non functional in Tripal2)" />
+	<param name="quantification_id" label="Quantification Id" argument="quantification_id" type="text" help="The id of the quantification associated with the experiment (optional, non functional in Tripal2)" />
+	<param name="file_extension" label="File Extension" argument="file_extension" type="text" help="File extension for the file(s) to be loaded into Chado. Do not include the \".\". Not required for matrix files. (optional)" />
+	<param name="start_regex" label="Start Regex" argument="start_regex" type="text" help="A regular expression to describe the line that occurs before the start of the expression data. If the file has no header, this is not needed. (optional)" />
+	<param name="stop_regex" label="Stop Regex" argument="stop_regex" type="text" help="A regular expression to describe the line that occurs after the end of the expression data. If the file has no footer text, this is not needed. (optional)" />
+	<param name="use_column" label="Use Column" argument="use_column" type="boolean" truevalue="--use_column" falsevalue="" help="Set if the expression file is a column file" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Do not wait for job to complete" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+:type organism_id: str :param organism_id: Organism Id
+
+@HELP@
+	</help>
+</tool>

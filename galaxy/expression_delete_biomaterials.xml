@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<tool id="tripaille_expression_delete_biomaterials" name="expression" version="@WRAPPER_VERSION@.0">
+ <description>delete_biomaterials</description>
+	<macros>
+		<import>macros.xml</import>
+	</macros>
+	<expand macro="requirements"/>
+	<command detect_errors="aggressive">
+tripaille expression delete_biomaterials
+
+#if $names:
+  --names '$names'
+#end if
+#if $organism_id:
+  --organism_id '$organism_id'
+#end if
+#if $analysis_id:
+  --analysis_id '$analysis_id'
+#end if
+#if $job_name:
+  --job_name '$job_name'
+#end if
+#if $no_wait:
+  $no_wait
+#end if
+
+| jq -S . > $results
+</command>
+	<inputs>
+    <!-- arguments -->
+
+    <!-- options -->
+	<param name="names" label="Names" argument="names" type="text" help="JSON list of biomaterial names to delete. (optional)" />
+	<param name="organism_id" label="Organism Id" argument="organism_id" type="text" help="Organism id from which to delete biomaterials (optional)" />
+	<param name="analysis_id" label="Analysis Id" argument="analysis_id" type="text" help="Analysis id from which to delete biomaterials (optional)" />
+	<param name="job_name" label="Job Name" argument="job_name" type="text" help="Name of the job (optional)" />
+	<param name="no_wait" label="No Wait" argument="no_wait" type="boolean" truevalue="--no_wait" falsevalue="" help="Return immediately without waiting for job completion" />
+
+	</inputs>
+	<outputs>
+		<data format="json" name="results"/>
+	</outputs>
+	<help>
+Delete some biomaterials
+
+@HELP@
+	</help>
+</tool>
