@@ -213,7 +213,7 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def sync_biomaterials(self, ids=[], max_sync='', job_name=None, no_wait=False):
+    def sync_biomaterials(self, ids="[]", max_sync='', job_name=None, no_wait=False):
         """
         Synchronize some biomaterials
 

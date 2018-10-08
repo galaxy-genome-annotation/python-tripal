@@ -7,6 +7,8 @@ from tripaille.decorators import custom_exception, str_output
 @click.option(
     "--ids",
     help="JSON list of ids of biomaterials to be synced (default: all)",
+    default="[]",
+    show_default=True,
     type=str
 )
 @click.option(
@@ -27,7 +29,7 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, ids=None, max_sync="", job_name="", no_wait=False):
+def cli(ctx, ids="[]", max_sync="", job_name="", no_wait=False):
     """Synchronize some biomaterials
 
 Output:
