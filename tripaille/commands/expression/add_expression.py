@@ -58,7 +58,7 @@ from tripaille.decorators import custom_exception, str_output
 @custom_exception
 @str_output
 def cli(ctx, organism_id, analysis_id, file_path, match_type="uniquename", array_design_id="", quantification_units="", file_extension="", start_regex="", stop_regex="", seq_type="", use_column=False, no_wait=False):
-    """:type organism_id: str :param organism_id: Organism Id
+    """Add an expression file to tripal
 
 Output:
 

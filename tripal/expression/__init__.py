@@ -20,6 +20,8 @@ class ExpressionClient(Client):
                        match_type="uniquename", array_design_id=None, quantification_units = None,
                        file_extension=None, start_regex=None, stop_regex=None, seq_type = None, use_column=False, no_wait=False):
         """
+        Add an expression file to tripal
+
         :type organism_id: str
         :param organism_id: Organism Id
 
