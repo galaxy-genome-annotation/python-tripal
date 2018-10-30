@@ -9,6 +9,9 @@ except ImportError:
 subpackages = [x.replace('/', '.') for x in glob.glob('tripaille/commands/*') if not x.endswith('.py') and not x.endswith('.pyc')]
 subpackages += [x.replace('/', '.') for x in glob.glob('tripal/*') if not x.endswith('.py') and not x.endswith('.pyc')]
 
+with open('requirements.txt') as f:
+    requires = f.read().splitlines()
+
 setup(
     name="tripal",
     version='3.0',
@@ -16,7 +19,7 @@ setup(
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
     url="https://github.com/galaxy-genome-annotation/python-tripal",
-    install_requires=['requests>=2.4.3', 'wrapt', 'click', 'pyyaml', 'future'],
+    install_requires=requires,
     packages=[
         'tripal',
         'tripaille',
