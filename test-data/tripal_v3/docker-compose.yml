@@ -14,7 +14,7 @@ services:
             VIRTUAL_HOST: localhost:8501
             UPLOAD_LIMIT: 20M
             MEMORY_LIMIT: 512M
-            TRIPAL_ENABLE_MODULES: "tripal_analysis_blast tripal_analysis_interpro tripal_analysis_go tripal_rest_api tripal_elasticsearch"
+            TRIPAL_ENABLE_MODULES: "tripal_analysis_blast tripal_analysis_interpro tripal_analysis_go tripal_rest_api tripal_elasticsearch tripal_analysis_expression"
 
   tripaldb:
         image: erasche/chado:1.31-jenkins110.2-pg9.5

@@ -27,10 +27,10 @@ class FeatureClient(Client):
         """
 
         if self.tripal.version == 3:
-            if feature_id:
-                entities = [self._get_ws('Feature/%s' % feature_id, {})]
-            else:
-                entities = self._get_ws('Feature', {})
+
+            if self.tripal.version == 3:
+                raise NotImplementedError("Not possible in Tripal 3. You can use the 'entity get_bundles' command, and then the 'entity get_entities' command with the required type.")
+
         else:
             if feature_id:
                 entities = [self._get('node/%s' % feature_id, {})]
@@ -40,6 +40,22 @@ class FeatureClient(Client):
             entities = [n for n in entities if n['type'].startswith('chado_feature')]
 
         return entities
+
+    def get_features(self, feature_id=None):
+        """
+        Get features entities
+
+        :type feature_id: int
+        :param feature_id: A feature entity/node ID
+
+        :rtype: list of dict
+        :return: Feature entity/node information
+        """
+
+        orgs = self._request('chado/list', {'table': 'feature'})
+        if feature_id:
+            orgs = [v for v in orgs if v['feature_id'] == str(feature_id)]
+        return orgs
 
     def sync(self, organism=None, organism_id=None, max_sync='', types=[], ids=[],
              job_name=None, no_wait=None):
