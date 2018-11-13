@@ -21,7 +21,7 @@ from tripaille.decorators import custom_exception, dict_output
 @custom_exception
 @dict_output
 def cli(ctx, organism_id, file_path, file_type, analysis_id="", no_wait=False):
-    """Add a new biomaterial to the database
+    """Add a new biomaterial file to the database
 
 Output:
 

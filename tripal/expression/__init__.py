@@ -16,6 +16,34 @@ log = logging.getLogger()
 class ExpressionClient(Client):
     """Manage Tripal expressions"""
 
+    def get_biomaterials_tripal(self, biomaterial_id=None):
+        """
+        Get Biomaterial entities
+
+        :type biomaterial_id: int
+        :param biomaterial_id: A biomaterial entity ID
+
+        :rtype: list of dict
+        :return: Organism entity information
+        """
+
+        if self.tripal.version == 3:
+            if biomaterial_id:
+                entities = [self._get_ws('Biological_Sample/%s' % biomaterial_id, {})]
+            else:
+                entities = self._get_ws('Biological_Sample', {})
+        else:
+            if biomaterial_id:
+                entities = [self._get('node/%s' % biomaterial_id, {})]
+            else:
+                entities = self._get('node', {})
+                entities = [n for n in entities if n['type'] == 'chado_biomaterial']
+
+        # Return type is a dict if no biomaterial_id, list otherwise..
+        # Its also a list in tripalV2.
+
+        return entities
+
     def add_expression(self, organism_id, analysis_id, file_path,
                        match_type="uniquename", array_design_id=None, quantification_units = None,
                        file_extension=None, start_regex=None, stop_regex=None, seq_type = None, use_column=False, no_wait=False):
@@ -79,7 +107,6 @@ class ExpressionClient(Client):
         assay_id = None
         acquisition_id = None
         quantification_id = None
-        # No actually used
         biomaterial_provider_id = None
 
         if self.tripal.version == 3:
@@ -124,7 +151,7 @@ class ExpressionClient(Client):
         else:
             return self._run_job_and_wait(r['job_id'])
 
-    def get_biomaterials(self, provider_id="", biomaterial_id="", organism_id="", dbxref_id=""):
+    def get_biomaterials(self, biomaterial_name="", provider_id="", biomaterial_id="", organism_id="", dbxref_id=""):
         """
         List biomaterials in the database
 
@@ -134,6 +161,9 @@ class ExpressionClient(Client):
         :type biomaterial_id: str
         :param biomaterial_id: Limit query to the selected biomaterial
 
+        :type biomaterial_name: str
+        :param biomaterial_name: Limit query to the selected biomaterial
+
         :type provider_id: str
         :param provider_id: Limit query to the selected provider
 
@@ -141,11 +171,13 @@ class ExpressionClient(Client):
         :param dbxref_id: Limit query to the selected ref
 
         :rtype: dict
-        :return: Job information
+        :return: Biomaterial list
         """
         orgs = self._request('chado/list', {'table': 'biomaterial'})
         if biomaterial_id:
             orgs = [v for v in orgs if v['biomaterial_id'] == str(biomaterial_id)]
+        if biomaterial_name:
+            orgs = [v for v in orgs if v['name'] == str(biomaterial_name)]
         if provider_id:
             orgs = [v for v in orgs if v['biosourceprovider_id'] == str(provider_id)]
         if organism_id:
@@ -156,7 +188,7 @@ class ExpressionClient(Client):
 
     def add_biomaterial(self, organism_id, file_path, file_type, analysis_id = None, no_wait=False):
         """
-        Add a new biomaterial to the database
+        Add a new biomaterial file to the database
 
         :type organism_id: str
         :param organism_id: The id of the associated organism
