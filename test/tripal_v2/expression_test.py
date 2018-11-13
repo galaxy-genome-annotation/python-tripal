@@ -1,7 +1,5 @@
 import unittest
 
-from nose.tools import raises
-
 from . import ci
 from . import ti
 
@@ -56,7 +54,6 @@ class ExpressionTest(unittest.TestCase):
 
         assert len(biomat_list) == 1, "Issue : Expecting only one biomaterial in list"
 
-        biomaterial_id = biomat_list[0]["biomaterial_id"]
         biomat_published_dict = self.ti.expression.get_biomaterials_tripal()
 
         assert len(biomat_published_dict) == 0, "Error : Number of published biomaterials is not 0"
@@ -110,7 +107,6 @@ class ExpressionTest(unittest.TestCase):
         # We expect 8 biomaterials to be created
 
         assert len(biomat_list) == 8, "Unexpected number of biomaterials created"
-
 
     def setUp(self):
 

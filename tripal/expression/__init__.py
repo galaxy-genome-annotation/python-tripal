@@ -45,8 +45,8 @@ class ExpressionClient(Client):
         return entities
 
     def add_expression(self, organism_id, analysis_id, file_path,
-                       match_type="uniquename", array_design_id=None, quantification_units = None,
-                       file_extension=None, start_regex=None, stop_regex=None, seq_type = None, use_column=False, no_wait=False):
+                       match_type="uniquename", array_design_id=None, quantification_units=None,
+                       file_extension=None, start_regex=None, stop_regex=None, seq_type=None, use_column=False, no_wait=False):
         """
         Add an expression file to tripal
 
@@ -114,7 +114,7 @@ class ExpressionClient(Client):
             job_args = {
                 "organism_id": organism_id,
                 "analysis_id": analysis_id,
-                "re_start" : start_regex,
+                "re_start": start_regex,
                 "re_stop": stop_regex,
                 "fileext": file_extension,
                 "filetype": file_type,
@@ -128,7 +128,6 @@ class ExpressionClient(Client):
 
             r = self.tripal.job.add_import_job(job_name, "tripal_expression_data_loader", file_path, job_args)
 
-
         elif self.tripal.version == 2:
 
             if match_type == "uniquename":
@@ -137,7 +136,6 @@ class ExpressionClient(Client):
             job_args = [organism_id, analysis_id, biomaterial_provider_id, array_design_id,
                         assay_id, acquisition_id, quantification_id, file_path, file_extension,
                         file_type, start_regex, stop_regex, match_type]
-
 
             r = self.tripal.job.add_job("Add Expression", 'tripal_analysis_expression', 'tripal_expression_loader', job_args)
         else:
@@ -186,7 +184,7 @@ class ExpressionClient(Client):
             orgs = [v for v in orgs if v['dbxref_id'] == str(dbxref_id)]
         return orgs
 
-    def add_biomaterial(self, organism_id, file_path, file_type, analysis_id = None, no_wait=False):
+    def add_biomaterial(self, organism_id, file_path, file_type, analysis_id=None, no_wait=False):
         """
         Add a new biomaterial file to the database
 
@@ -208,7 +206,6 @@ class ExpressionClient(Client):
         :rtype: dict
         :return: Job information
         """
-
 
         if file_type not in ['xml', 'tsv', 'csv']:
             raise Exception("File format must be one of ['xml', 'tsv', 'csv']")
@@ -232,8 +229,8 @@ class ExpressionClient(Client):
             job_args = {
                 "organism_id": organism_id,
                 "analysis_id": analysis_id,
-                "field_info" : [],
-                "cvalue_info" : []
+                "field_info": [],
+                "cvalue_info": []
             }
 
             job_name = "Importing Biomaterial file"

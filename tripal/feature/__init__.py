@@ -57,8 +57,6 @@ class FeatureClient(Client):
             orgs = [v for v in orgs if v['feature_id'] == str(feature_id)]
         return orgs
 
-
-
     def sync(self, organism=None, organism_id=None, max_sync='', types=[], ids=[],
              job_name=None, no_wait=None):
         """
