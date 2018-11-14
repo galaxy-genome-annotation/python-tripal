@@ -106,6 +106,9 @@ Or with the Tripaille client:
 
 ## History
 
+ - 3.1.1
+    - Minor release to fix broken package at pypi, no code change
+
  - 3.1
     - Add expression module to manage biomaterials and expression data (with tripal_expression module)
     - Add entity.get_bundles() and entity.publish() methods for Tripal 3

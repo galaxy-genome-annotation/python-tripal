@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="tripal",
-    version='3.1',
+    version='3.1.1',
     description="Tripal library",
     author="Anthony Bretaudeau",
     author_email="anthony.bretaudeau@inra.fr",
