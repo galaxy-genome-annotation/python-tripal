@@ -62,12 +62,12 @@ class DbClient(Client):
 
         return mvs
 
-    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', job_name=None, no_wait=False):
+    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', token_filters=['standard', 'lowercase'], exposed=False, index_url=None, job_name=None, no_wait=False):
         """
         Schedule database indexing using elasticsearch
 
         :type mode: str
-        :param mode: Indexing mode: 'website' to index everything, 'table' to index a single table (default: website)
+        :param mode: Indexing mode: 'website' to index everything, 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)
 
         :type table: str
         :param table: Table to index (only in 'table' mode)
@@ -76,16 +76,25 @@ class DbClient(Client):
         :param index_name: Index name (only in 'table' mode)
 
         :type queues: int
-        :param queues: Number of indexing task queues
+        :param queues: Number of indexing task queues (Tripal 2 only)
 
         :type fields: list of str
-        :param fields: Fields to index (only in 'table' mode), syntax: <field_name>|<field_type>, field_type should be one of 'string', 'keyword', 'date', 'long', 'double', 'boolean', 'ip', 'object', 'nested', 'geo_point', 'geo_shape', or 'completion'
+        :param fields: Fields to index (only in 'table' mode), syntax: <field_name>|<field_type>, field_type should be one of 'string' (Tripal2), 'text' (Tripal3), 'keyword', 'date', 'long', 'double', 'boolean', 'ip', 'object', 'nested', 'geo_point', 'geo_shape', or 'completion'
 
         :type links: list of str
-        :param links: List of links to show to users, syntax: <column-where-to-show-the-link>|</your/url/[any-column-name]>
+        :param links: List of links to show to users, syntax: <column-where-to-show-the-link>|</your/url/[any-column-name]> (Tripal 2 only)
 
         :type tokenizer: str
-        :param tokenizer: Tokenizer to use (one of 'standard', 'letter', 'lowercase', 'whitespace', 'uax_url_email', 'classic', 'ngram', 'edge_ngram', 'keyword', 'pattern', or 'path_hierarchy'; default='standard')
+        :param tokenizer: Tokenizer to use (only in 'table' mode) (one of 'standard', 'letter', 'lowercase', 'whitespace', 'uax_url_email', 'classic', 'ngram', 'edge_ngram', 'keyword', 'pattern', or 'path_hierarchy'; default='standard')
+
+        :type token_filters: list of str
+        :param token_filters:  Token filters (Tripal 3 only) (only in 'table' mode) (available filters are 'standard', 'asciifolding', 'length', 'lowercase', 'uppercase') (Default : ['standard', 'lowercase'])
+
+        :type exposed: bool
+        :param exposed: "Expose the index (read-only) to other websites ('table' or 'gene' mode)
+
+        :type index_url: str
+        :param index_url: In order for other sites to link back to your results page, you must specify a path where the form for this index can be reached ('table' or 'gene' mode)
 
         :type job_name: str
         :param job_name: Name of the job
@@ -100,10 +109,11 @@ class DbClient(Client):
         modes = {
             'table': 'table',
             'website': 'website',
+            'gene':'gene'
         }
 
         if mode not in modes:
-            raise Exception("Mode should be 'table' or 'website'")
+            raise Exception("Mode should be 'table', 'website' or 'gene'")
 
         if mode == 'table' and not index_name:
             raise Exception("index_name is required in 'table' mode")
@@ -122,11 +132,22 @@ class DbClient(Client):
             'path_hierarchy': 'path_hierarchy',
         }
 
+        token_filters_list = {
+            'standard': 'standard',
+            'asciifolding': 'asciifolding',
+            'length': 'length',
+            'lowercase': 'lowercase',
+            'uppercase': 'uppercase'
+        }
+
         if tokenizer not in tokenizers:
             raise Exception("Unknown tokenizer")
 
-        if mode not in mode:
-            raise Exception("Mode should be 'table' or 'website'")
+        if not all(token in token_filters_list for token in token_filters):
+            raise Exception("Unknown token filters")
+
+        if exposed and not index_url:
+            raise Exception("An index url is required for the exposed flag")
 
         fields_real = {}
         for f in fields:
@@ -146,8 +167,11 @@ class DbClient(Client):
             'index_name': index_name,
             'queues': queues,
             'tokenizer': tokenizer,
+            'token_filters' : token_filters,
             'fields': fields_real,
             'links': links_real,
+            'exposed': exposed,
+            'index_url': index_url
         }
 
         res = self._request('elasticsearch/index', data)
