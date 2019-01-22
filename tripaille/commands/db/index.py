@@ -6,7 +6,7 @@ from tripaille.decorators import custom_exception, str_output
 @click.command('index')
 @click.option(
     "--mode",
-    help="Indexing mode: 'website' to index everything, 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)",
+    help="Indexing mode: 'website' to index the website (Nodes in Tripal 2, Entities in Tripal 3) , 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)",
     default="website",
     show_default=True,
     type=str

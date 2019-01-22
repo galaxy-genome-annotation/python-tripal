@@ -67,7 +67,7 @@ class DbClient(Client):
         Schedule database indexing using elasticsearch
 
         :type mode: str
-        :param mode: Indexing mode: 'website' to index everything, 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)
+        :param mode: Indexing mode: 'website' to index the website (Nodes in Tripal 2, Entities in Tripal 3) , 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)
 
         :type table: str
         :param table: Table to index (only in 'table' mode)
@@ -109,11 +109,11 @@ class DbClient(Client):
         modes = {
             'table': 'table',
             'website': 'website',
-            'gene':'gene'
+            'gene':'gene',
         }
 
         if mode not in modes:
-            raise Exception("Mode should be 'table', 'website' or 'gene'")
+            raise Exception("Mode should be 'table', 'website', or 'gene'")
 
         if mode == 'table' and not index_name:
             raise Exception("index_name is required in 'table' mode")
