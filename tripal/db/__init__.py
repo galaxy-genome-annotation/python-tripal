@@ -62,7 +62,7 @@ class DbClient(Client):
 
         return mvs
 
-    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', token_filters=['standard', 'lowercase'], exposed=False, index_url=None, job_name=None, no_wait=False):
+    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', token_filters=None, exposed=False, index_url=None, job_name=None, no_wait=False):
         """
         Schedule database indexing using elasticsearch
 
@@ -85,10 +85,10 @@ class DbClient(Client):
         :param links: List of links to show to users, syntax: <column-where-to-show-the-link>|</your/url/[any-column-name]> (Tripal 2 only)
 
         :type tokenizer: str
-        :param tokenizer: Tokenizer to use (only in 'table' mode) (one of 'standard', 'letter', 'lowercase', 'whitespace', 'uax_url_email', 'classic', 'ngram', 'edge_ngram', 'keyword', 'pattern', or 'path_hierarchy'; default='standard')
+        :param tokenizer: Tokenizer to use (only in 'table' mode) (one of 'standard', 'letter', 'lowercase', 'whitespace', 'uax_url_email', 'classic', 'ngram', 'edge_ngram', 'keywordx', 'pattern', or 'path_hierarchy'; default='standard')
 
         :type token_filters: list of str
-        :param token_filters:  Token filters (Tripal 3 only) (only in 'table' mode) (available filters are 'standard', 'asciifolding', 'length', 'lowercase', 'uppercase') (Default : ['standard', 'lowercase'])
+        :param token_filters:  Token filters (Tripal 3 only) (only in 'table' mode) (available filters are 'standard', 'asciifolding', 'length', 'lowercase', 'uppercase') (Default to ['standard', 'lowercase'])
 
         :type exposed: bool
         :param exposed: "Expose the index (read-only) to other websites ('table' or 'gene' mode)
@@ -143,7 +143,7 @@ class DbClient(Client):
         if tokenizer not in tokenizers:
             raise Exception("Unknown tokenizer")
 
-        if not all(token in token_filters_list for token in token_filters):
+        if not set(token_filters).issubset(token_filters_list):
             raise Exception("Unknown token filters")
 
         if exposed and not index_url:
@@ -238,3 +238,23 @@ class DbClient(Client):
             return r
         else:
             return self._run_job_and_wait(r['job_id'])
+
+    def tune(self):
+        """
+            Tune indices for website indexation
+
+            :rtype: dict
+            :return: "Status"
+
+        """
+
+
+        data = {}
+
+        res = self._request('elasticsearch/tune', data)
+
+        if res and 'status' in res and res['status'] == 'error':
+            raise Exception("Failed to schedule indexing, error: %s" % res['errors'])
+
+        return res
+
