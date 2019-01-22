@@ -3,7 +3,13 @@
 [![Build](https://travis-ci.org/galaxy-genome-annotation/python-tripal.svg?branch=master)](https://travis-ci.org/galaxy-genome-annotation/python-tripal)
 [![Documentation](https://readthedocs.org/projects/python-tripal/badge/?version=latest)](http://python-tripal.readthedocs.io/en/latest/?badge=latest)
 
-A Python library for interacting with [Tripal](http://tripal.info/)
+A Python library for interacting with [Tripal](http://tripal.info/).
+
+It allows to load data into a remote Tripal instance, and explore its content, directly from Python code, or using a CLI (Command Line Interface).
+
+See below for examples of what you can do using the `tripal` python module, and the `tripaille` CLI.
+
+(in case you wonder: Tripaille's name comes from a bad french word play)
 
 ## Requirements
 
@@ -105,6 +111,9 @@ Or with the Tripaille client:
 ```
 
 ## History
+
+ - 3.1.1
+    - Minor release to fix broken package at pypi, no code change
 
  - 3.1
     - Add expression module to manage biomaterials and expression data (with tripal_expression module)
