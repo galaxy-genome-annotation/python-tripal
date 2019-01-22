@@ -248,7 +248,6 @@ class DbClient(Client):
 
         """
 
-
         data = {}
 
         res = self._request('elasticsearch/tune', data)
