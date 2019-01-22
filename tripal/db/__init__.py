@@ -164,12 +164,6 @@ class DbClient(Client):
             elif mode == 'entities' or mode == 'gene':
                 raise NotImplementedError("These modes are not available for Tripal 2")
 
-        if (mode == 'website' and self.tripal.version == 3):
-            mode = 'entities'
-
-        if (mode == 'nodes' and self.tripal.version == 2):
-            mode = 'website'
-
         fields_real = {}
         for f in fields:
             fs = f.split('|', 1)
