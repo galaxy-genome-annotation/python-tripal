@@ -109,7 +109,7 @@ class DbClient(Client):
         modes = {
             'table': 'table',
             'website': 'website',
-            'gene':'gene',
+            'gene': 'gene',
             'nodes': 'nodes',
             'entities': 'entities'
         }
@@ -182,7 +182,7 @@ class DbClient(Client):
             'index_name': index_name,
             'queues': queues,
             'tokenizer': tokenizer,
-            'token_filters' : token_filters,
+            'token_filters': token_filters,
             'fields': fields_real,
             'links': links_real,
             'exposed': exposed,
