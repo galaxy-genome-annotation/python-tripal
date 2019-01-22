@@ -67,7 +67,7 @@ class DbClient(Client):
         Schedule database indexing using elasticsearch
 
         :type mode: str
-        :param mode: Indexing mode: 'website' to index the website (Nodes in Tripal 2, Entities in Tripal 3) , 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)
+        :param mode: Indexing mode: 'website' to index the website , 'nodes' for the website nodes, 'entities' for the website entities (Tripal 3), 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website) ('website' default to 'nodes' for Tripal 2, 'entities' for Tripal 3)
 
         :type table: str
         :param table: Table to index (only in 'table' mode)
@@ -91,10 +91,10 @@ class DbClient(Client):
         :param token_filters:  Token filters (Tripal 3 only) (only in 'table' mode) (available filters are 'standard', 'asciifolding', 'length', 'lowercase', 'uppercase') (Default to ['standard', 'lowercase'])
 
         :type exposed: bool
-        :param exposed: "Expose the index (read-only) to other websites ('table' or 'gene' mode)
+        :param exposed: "Expose the index (read-only) to other websites
 
         :type index_url: str
-        :param index_url: In order for other sites to link back to your results page, you must specify a path where the form for this index can be reached ('table' or 'gene' mode)
+        :param index_url: In order for other sites to link back to your results page, you must specify a path where the form for this index can be reached
 
         :type job_name: str
         :param job_name: Name of the job
@@ -110,10 +110,12 @@ class DbClient(Client):
             'table': 'table',
             'website': 'website',
             'gene':'gene',
+            'nodes': 'nodes',
+            'entities': 'entities'
         }
 
         if mode not in modes:
-            raise Exception("Mode should be 'table', 'website', or 'gene'")
+            raise Exception("Mode should be 'table', 'website', 'nodes', 'entities' or 'gene'")
 
         if mode == 'table' and not index_name:
             raise Exception("index_name is required in 'table' mode")
@@ -148,6 +150,15 @@ class DbClient(Client):
 
         if exposed and not index_url:
             raise Exception("An index url is required for the exposed flag")
+
+        # 'website' redirect to node indexing in Tripal 3, but it's misleading.
+        # We redirect users to entity indexing if Tripal 3, and Node indexing in tripal 2
+
+        if mode == 'website':
+            if self.tripal.version == 3:
+                mode = 'entities'
+            else:
+                mode = 'nodes'
 
         fields_real = {}
         for f in fields:

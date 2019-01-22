@@ -6,7 +6,7 @@ from tripaille.decorators import custom_exception, str_output
 @click.command('index')
 @click.option(
     "--mode",
-    help="Indexing mode: 'website' to index the website (Nodes in Tripal 2, Entities in Tripal 3) , 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website)",
+    help="Indexing mode: 'website' to index the website , 'nodes' for the website nodes, 'entities' for the website entities (Tripal 3), 'table' to index a single table, 'gene' to build a Gene search index (Tripal 3 only) (default: website) ('website' default to 'nodes' for Tripal 2, 'entities' for Tripal 3)",
     default="website",
     show_default=True,
     type=str
@@ -55,12 +55,12 @@ from tripaille.decorators import custom_exception, str_output
 )
 @click.option(
     "--exposed",
-    help="\"Expose the index (read-only) to other websites ('table' or 'gene' mode)",
+    help="\"Expose the index (read-only) to other websites",
     is_flag=True
 )
 @click.option(
     "--index_url",
-    help="In order for other sites to link back to your results page, you must specify a path where the form for this index can be reached ('table' or 'gene' mode)",
+    help="In order for other sites to link back to your results page, you must specify a path where the form for this index can be reached",
     type=str
 )
 @click.option(
