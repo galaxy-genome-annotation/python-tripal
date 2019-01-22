@@ -151,14 +151,24 @@ class DbClient(Client):
         if exposed and not index_url:
             raise Exception("An index url is required for the exposed flag")
 
-        # 'website' redirect to node indexing in Tripal 3, but it's misleading.
-        # We redirect users to entity indexing if Tripal 3, and Node indexing in tripal 2
+        # 'website' redirect to node indexing in tripal code, but it's misleading.
+        # We redirect users to entity indexing if Tripal 3, and node indexing in tripal 2
+        # We leave the mode for node indexing at 'website' in Tripal 2 for back-compatibility
 
-        if mode == 'website':
-            if self.tripal.version == 3:
+        if self.tripal.version == 3:
+            if mode == 'website':
                 mode = 'entities'
-            else:
-                mode = 'nodes'
+        else:
+            if mode == 'nodes':
+                mode = 'website'
+            elif mode == 'entities' or mode == 'gene':
+                raise NotImplementedError("These modes are not available for Tripal 2")
+
+        if (mode == 'website' and self.tripal.version == 3):
+            mode = 'entities'
+
+        if (mode == 'nodes' and self.tripal.version == 2):
+            mode = 'website'
 
         fields_real = {}
         for f in fields:
@@ -267,4 +277,3 @@ class DbClient(Client):
             raise Exception("Failed to schedule indexing, error: %s" % res['errors'])
 
         return res
-
