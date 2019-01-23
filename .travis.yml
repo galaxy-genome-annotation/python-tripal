@@ -26,7 +26,8 @@ jobs:
         - cd test-data/tripal_v$TRIPAL_VERSION/
         - docker-compose up -d
         - cd ../../
-        - sleep 300 # Wait for the containers to be ready
+        - sleep 360 # Wait for the containers to be ready
+        - docker-compose logs
       script:
         - python setup.py nosetests --tests test.tripal_v$TRIPAL_VERSION
     - stage: test  # Python 3.5 + tripal 2
@@ -41,7 +42,8 @@ jobs:
         - cd test-data/tripal_v$TRIPAL_VERSION/
         - docker-compose up -d
         - cd ../../
-        - sleep 300 # Wait for the container to be ready
+        - sleep 360 # Wait for the container to be ready
+        - docker-compose logs
       script:
         - python setup.py nosetests --tests test.tripal_v$TRIPAL_VERSION
     - stage: test  # Python 2.7 + tripal 3
@@ -58,6 +60,7 @@ jobs:
         - cd ../../
         - while sleep 9m; do echo "[TRAVIS] Still running..."; done &
         - sleep 900 # Wait for the containers to be ready
+        - docker-compose logs
       script:
         - python setup.py nosetests --tests test.tripal_v$TRIPAL_VERSION
     - stage: test  # Python 3.5 + tripal 3
@@ -74,6 +77,7 @@ jobs:
         - cd ../../
         - while sleep 9m; do echo "[TRAVIS] Still running..."; done &
         - sleep 900 # Wait for the container to be ready
+        - docker-compose logs
       script:
         - python setup.py nosetests --tests test.tripal_v$TRIPAL_VERSION
     - stage: deploy
