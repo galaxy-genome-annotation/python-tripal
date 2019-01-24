@@ -145,7 +145,7 @@ class DbClient(Client):
         if tokenizer not in tokenizers:
             raise Exception("Unknown tokenizer")
 
-        if not set(token_filters).issubset(token_filters_list):
+        if (token_filter and not set(token_filters).issubset(token_filters_list)):
             raise Exception("Unknown token filters")
 
         if exposed and not index_url:
