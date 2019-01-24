@@ -76,7 +76,7 @@ from tripaille.decorators import custom_exception, str_output
 @pass_context
 @custom_exception
 @str_output
-def cli(ctx, mode="website", table="", index_name="", queues=10, fields=None, links={}, tokenizer="standard", token_filters="", exposed=False, index_url="", job_name="", no_wait=False):
+def cli(ctx, mode="website", table="", index_name="", queues=10, fields=None, links={}, tokenizer="standard", token_filters=None, exposed=False, index_url="", job_name="", no_wait=False):
     """Schedule database indexing using elasticsearch
 
 Output:

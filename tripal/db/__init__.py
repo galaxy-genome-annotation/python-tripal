@@ -62,7 +62,7 @@ class DbClient(Client):
 
         return mvs
 
-    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', token_filters=None, exposed=False, index_url=None, job_name=None, no_wait=False):
+    def index(self, mode="website", table=None, index_name=None, queues=10, fields=[], links={}, tokenizer='standard', token_filters=[], exposed=False, index_url=None, job_name=None, no_wait=False):
         """
         Schedule database indexing using elasticsearch
 
