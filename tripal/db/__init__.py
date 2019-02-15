@@ -256,12 +256,15 @@ class DbClient(Client):
 
     def tune(self):
         """
-            Tune indices for website indexation
+            Setup default entity index priority for whole website indexing
 
             :rtype: dict
             :return: "Status"
 
         """
+
+        if self.tripal.version == 2:
+            raise NotImplementedError("Tuning is not required in Tripal 2")
 
         data = {}
 
