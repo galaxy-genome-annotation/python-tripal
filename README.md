@@ -112,6 +112,9 @@ Or with the Tripaille client:
 
 ## History
 
+ - 3.2
+    - Fix support for elasticsearch indexing with Tripal 3
+
  - 3.1.1
     - Minor release to fix broken package at pypi, no code change
 
