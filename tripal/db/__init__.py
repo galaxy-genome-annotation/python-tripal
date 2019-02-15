@@ -256,7 +256,7 @@ class DbClient(Client):
 
     def tune(self):
         """
-            Tune indices for website indexation
+            Setup default entity index priority for whole website indexing
 
             :rtype: dict
             :return: "Status"

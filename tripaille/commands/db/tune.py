@@ -8,7 +8,7 @@ from tripaille.decorators import custom_exception, dict_output
 @custom_exception
 @dict_output
 def cli(ctx):
-    """Tune indices for website indexation
+    """Setup default entity index priority for whole website indexing
 
 Output:
 
