@@ -263,6 +263,9 @@ class DbClient(Client):
 
         """
 
+        if self.tripal.version == 2:
+            raise NotImplementedError("Tuning is not required in Tripal 2")
+
         data = {}
 
         res = self._request('elasticsearch/tune', data)
