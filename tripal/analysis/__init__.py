@@ -222,7 +222,7 @@ class AnalysisClient(Client):
                    blast_parameters=None, query_re=None, query_type=None,
                    query_uniquename=False, is_concat=False, search_keywords=False,
                    no_parsed="all", no_wait=False, algorithm=None, sourceversion=None,
-                   sourceuri=None, description=None, date_executed=None):
+                   sourceuri=None, description="", date_executed=None):
         """
         Create a Blast analysis
 
@@ -414,7 +414,7 @@ class AnalysisClient(Client):
                       interpro_output, interpro_parameters=None, query_re=None,
                       query_type=None, query_uniquename=False, parse_go=False,
                       no_wait=False, algorithm=None, sourceversion=None, sourceuri=None,
-                      description=None, date_executed=None):
+                      description="", date_executed=None):
         """
         Create an Interpro analysis
 
