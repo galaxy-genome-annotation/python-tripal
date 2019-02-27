@@ -112,6 +112,9 @@ Or with the Tripaille client:
 
 ## History
 
+ - 3.2.1
+    - Fix error when loading blast or interpro with empty description
+
  - 3.2
     - Fix support for elasticsearch indexing with Tripal 3
 
