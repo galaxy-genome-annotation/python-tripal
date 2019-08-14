@@ -17,7 +17,7 @@ services:
             TRIPAL_ENABLE_MODULES: "tripal_analysis_blast tripal_analysis_interpro tripal_analysis_go tripal_rest_api tripal_elasticsearch tripal_analysis_expression"
 
   tripaldb:
-        image: quay.io/galaxy-genome-annotation/chado:1.31-jenkins21-pg9.5
+        image: quay.io/galaxy-genome-annotation/chado:1.31-jenkins23-pg9.5
         ports:
             - "5433:5432"
         environment:
